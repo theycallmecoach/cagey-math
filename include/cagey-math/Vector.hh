@@ -33,7 +33,19 @@
 
 namespace cagey::math {
   /**
-   * Checks if the given type can be used as a Vector component
+   * Checks if the given type can be used as a Vector component.  Supported
+   * types are the following:
+
+   *            - `float`
+   *            - `double`
+   *            - `std::int8_t`
+   *            - `std::int16_t`
+   *            - `std::int32_t`
+   *            - `std::int64_t`
+   *            - `std::uint8_t`
+   *            - `std::uint16_t`
+   *            - `std::uint32_t`
+   *            - `std::uint64_t`
    *
    * @tparam T the type to check
    */
@@ -56,82 +68,82 @@ namespace cagey::math {
    * 2 Dimensional Vector
    * @tparam T component type.  is_vec_type<T>::value must be true.
    **/
-  template <typename T> using Vector2 = Vector<T, 2>;
+  template <typename T> using Vec2 = Vector<T, 2>;
 
   /**
    * 3 Dimensional Vector
    * @tparam T component type.  is_vec_type<T>::value must be true.
    **/
-  template <typename T> using Vector3 = Vector<T, 3>;
+  template <typename T> using Vec3 = Vector<T, 3>;
 
   /**
    * 4 Dimensional Vector
    * @tparam T component type.  is_vec_type<T>::value must be true.
    **/
-  template <typename T> using Vector4 = Vector<T, 4>;
+  template <typename T> using Vec4 = Vector<T, 4>;
 
   /**
    * 2 Dimensional Vector with float components.
    **/
-  using Vector2f = Vector2<float>;
-
-  /**
-   * 3 Dimensional Vector with float components.
-   **/
-  using Vector3f = Vector3<float>;
-
-  /**
-   * 4 Dimensional Vector with float components.
-   **/
-  using Vector4f = Vector4<float>;
+  using Vec2f = Vec2<float>;
 
   /**
    * 2 Dimensional Vector with double components.
    **/
-  using Vector2d = Vector2<double>;
-
-  /**
-   * 3 Dimensional Vector with double components.
-   **/
-  using Vector3d = Vector3<double>;
-
-  /**
-   * 4 Dimensional Vector with double components.
-   **/
-  using Vector4d = Vector4<double>;
-
+  using Vec2d = Vec2<double>;
   /**
    * 2 Dimensional Vector with int components.
    **/
-  using Vector2i = Vector2<int>;
-
-  /**
-   * 3 Dimensional Vector with int components.
-   **/
-  using Vector3i = Vector3<int>;
-
-  /**
-   * 4 Dimensional Vector with int components.
-   **/
-  using Vector4i = Vector4<int>;
+  using Vec2i = Vec2<int>;
 
   /**
    * 2 Dimensional Vector with unsigned int components.
    **/
-  using Vector2u = Vector2<unsigned int>;
+  using Vec2u = Vec2<unsigned int>;
+
+  /**
+   * 3 Dimensional Vector with float components.
+   **/
+  using Vec3f = Vec3<float>;
+
+  /**
+   * 3 Dimensional Vector with double components.
+   **/
+  using Vec3d = Vec3<double>;
+
+  /**
+   * 3 Dimensional Vector with int components.
+   **/
+  using Vec3i = Vec3<int>;
 
   /**
    * 3 Dimensional Vector with unsigned int components.
    **/
-  using Vector3u = Vector3<unsigned int>;
+  using Vec3u = Vec3<unsigned int>;
+
+  /**
+   * 4 Dimensional Vector with float components.
+   **/
+  using Vec4f = Vec4<float>;
+
+  /**
+   * 4 Dimensional Vector with double components.
+   **/
+  using Vec4d = Vec4<double>;
+
+  /**
+   * 4 Dimensional Vector with int components.
+   **/
+  using Vec4i = Vec4<int>;
 
   /**
    * 4 Dimensional Vector with unsigned int components.
    **/
-  using Vector4u = Vector4<unsigned int>;
+  using Vec4u = Vec4<unsigned int>;
 
   /**/
   template <typename T, std::size_t N> struct Vector {
+
     static_assert(N > 2 && N <= 4,
                   "Vector must have between 2 and 4 components");
 
@@ -151,9 +163,56 @@ namespace cagey::math {
     static constexpr std::size_t Size = N;
 
     /**
+     * Returns a Vector with each component set to 0.
+     *
+     * @return A Vector with each component set to 0
+     */
+    inline static constexpr auto zero() noexcept -> Vector<T, N>;
+
+    /**
+     * Returns a Vector with the first component set to 1 and all other
+     * components set to 0.
+     *
+     * @return A Vector with the first component set to 1 and all other
+     * components set to 0.
+     */
+    inline static constexpr auto xAxis() noexcept -> Vector<T, N>;
+
+    /**
+     * Returns a Vector with the second component set to 1 and all other
+     * components set to 0.
+     *
+     * @return A Vector with the second component set to 1 and all other
+     * components set to 0.
+     */
+    inline static constexpr auto yAxis() noexcept -> Vector<T, N>;
+
+    /**
+     * Returns a Vector with the third component set to 1 and all other
+     * components set to 0.
+     *
+     * Note: Function only available when N > 2.
+     *
+     * @return A Vector with the third component set to 1 and all other
+     * components set to 0.
+     */
+    inline static constexpr auto zAxis() noexcept -> Vector<T, N>;
+
+    /**
+     * Returns a Vector with the forth component set to 1 and all other
+     * components set to 0.
+     *
+     * Note: Function only available when N > 3.
+     *
+     * @return A Vector with the forth component set to 1 and all other
+     * components set to 0.
+     */
+    inline static constexpr auto wAxis() noexcept -> Vector<T, N>;
+
+    /**
      * Default Construct all Vector components.
      */
-    Vector() noexcept = default;
+    constexpr Vector() noexcept = default;
 
     /**
      * Construct each component with the same value.
@@ -203,7 +262,7 @@ namespace cagey::math {
      * @param  xy The value to init the first and second components.
      * @param  z The value to init the second component.
      */
-    inline constexpr Vector(Vector2<T> xy, T z) noexcept;
+    inline constexpr Vector(Vec2<T> const &xy, T z) noexcept;
 
     /**
      * Construct each component with the value of the corresponding parameter.
@@ -214,7 +273,7 @@ namespace cagey::math {
      * @param  z The value to init the second component.
      * @param  w The value to init the forth component.
      */
-    inline constexpr Vector(Vector2<T> const &xy, T z, T w) noexcept;
+    inline constexpr Vector(Vec2<T> const &xy, T z, T w) noexcept;
 
     /**
      * Construct each component with the value of the corresponding parameter.
@@ -224,7 +283,23 @@ namespace cagey::math {
      * @param  xy The value to init the first,second and third components.
      * @param  w The value to init the forth component.
      */
-    inline constexpr Vector(Vector3<T> const &xyz, T w) noexcept;
+    inline constexpr Vector(Vec3<T> const &xyz, T w) noexcept;
+
+    /**
+     * Construct each component with the values pointed at by val.  Note
+     * arrays which are not of size N causes undefined behaviour.
+     *
+     * @param  val A pointer to an array
+     */
+    inline constexpr Vector(T *const val) noexcept;
+
+    /**
+     * Construct each component with the value of the corresponding array
+     * element.
+     *
+     * @param  vals An array of values
+     */
+    inline constexpr Vector(std::array<T, N> const &vals) noexcept;
 
     /**
      * Downsizes a larger vector with same type.
@@ -255,53 +330,6 @@ namespace cagey::math {
      */
     template <typename U>
     inline constexpr operator Vector<U, N>() const noexcept;
-
-    /**
-     * Returns a Vector with each component set to 0.
-     *
-     * @return A Vector with each component set to 0
-     */
-    inline static constexpr auto zero() noexcept -> Vector<T, N>;
-
-    /**
-     * Returns a Vector with the first component set to 1 and all other
-     * components set to 0.
-     *
-     * @return A Vector with the first component set to 1 and all other
-     * components set to 0.
-     */
-    inline static constexpr auto xAxis() noexcept -> Vector<T, N>;
-
-    /**
-     * Returns a Vector with the second component set to 1 and all other
-     * components set to 0.
-     *
-     * @return A Vector with the second component set to 1 and all other
-     * components set to 0.
-     */
-    inline static constexpr auto yAxis() noexcept -> Vector<T, N>;
-
-    /**
-     * Returns a Vector with the third component set to 1 and all other
-     * components set to 0.
-     *
-     * Note: Function only available when N > 2.
-     *
-     * @return A Vector with the third component set to 1 and all other
-     * components set to 0.
-     */
-    inline static constexpr auto zAxis() noexcept -> Vector<T, N>;
-
-    /**
-     * Returns a Vector with the forth component set to 1 and all other
-     * components set to 0.
-     *
-     * Note: Function only available when N > 3.
-     *
-     * @return A Vector with the forth component set to 1 and all other
-     * components set to 0.
-     */
-    inline static constexpr auto wAxis() noexcept -> Vector<T, N>;
 
     /**
      * Return a reference to the component at the given index.
@@ -523,6 +551,7 @@ namespace cagey::math {
 #include "detail/Vector2.hh"
 //#include "detail/Vector3.hh"
 //#include "detail/Vector4.hh"
+#include "detail/VectorOpImpl.hh"
 
 namespace cagey::math {
 
@@ -543,16 +572,8 @@ namespace cagey::math {
       ->std::enable_if_t<
           is_vec_type<T>::value,
           Vector<decltype(std::declval<T>() + std::declval<U>()), N>> {
-    return vectorAdditionOperatorScalarVector(lhs, rhs, Indices());
-  }
-
-  template <typename T, typename U, std::size_t N, std::size_t... I>
-  inline constexpr auto vectorAdditionOperatorScalarVector(
-      T const lhs, Vector<U, N> const &rhs, std::index_sequence<I...>)noexcept
-      ->std::enable_if_t<
-          is_vec_type<T>::value,
-          Vector<decltype(std::declval<T>() + std::declval<U>()), N>> {
-    return {lhs + rhs[I]...};
+    return cagey::math::detail::additionOperatorScalarVector(lhs, rhs,
+                                                             Indices());
   }
 
   /**
@@ -566,12 +587,14 @@ namespace cagey::math {
    * @param rhs the right-hand operand
    * @return the sum of rhs and each component of lhs
    */
-  template <typename T, typename U, std::size_t N>
+  template <typename T, typename U, std::size_t N,
+            typename Indices = std::make_index_sequence<N>>
   inline constexpr auto operator+(Vector<T, N> const &lhs, U const rhs) noexcept
       ->std::enable_if_t<
           is_vec_type<T>::value,
           Vector<decltype(std::declval<T>() + std::declval<U>()), N>> {
-    return cagey::math::detail::vectorAdditionOperatorVectorScalar(lhs, rhs);
+    return cagey::math::detail::additionOperatorVectorScalar(lhs, rhs,
+                                                             Indices());
   }
 
   /**
@@ -585,13 +608,14 @@ namespace cagey::math {
    * @param rhs the right-hand operand
    * @return the component wise sum of lhs and rhs
    */
-  template <typename T, typename U, std::size_t N>
+  template <typename T, typename U, std::size_t N,
+            typename Indices = std::make_index_sequence<N>>
   inline constexpr auto operator+(Vector<T, N> const &lhs,
                                   Vector<U, N> const &rhs) noexcept
       ->std::enable_if_t<
           is_vec_type<T>::value,
           Vector<decltype(std::declval<T>() + std::declval<U>()), N>> {
-    return cagey::math::detail::vectorAdditionOperator(lhs, rhs);
+    return cagey::math::detail::additionOperatorVector(lhs, rhs, Indices());
   }
 
   /**
@@ -620,12 +644,14 @@ namespace cagey::math {
    * @param rhs the right-hand operand
    * @return the differences of lhs and each component of rhs
    */
-  template <typename T, typename U, std::size_t N>
+  template <typename T, typename U, std::size_t N,
+            typename Indices = std::make_index_sequence<N>>
   inline constexpr auto
   operator-(T const &lhs, Vector<U, N> const &rhs) noexcept->std::enable_if_t<
       is_vec_type<T>::value,
       Vector<decltype(std::declval<T>() - std::declval<U>()), N>> {
-    return cagey::math::detail::vectorSubtractionOperatorScalarVector(lhs, rhs);
+    return cagey::math::detail::subtractionOperatorScalarVector(lhs, rhs,
+                                                                Indices());
   }
 
   /**
@@ -639,12 +665,14 @@ namespace cagey::math {
    * @param rhs the right-hand operand
    * @return the differences of rhs and each component of lhs
    */
-  template <typename T, typename U, std::size_t N>
+  template <typename T, typename U, std::size_t N,
+            typename Indices = std::make_index_sequence<N>>
   inline constexpr auto
   operator-(Vector<U, N> const &lhs, T const &rhs) noexcept->std::enable_if_t<
       is_vec_type<T>::value,
       Vector<decltype(std::declval<T>() - std::declval<U>()), N>> {
-    return cagey::math::detail::vectorSubtractionOperatorVectorScalar(lhs, rhs);
+    return cagey::math::detail::subtractionOperatorVectorScalar(lhs, rhs,
+                                                                Indices());
   }
 
   /**
@@ -658,13 +686,14 @@ namespace cagey::math {
    * @param rhs the right-hand operand
    * @return the differences of lhs and rhs
    */
-  template <typename T, typename U, std::size_t N>
+  template <typename T, typename U, std::size_t N,
+            typename Indices = std::make_index_sequence<N>>
   inline constexpr auto operator-(Vector<T, N> const &lhs,
                                   Vector<U, N> const &rhs) noexcept
       ->std::enable_if_t<
           is_vec_type<T>::value,
           Vector<decltype(std::declval<T>() - std::declval<U>()), N>> {
-    return cagey::math::detail::vectorSubtractionOperator(lhs, rhs);
+    return cagey::math::detail::subtractionOperatorVector(lhs, rhs, Indices());
   }
 
   /**
@@ -855,7 +884,7 @@ namespace cagey::math {
   template <typename T, typename U>
   inline constexpr auto cross(Vector<T, 3> const &lhs,
                               Vector<U, 3> const &rhs) noexcept
-      ->Vector3<decltype(std::declval<T>() * std::declval<U>())> {
+      ->Vec3<decltype(std::declval<T>() * std::declval<U>())> {
     return {
         lhs[1] * rhs[2] - lhs[2] * rhs[1], lhs[2] * rhs[0] - lhs[0] * rhs[2],
         lhs[0] * rhs[1] - lhs[1] * rhs[0],

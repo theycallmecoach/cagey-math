@@ -204,71 +204,41 @@ namespace cagey::math {
   namespace detail {
 
   template <typename T, typename U>
-  inline constexpr auto vectorAdditionOperatorVectorScalar(
-      Vector<T, 2> const &lhs, U const &rhs) noexcept
-      -> Vector<decltype(std::declval<T>() + std::declval<U>()), 2> {
-    return {lhs[0] + rhs, lhs[1] + rhs};
-  }
-
-  template <typename T, typename U>
-  inline constexpr auto vectorAdditionOperator(Vector<T, 2> const &lhs,
-                                               Vector<U, 2> const &rhs) noexcept
-      -> Vector<decltype(std::declval<T>() + std::declval<U>()), 2> {
-    return {lhs[0] + rhs[0], lhs[1] + rhs[1]};
-  }
-
-  template <typename T, typename U>
-  inline constexpr auto vectorSubtractionOperatorScalarVector(
-      T const lhs, Vector<U, 2> const &rhs) noexcept
-      -> Vector<decltype(std::declval<T>() - std::declval<U>()), 2> {
-    return {lhs - rhs[0], lhs - rhs[1]};
-  }
-
-  template <typename T, typename U>
-  inline constexpr auto vectorSubtractionOperatorVectorScalar(
-      Vector<T, 2> const &lhs, U const &rhs) noexcept
-      -> Vector<decltype(std::declval<T>() - std::declval<U>()), 2> {
-    return {lhs[0] - rhs, lhs[1] - rhs};
-  }
-
-  template <typename T, typename U>
-  inline constexpr auto vectorSubtractionOperator(
-      Vector<T, 2> const &lhs, Vector<U, 2> const &rhs) noexcept
-      -> Vector<decltype(std::declval<T>() - std::declval<U>()), 2> {
-    return {lhs[0] - rhs[0], lhs[1] - rhs[1]};
-  }
-
-  template <typename T, typename U>
-  inline constexpr auto vectorMultiplicationOperatorScalarVector(
-      T const &lhs, Vector<U, 2> const &rhs) noexcept
+  inline constexpr auto
+  vectorMultiplicationOperatorScalarVector(T const &lhs,
+                                           Vector<U, 2> const &rhs) noexcept
       -> Vector<decltype(std::declval<T>() * std::declval<U>()), 2> {
     return {lhs * rhs[0], lhs * rhs[1]};
   }
 
   template <typename T, typename U>
-  inline constexpr auto vectorMultiplicationOperatorVectorScalar(
-      Vector<T, 2> const &lhs, U const &rhs) noexcept
+  inline constexpr auto
+      vectorMultiplicationOperatorVectorScalar(Vector<T, 2> const &lhs,
+                                               U const &rhs) noexcept
       -> Vector<decltype(std::declval<T>() * std::declval<U>()), 2> {
     return {lhs[0] * rhs, lhs[1] * rhs};
   }
 
   template <typename T, typename U>
-  inline constexpr auto vectorMultiplicationOperator(
-      Vector<T, 2> const &lhs, Vector<U, 2> const &rhs) noexcept
+  inline constexpr auto
+      vectorMultiplicationOperator(Vector<T, 2> const &lhs,
+                                   Vector<U, 2> const &rhs) noexcept
       -> Vector<decltype(std::declval<T>() * std::declval<U>()), 2> {
     return {lhs[0] * rhs[0], lhs[1] * rhs[1]};
   }
 
   template <typename T, typename U>
-  inline constexpr auto vectorDivisionOperatorScalarVector(
-      T const &lhs, Vector<U, 2> const &rhs) noexcept
+  inline constexpr auto
+  vectorDivisionOperatorScalarVector(T const &lhs,
+                                     Vector<U, 2> const &rhs) noexcept
       -> Vector<decltype(std::declval<T>() / std::declval<U>()), 2> {
     return {lhs / rhs[0], lhs / rhs[1]};
   }
 
   template <typename T, typename U>
-  inline constexpr auto vectorDivisionOperatorVectorScalar(
-      Vector<T, 2> const &lhs, U const &rhs) noexcept
+  inline constexpr auto
+      vectorDivisionOperatorVectorScalar(Vector<T, 2> const &lhs,
+                                         U const &rhs) noexcept
       -> Vector<decltype(std::declval<T>() / std::declval<U>()), 2> {
     return {lhs[0] / rhs, lhs[1] / rhs};
   }
