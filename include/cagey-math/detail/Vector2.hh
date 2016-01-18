@@ -203,65 +203,13 @@ namespace cagey::math {
 
   namespace detail {
 
-  template <typename T, typename U>
-  inline constexpr auto
-  vectorMultiplicationOperatorScalarVector(T const &lhs,
-                                           Vector<U, 2> const &rhs) noexcept
-      -> Vector<decltype(std::declval<T>() * std::declval<U>()), 2> {
-    return {lhs * rhs[0], lhs * rhs[1]};
-  }
-
-  template <typename T, typename U>
-  inline constexpr auto
-      vectorMultiplicationOperatorVectorScalar(Vector<T, 2> const &lhs,
-                                               U const &rhs) noexcept
-      -> Vector<decltype(std::declval<T>() * std::declval<U>()), 2> {
-    return {lhs[0] * rhs, lhs[1] * rhs};
-  }
-
-  template <typename T, typename U>
-  inline constexpr auto
-      vectorMultiplicationOperator(Vector<T, 2> const &lhs,
-                                   Vector<U, 2> const &rhs) noexcept
-      -> Vector<decltype(std::declval<T>() * std::declval<U>()), 2> {
-    return {lhs[0] * rhs[0], lhs[1] * rhs[1]};
-  }
-
-  template <typename T, typename U>
-  inline constexpr auto
-  vectorDivisionOperatorScalarVector(T const &lhs,
-                                     Vector<U, 2> const &rhs) noexcept
-      -> Vector<decltype(std::declval<T>() / std::declval<U>()), 2> {
-    return {lhs / rhs[0], lhs / rhs[1]};
-  }
-
-  template <typename T, typename U>
-  inline constexpr auto
-      vectorDivisionOperatorVectorScalar(Vector<T, 2> const &lhs,
-                                         U const &rhs) noexcept
-      -> Vector<decltype(std::declval<T>() / std::declval<U>()), 2> {
-    return {lhs[0] / rhs, lhs[1] / rhs};
-  }
-
-  template <typename T, typename U>
-  inline constexpr auto vectorDivisionOperator(Vector<T, 2> const &lhs,
-                                               Vector<U, 2> const &rhs) noexcept
-      -> Vector<decltype(std::declval<T>() / std::declval<U>()), 2> {
-    return {lhs[0] / rhs[0], lhs[1] / rhs[1]};
-  }
-
-  template <typename T>
-  inline constexpr auto vectorUnaryMinusOperator(const Vector<T, 2> &v) noexcept
-      -> Vector<decltype(-std::declval<T>()), 2> {
-    return {-v[0], -v[1]};
-  }
-
-  template <typename T, typename U, std::size_t N>
-  inline constexpr auto vectorEqualityOperator(Vector<T, N> const &lhs,
-                                               Vector<U, N> const &rhs) noexcept
-      -> bool {
-    return lhs[0] == rhs[0] && lhs[1] == rhs[1];
-  }
+  // template <typename T, typename U, std::size_t N>
+  // inline constexpr auto vectorEqualityOperator(Vector<T, N> const &lhs,
+  //                                              Vector<U, N> const &rhs)
+  //                                              noexcept
+  //     -> bool {
+  //   return lhs[0] == rhs[0] && lhs[1] == rhs[1];
+  // }
 
   template <typename T, typename U, std::size_t N>
   inline constexpr auto dot(Vector<T, N> const &lhs,
