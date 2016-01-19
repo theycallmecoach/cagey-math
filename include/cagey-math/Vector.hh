@@ -330,8 +330,6 @@ namespace cagey::math {
     }
 
     inline constexpr auto operator+=(Vector const &v) noexcept -> Vector & {
-      // std::get<0>(data) += std::get<0>(v.data);
-      // std::get<1>(data) += std::get<1>(v.data);
       raw[0] += v.raw[0];
       raw[1] += v.raw[1];
       return *this;
