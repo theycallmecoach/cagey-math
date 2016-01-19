@@ -47,6 +47,7 @@ TEST(Vector2Test, DefaultConstructorTest) { Vec2f v; }
 
 TEST(Vector2Test, ScalarConstructorTest) {
   constexpr Vec2d v{4.8};
+  constexpr Vec2d v2{4};
   ASSERT_DOUBLE_EQ(v[0], 4.8);
   ASSERT_DOUBLE_EQ(v[1], 4.8);
 }
@@ -55,6 +56,12 @@ TEST(Vector2Test, ComponentConstructorTest) {
   constexpr Vec2d v{4.8, 5.6};
   ASSERT_DOUBLE_EQ(v[0], 4.8);
   ASSERT_DOUBLE_EQ(v[1], 5.6);
+}
+
+TEST(Vector2Test, BeginTest) {
+  const Vec2d cvd{1.2};
+  const double *cdata = cvd.begin();
+  ASSERT_EQ(cdata, static_cast<const void *>(&cvd));
 }
 
 TEST(Vector2Test, EndTest) {
@@ -112,12 +119,6 @@ TEST(Vector2Test, ArrayIndexOperatorTest) {
   ASSERT_EQ(&v1, v.begin() + 1);
 }
 
-TEST(Vector2Test, BeginTest) {
-  const Vec2d cvd{1.2};
-  const double *cdata = cvd.begin();
-  ASSERT_EQ(cdata, static_cast<const void *>(&cvd));
-}
-
 TEST(Vector2Test, ReadFieldTest) {
   const Vec2d cvd{1.2, 8.9};
   ASSERT_DOUBLE_EQ(cvd.x, 1.2);
@@ -149,19 +150,19 @@ TEST(Vector2Test, WriteFieldTest) {
 // //   ASSERT_EQ(vi[0], 2);
 // //   ASSERT_EQ(vi[1], 3);
 // // }
-//
-// // TEST(Vector2Test, AdditionAssignmentOperatorTest) {
-// //   // Vec2d v1{1.2, 3.4};
-// //   // ASSERT_EQ(&(v1 += 5), &v1);
-// //   // ASSERT_DOUBLE_EQ(v1[0], 1.2 + 5);
-// //   // ASSERT_DOUBLE_EQ(v1[1], 3.4 + 5);
-// //
-// //   Vec2d v2{1.2, 3.4};
-// //   ASSERT_EQ(&(v2 += Vec2i(5, 6)), &v2);
-// //   ASSERT_DOUBLE_EQ(v2[0], 1.2 + 5);
-// //   ASSERT_DOUBLE_EQ(v2[1], 3.4 + 6);
-// // }
-//
+
+TEST(Vector2Test, AdditionAssignmentOperatorTest) {
+  // Vec2d v1{1.2, 3.4};
+  // ASSERT_EQ(&(v1 += 5), &v1);
+  // ASSERT_DOUBLE_EQ(v1[0], 1.2 + 5);
+  // ASSERT_DOUBLE_EQ(v1[1], 3.4 + 5);
+
+  Vec2d v2{1.2, 3.4};
+  ASSERT_EQ(&(v2 += Vec2i(5, 6)), &v2);
+  ASSERT_DOUBLE_EQ(v2[0], 1.2 + 5);
+  ASSERT_DOUBLE_EQ(v2[1], 3.4 + 6);
+}
+
 // // TEST(Vector2Test, SubtractionAssignmentOperatorTest) {
 // //   // Vec2d v1{3.2, 3.7};
 // //   // ASSERT_EQ(&(v1 -= 1), &v1);

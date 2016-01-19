@@ -161,7 +161,8 @@ namespace cagey::math {
      *
      * @return A reference to this Vector.
      */
-    inline constexpr auto operator*=(T const x) noexcept -> Vector &;
+    template <typename U>
+    inline constexpr auto operator*=(U const x) noexcept -> Vector &;
 
     /**
      * Divides each component of this Vector by x.
@@ -172,7 +173,8 @@ namespace cagey::math {
      *
      * @return A reference to this Vector.
      */
-    inline constexpr auto operator/=(T const x) noexcept -> Vector &;
+    template <typename U>
+    inline constexpr auto operator/=(U const x) noexcept -> Vector &;
 
     ////////////////////////////////////////////////////////////////////////////
     /// Member Functions
@@ -245,47 +247,48 @@ namespace cagey::math {
 
     inline constexpr Vector() noexcept = default;
 
-    template <typename U>
-    inline explicit constexpr Vector(U const v) noexcept : data{T{v}, T{v}} {};
+    inline explicit constexpr Vector(T const v) noexcept : data{v, v} {};
 
-    template <typename U>
-    inline explicit constexpr Vector(U const x, U const y) noexcept
-        : data{T{x}, T{y}} {};
+    inline constexpr Vector(T const x, T const y) noexcept : data{x, y} {};
 
     ////////////////////////////////////////////////////////////////////////////
     /// Operators
     ////////////////////////////////////////////////////////////////////////////
 
     inline constexpr auto operator[](std::size_t i) noexcept -> T & {
-      return this->data[i];
+      return data[i];
     }
 
     inline constexpr auto operator[](std::size_t i) const noexcept
         -> T const & {
-      return this->data[i];
+      return data[i];
     }
 
-    inline constexpr auto operator+=(Vector const &v) noexcept -> Vector & {
-      this->data[0] += v[0];
-      this->data[1] += v[1];
+    template <typename U, std::size_t N>
+    inline constexpr auto operator+=(Vector<U, N> const &v) noexcept
+        -> Vector & {
+      std::get<0>(data) += v[0];
+      std::get<1>(data) += v[1];
       return *this;
     }
 
-    inline constexpr auto operator-=(Vector const &v) noexcept -> Vector & {
-      this->data[0] -= v[0];
-      this->data[1] -= v[1];
+    template <typename U, std::size_t N>
+    inline constexpr auto operator-=(Vector<U, N> const &v) noexcept
+        -> Vector & {
+      std::get<0>(data) -= v[0];
+      std::get<1>(data) -= v[1];
       return *this;
     }
 
     inline constexpr auto operator*=(T const v) noexcept -> Vector & {
-      this->data[0] *= v;
-      this->data[1] *= v;
+      std::get<0>(data) *= v;
+      std::get<1>(data) *= v;
       return *this;
     }
 
     inline constexpr auto operator/=(T const v) noexcept -> Vector & {
-      this->data[0] /= v;
-      this->data[1] /= v;
+      std::get<0>(data) /= v;
+      std::get<1>(data) /= v;
       return *this;
     }
 
@@ -326,35 +329,71 @@ namespace cagey::math {
   };
 
   /**
-   * Compute the sum of the lhs and each component of rhs.
+   * Compute the component wise product of rhs and lhs.
    *
-   * @tparam T The component type of the lhs
-   * @tparam N The number of components of both lhs and rhs
+   * @tparam U The type of the components of lhs
+   * @tparam T The component type of the rhs
+   * @tparam N The number of components in rhs
    *
    * @param lhs the left-hand operand
    * @param rhs the right-hand operand
-   * @return the sum of lhs and each component of rhs
+   * @return the product of lhs and each component of rhs
    */
-  template <typename T, std::size_t N>
-  inline constexpr auto operator*(T const lhs,
+  template <typename U, typename T, std::size_t N>
+  inline constexpr auto operator*(U const lhs,
                                   Vector<T, N> rhs) noexcept->Vector<T, N> {
     return rhs *= lhs;
   }
 
   /**
-   * Compute the sum of the lhs and each component of rhs.
+   * Compute the component wise product of rhs and lhs.
    *
+   * @tparam U The type of the components of rhs
    * @tparam T The component type of the lhs
-   * @tparam N The number of components of both lhs and rhs
+   * @tparam N The number of components of the lhs
    *
    * @param lhs the left-hand operand
    * @param rhs the right-hand operand
-   * @return the sum of lhs and each component of rhs
+   * @return the product of lhs and each component of rhs
    */
-  template <typename T, std::size_t N>
+  template <typename U, typename T, std::size_t N>
   inline constexpr auto operator*(Vector<T, N> lhs,
-                                  T const rhs) noexcept->Vector<T, N> {
+                                  U const rhs) noexcept->Vector<T, N> {
     return lhs *= rhs;
+  }
+
+  /**
+   * Compute the component wise quotients of rhs and lhs.
+   *
+   * @tparam U The type of the components of lhs
+   * @tparam T The component type of the rhs
+   * @tparam N The number of components in rhs
+   *
+   * @param lhs the left-hand operand
+   * @param rhs the right-hand operand
+   * @return the quotients of lhs and each component of rhs
+   */
+  template <typename U, typename T, std::size_t N>
+  inline constexpr auto operator/(U const lhs,
+                                  Vector<T, N> rhs) noexcept->Vector<T, N> {
+    return rhs /= lhs;
+  }
+
+  /**
+   * Compute the component wise quotients of rhs and lhs.
+   *
+   * @tparam U The type of the components of rhs
+   * @tparam T The component type of the lhs
+   * @tparam N The number of components of the lhs
+   *
+   * @param lhs the left-hand operand
+   * @param rhs the right-hand operand
+   * @return the quotients of lhs and each component of rhs
+   */
+  template <typename U, typename T, std::size_t N>
+  inline constexpr auto operator/(Vector<T, N> lhs,
+                                  U const rhs) noexcept->Vector<T, N> {
+    return lhs /= rhs;
   }
 
 } // namespace cagey::math
