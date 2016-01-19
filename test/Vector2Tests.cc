@@ -69,14 +69,13 @@ TEST(Vector2Test, EndTest) {
   ASSERT_EQ(v.end(), (&v[1] + 1));
 }
 
-//
-// TEST(Vector2Test, ExplicitConversionConstructorTest) {
-//   constexpr Vec2d vd{4.8f, 5.6f};
-//   constexpr Vec2f vf{vd};
-//   ASSERT_DOUBLE_EQ(vf[0], 4.8f);
-//   ASSERT_DOUBLE_EQ(vf[1], 5.6f);
-// }
-//
+TEST(Vector2Test, ExplicitConversionConstructorTest) {
+  constexpr Vec2d vd{4.8f, 5.6f};
+  constexpr Vec2f vf{vd};
+  ASSERT_DOUBLE_EQ(vf[0], 4.8f);
+  ASSERT_DOUBLE_EQ(vf[1], 5.6f);
+}
+
 // // TEST(Vector2Test, ImplicitConversionConstructorTest) {
 // //   constexpr Vec2f vf{4.8f, 5.6f};
 // //   constexpr Vec2d vd = vf;
@@ -158,9 +157,9 @@ TEST(Vector2Test, AdditionAssignmentOperatorTest) {
   // ASSERT_DOUBLE_EQ(v1[1], 3.4 + 5);
 
   Vec2d v2{1.2, 3.4};
-  ASSERT_EQ(&(v2 += Vec2i(5, 6)), &v2);
-  ASSERT_DOUBLE_EQ(v2[0], 1.2 + 5);
-  ASSERT_DOUBLE_EQ(v2[1], 3.4 + 6);
+  ASSERT_EQ(&(v2 += Vec2d(5.0, 6.0)), &v2);
+  ASSERT_DOUBLE_EQ(v2[0], 1.2 + 5.0);
+  ASSERT_DOUBLE_EQ(v2[1], 3.4 + 6.0);
 }
 
 // // TEST(Vector2Test, SubtractionAssignmentOperatorTest) {

@@ -94,8 +94,7 @@ namespace cagey::math {
      */
     template <typename... U, typename V = typename std::enable_if<
                                  sizeof...(U) + 1 == N, T>::type>
-    inline constexpr Vector(T first, U... next)
-        : data{first, next...} {}
+    inline constexpr Vector(T first, U... next) : data{first, next...} {}
 
     ////////////////////////////////////////////////////////////////////////////
     /// Operators
@@ -112,7 +111,7 @@ namespace cagey::math {
      *
      * @return a reference to the component at the given index.
      */
-    inline constexpr auto operator[](std::size_t i) noexcept -> T &;
+    inline auto operator[](std::size_t i) noexcept -> T &;
 
     /**
      * Return a reference to the component at the given index.
@@ -125,7 +124,7 @@ namespace cagey::math {
      *
      * @return a reference to the component at the given index.
      */
-    inline constexpr auto operator[](std::size_t i) const noexcept;
+    inline constexpr auto operator[](std::size_t i) const noexcept -> T const &;
 
     /**
      * Add each component of the given vector to the corresponding component
@@ -161,8 +160,7 @@ namespace cagey::math {
      *
      * @return A reference to this Vector.
      */
-    template <typename U>
-    inline constexpr auto operator*=(U const x) noexcept -> Vector &;
+    inline constexpr auto operator*=(T const x) noexcept -> Vector &;
 
     /**
      * Divides each component of this Vector by x.
@@ -173,8 +171,7 @@ namespace cagey::math {
      *
      * @return A reference to this Vector.
      */
-    template <typename U>
-    inline constexpr auto operator/=(U const x) noexcept -> Vector &;
+    inline constexpr auto operator/=(T const x) noexcept -> Vector &;
 
     ////////////////////////////////////////////////////////////////////////////
     /// Member Functions
@@ -185,7 +182,7 @@ namespace cagey::math {
      *
      * @return A pointer to this Vectors data
      */
-    inline constexpr auto begin() noexcept -> T * { return this->data.begin(); }
+    inline auto begin() noexcept -> T * { return data.begin(); }
 
     /**
      * Returns an iterator pointing to the first component
@@ -193,7 +190,7 @@ namespace cagey::math {
      * @return A pointer to this Vectors data
      */
     inline constexpr auto begin() const noexcept -> T const * {
-      return this->data.begin();
+      return data.begin();
     }
 
     /**
@@ -201,16 +198,14 @@ namespace cagey::math {
      *
      * @return A pointer to this Vectors data
      */
-    inline constexpr auto end() noexcept -> T * { return this->data.end(); }
+    inline auto end() noexcept -> T * { return data.end(); }
 
     /**
      * Returns an iterator pointing to the last component
      *
      * @return A pointer to this Vectors data
      */
-    inline constexpr auto end() const noexcept -> T const * {
-      return this->data.end();
-    }
+    inline auto end() const noexcept -> T const * { return data.end(); }
 
     ////////////////////////////////////////////////////////////////////////////
     /// Data Members
@@ -251,30 +246,28 @@ namespace cagey::math {
 
     inline constexpr Vector(T const x, T const y) noexcept : data{x, y} {};
 
+    template <typename U, std::size_t S>
+    inline constexpr Vector(Vector<U, S> const &v) noexcept
+        : data{{T(v[0]), T(v[1])}} {}
+
     ////////////////////////////////////////////////////////////////////////////
     /// Operators
     ////////////////////////////////////////////////////////////////////////////
 
-    inline constexpr auto operator[](std::size_t i) noexcept -> T & {
-      return data[i];
-    }
+    inline auto operator[](std::size_t i) noexcept -> T & { return data[i]; }
 
     inline constexpr auto operator[](std::size_t i) const noexcept
         -> T const & {
       return data[i];
     }
 
-    template <typename U, std::size_t N>
-    inline constexpr auto operator+=(Vector<U, N> const &v) noexcept
-        -> Vector & {
+    inline constexpr auto operator+=(Vector const &v) noexcept -> Vector & {
       std::get<0>(data) += v[0];
       std::get<1>(data) += v[1];
       return *this;
     }
 
-    template <typename U, std::size_t N>
-    inline constexpr auto operator-=(Vector<U, N> const &v) noexcept
-        -> Vector & {
+    inline constexpr auto operator-=(Vector const &v) noexcept -> Vector & {
       std::get<0>(data) -= v[0];
       std::get<1>(data) -= v[1];
       return *this;
@@ -295,13 +288,13 @@ namespace cagey::math {
     ////////////////////////////////////////////////////////////////////////////
     /// Member Functions
     ////////////////////////////////////////////////////////////////////////////
-    inline constexpr auto begin() noexcept -> T * { return this->data.begin(); }
+    inline auto begin() noexcept -> T * { return data.begin(); }
     inline constexpr auto begin() const noexcept -> T const * {
-      return this->data.begin();
+      return data.begin();
     }
-    inline constexpr auto end() noexcept -> T * { return this->data.end(); }
+    inline auto end() noexcept -> T * { return data.end(); }
     inline constexpr auto end() const noexcept -> T const * {
-      return this->data.end();
+      return data.end();
     }
 
     ////////////////////////////////////////////////////////////////////////////
