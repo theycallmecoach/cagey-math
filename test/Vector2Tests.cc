@@ -222,14 +222,14 @@ TEST(Vector2Test, SubtractionOperatorTest) {
   // ASSERT_DOUBLE_EQ(v2[1], 3.4 - 5);
 
   constexpr auto v3 = Vec2d(1.2, 3.4) - Vec2d(5.0, 6.0);
-  ASSERT_DOUBLE_EQ(v3[0], 1.2 - 5);
-  ASSERT_DOUBLE_EQ(v3[1], 3.4 - 6);
+  ASSERT_DOUBLE_EQ(v3[0], 1.2 - 5.0);
+  ASSERT_DOUBLE_EQ(v3[1], 3.4 - 6.0);
 }
 
 TEST(Vector2Test, MultiplicationOperatorTest) {
   constexpr auto v1 = 1.0 * Vec2d(2.3, 4.5);
-  ASSERT_DOUBLE_EQ(v1[0], 1 * 2.3);
-  ASSERT_DOUBLE_EQ(v1[1], 1 * 4.5);
+  ASSERT_DOUBLE_EQ(v1[0], 1.0 * 2.3);
+  ASSERT_DOUBLE_EQ(v1[1], 1.0 * 4.5);
 
   constexpr auto v2 = Vec2d(1.2, 3.4) * 5.0;
   ASSERT_DOUBLE_EQ(v2[0], 1.2 * 5.0);
@@ -240,20 +240,28 @@ TEST(Vector2Test, MultiplicationOperatorTest) {
   // ASSERT_DOUBLE_EQ(v3[1], 3.4 * 6);
 }
 //
-// TEST(Vector2Test, DivisionOperatorTest) {
-//   constexpr auto v1 = 1 / Vec2d(2.3, 4.5);
-//   ASSERT_DOUBLE_EQ(v1[0], 1 / 2.3);
-//   ASSERT_DOUBLE_EQ(v1[1], 1 / 4.5);
-//
-//   constexpr auto v2 = Vec2d(1.2, 3.4) / 5;
-//   ASSERT_DOUBLE_EQ(v2[0], 1.2 / 5);
-//   ASSERT_DOUBLE_EQ(v2[1], 3.4 / 5);
-//
-//   constexpr auto v3 = Vec2d(1.2, 3.4) / Vec2i(5, 6);
-//   ASSERT_DOUBLE_EQ(v3[0], 1.2 / 5);
-//   ASSERT_DOUBLE_EQ(v3[1], 3.4 / 6);
-// }
-//
+TEST(Vector2Test, DivisionOperatorTest) {
+  constexpr auto v1 = 1.0 / Vec2d{2.3, 4.5};
+  ASSERT_DOUBLE_EQ(v1[0], 1.0 / 2.3);
+  ASSERT_DOUBLE_EQ(v1[1], 1.0 / 4.5);
+
+  constexpr auto v2 = Vec2d(1.2, 3.4) / 5.0;
+  ASSERT_DOUBLE_EQ(v2[0], 1.2 / 5.0);
+  ASSERT_DOUBLE_EQ(v2[1], 3.4 / 5.0);
+
+  // constexpr auto v3 = Vec2d(1.2, 3.4) / Vec2d(5.0, 6.0);
+  // ASSERT_DOUBLE_EQ(v3[0], 1.2 / 5);
+  // ASSERT_DOUBLE_EQ(v3[1], 3.4 / 6);
+}
+
+TEST(Vector2Test, EqualityTest) {
+  auto v1 = Vec2d{1.2, 3.4};
+  auto v2 = Vec2d{1.2, 3.4};
+  auto v3 = Vec2d{1.2, 4.4};
+  ASSERT_TRUE(v1 == v2);
+  ASSERT_TRUE(v1 != v3);
+}
+
 TEST(Vector2Test, VectorDotProductTest) {
   constexpr auto x = dot(Vec2d(1.2, 3.4), Vec2d(7, 8));
   ASSERT_DOUBLE_EQ(x, 1.2 * 7 + 3.4 * 8);

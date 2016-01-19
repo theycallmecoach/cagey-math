@@ -28,11 +28,19 @@
 #pragma once
 
 namespace cagey::math::detail::vector {
+
   template <typename T, std::size_t N, std::size_t... I>
   inline constexpr auto operatorUnaryMinus(const Vector<T, N> &v,
                                            std::index_sequence<I...>)noexcept
       ->Vector<decltype(-std::declval<T>()), N> {
     return {-v[I]...};
+  }
+
+  template <typename T, typename U, std::size_t N, std::size_t... I>
+  inline constexpr auto operatorDivision(U const &lhs, Vector<T, N> const &rhs,
+                                         std::index_sequence<I...>)noexcept
+      ->Vector<decltype(std::declval<T>() / std::declval<U>()), 2> {
+    return {lhs / rhs[I]...};
   }
 }
 

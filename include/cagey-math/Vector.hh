@@ -485,10 +485,11 @@ namespace cagey::math {
    * @param rhs the right-hand operand
    * @return the quotients of lhs and each component of rhs
    */
-  template <typename T, std::size_t N>
-  inline constexpr auto operator/(T const lhs,
-                                  Vector<T, N> rhs) noexcept->Vector<T, N> {
-    return rhs /= lhs;
+  template <typename T, std::size_t N,
+            typename Indices = std::make_index_sequence<N>>
+  inline constexpr auto operator/(
+      T const lhs, Vector<T, N> const &rhs) noexcept->Vector<T, N> {
+    return detail::vector::operatorDivision(lhs, rhs, Indices());
   }
 
   /**
@@ -510,35 +511,32 @@ namespace cagey::math {
   /**
    * Determines if two Vectors are equal.
    *
-   * @tparam T The component type of the lhs
-   * @tparam U The component type of the rhs
+   * @tparam T The component type of the lhs and rhs
    * @tparam N The number of components of both lhs and rhs
    *
    * @param lhs the left-hand operand
    * @param rhs the right-hand operand
    * @return true if lhs and rhs are equal
    */
-  template <typename T, typename U, std::size_t N,
-            typename Indices = std::make_index_sequence<N>>
+  template <typename T, std::size_t N>
   inline auto operator==(Vector<T, N> const &lhs,
-                         Vector<U, N> const &rhs) noexcept->bool {
+                         Vector<T, N> const &rhs) noexcept->bool {
     return detail::equal(std::begin(lhs), std::end(lhs), std::begin(rhs));
   }
 
   /**
    * Determines the inequality of if two Vectors.
    *
-   * @tparam T The component type of the lhs
-   * @tparam U The component type of the rhs
+   * @tparam T The component type of the lhs and rhs
    * @tparam N The number of components of both lhs and rhs
    *
    * @param lhs the left-hand operand
    * @param rhs the right-hand operand
    * @return true if lhs and rhs are not equal
    */
-  template <typename T, typename U, std::size_t N>
+  template <typename T, std::size_t N>
   inline constexpr auto operator!=(Vector<T, N> const &lhs,
-                                   Vector<U, N> const &rhs) noexcept->bool {
+                                   Vector<T, N> const &rhs) noexcept->bool {
     return !(lhs == rhs);
   }
 

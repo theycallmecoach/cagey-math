@@ -33,4 +33,17 @@ namespace cagey::math::detail {
     return value;
   }
 
+  // template <typename T, std::size_t N, typename F, std::size_t... I>
+  // constexpr auto transform(T const(&lhs)[N], T const(&rhs)[N], F f,
+  //                          std::index_sequence<I...>)
+  //     ->std::array<decltype(f(lhs[0], rhs[0])), N> {
+  //   return {{f(lhs[I], rhs[I])...}};
+  // }
+  //
+  // template <class T, int N, class F>
+  // constexpr auto transform(T const(&lhs)[N], T const(&rhs)[N], F f)
+  //     ->decltype(transform(lhs, rhs, f, gen_seq<N>{})) {
+  //   return transform(lhs, rhs, f, gen_seq<N>{});
+  // }
+
 } // namespace cagey::math::detail
