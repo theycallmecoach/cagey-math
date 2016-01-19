@@ -20,6 +20,8 @@ set(MATH_SOURCES
     include/cagey-math/Radian.hh
     include/cagey-math/detail/BaseAngle.hh
     include/cagey-math/detail/Vector2.hh
+    include/cagey-math/detail/ConstExprUtil.hh
+    include/cagey-math/detail/MetaUtil.hh
     include/cagey-math/detail/vec_type.hh)
 
 set(MATH_TEST_SOURCES

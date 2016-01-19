@@ -31,6 +31,7 @@
 #include <cagey-math/detail/MetaUtil.hh>
 #include <cagey-math/detail/vec_type.hh>
 #include <cagey-math/detail/VectorOpImpl.hh>
+#include <cagey-math/detail/ConstExprUtil.hh>
 
 // namespace cagey::math {
 //   /**
@@ -67,6 +68,54 @@ namespace cagey::math {
     const static std::size_t Size = N;
 
     ////////////////////////////////////////////////////////////////////////////
+    /// Static Member Functions
+    ////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Returns a Vector with the first component set to 1 and all other
+     * components set to 0.
+     *
+     * Note: Function only available when N >= 2.
+     *
+     * @return A Vector with the first component set to 1 and all other
+     * components set to 0.
+     */
+    inline static constexpr auto xAxis() noexcept -> Vector<T, N>;
+
+    /**
+     * Returns a Vector with the second component set to 1 and all other
+     * components set to 0.
+     *
+     * Note: Function only available when N >= 2.
+     *
+     * @return A Vector with the second component set to 1 and all other
+     * components set to 0.
+     */
+    inline static constexpr auto yAxis() noexcept -> Vector<T, N>;
+
+    /**
+     * Returns a Vector with the third component set to 1 and all other
+     * components set to 0.
+     *
+     * Note: Function only available when N > 2.
+     *
+     * @return A Vector with the third component set to 1 and all other
+     * components set to 0.
+     */
+    inline static constexpr auto zAxis() noexcept -> Vector<T, N>;
+
+    /**
+     * Returns a Vector with the forth component set to 1 and all other
+     * components set to 0.
+     *
+     * Note: Function only available when N > 3.
+     *
+     * @return A Vector with the forth component set to 1 and all other
+     * components set to 0.
+     */
+    inline static constexpr auto wAxis() noexcept -> Vector<T, N>;
+
+    ////////////////////////////////////////////////////////////////////////////
     /// Constructors
     ////////////////////////////////////////////////////////////////////////////
 
@@ -94,7 +143,8 @@ namespace cagey::math {
      */
     template <typename... U, typename V = typename std::enable_if<
                                  sizeof...(U) + 1 == N, T>::type>
-    inline constexpr Vector(T first, U... next) : data{first, next...} {}
+    inline constexpr Vector(T first, U... next)
+        : data{first, next...} {}
 
     ////////////////////////////////////////////////////////////////////////////
     /// Operators
@@ -111,7 +161,7 @@ namespace cagey::math {
      *
      * @return a reference to the component at the given index.
      */
-    inline auto operator[](std::size_t i) noexcept -> T &;
+    inline constexpr auto operator[](std::size_t i) noexcept -> T &;
 
     /**
      * Return a reference to the component at the given index.
@@ -182,37 +232,41 @@ namespace cagey::math {
      *
      * @return A pointer to this Vectors data
      */
-    inline auto begin() noexcept -> T * { return data.begin(); }
+    inline constexpr auto begin() noexcept -> T *;
 
     /**
      * Returns an iterator pointing to the first component
      *
      * @return A pointer to this Vectors data
      */
-    inline constexpr auto begin() const noexcept -> T const * {
-      return data.begin();
-    }
+    inline constexpr auto begin() const noexcept -> T const *;
 
     /**
      * Returns an iterator pointing to the last component
      *
      * @return A pointer to this Vectors data
      */
-    inline auto end() noexcept -> T * { return data.end(); }
+    inline constexpr auto end() noexcept -> T *;
 
     /**
      * Returns an iterator pointing to the last component
      *
      * @return A pointer to this Vectors data
      */
-    inline auto end() const noexcept -> T const * { return data.end(); }
+    inline constexpr auto end() const noexcept -> T const *;
 
     ////////////////////////////////////////////////////////////////////////////
     /// Data Members
     ////////////////////////////////////////////////////////////////////////////
 
     /// Data representation
-    std::enable_if_t<is_vec_type<T>::value, std::array<T, N>> data;
+    /**
+     * Anonymous union to allow access to members using different names
+     */
+    union {
+      std::enable_if_t<is_vec_type<T>::value, std::array<T, N>> data;
+      T raw[N];
+    };
 
   private:
     /**
@@ -237,64 +291,83 @@ namespace cagey::math {
     const static std::size_t Size = 2;
 
     ////////////////////////////////////////////////////////////////////////////
+    /// Static Member Functions
+    ////////////////////////////////////////////////////////////////////////////
+
+    static constexpr auto xAxis() noexcept -> Vector<T, 2> {
+      return {T(1), T(0)};
+    }
+
+    static constexpr auto yAxis() noexcept -> Vector<T, 2> {
+      return {T(0), T(1)};
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
     /// Constructors
     ////////////////////////////////////////////////////////////////////////////
 
     inline constexpr Vector() noexcept = default;
 
-    inline explicit constexpr Vector(T const v) noexcept : data{v, v} {};
+    inline explicit constexpr Vector(T const v) noexcept : raw{v, v} {};
 
-    inline constexpr Vector(T const x, T const y) noexcept : data{x, y} {};
+    inline constexpr Vector(T const x, T const y) noexcept : raw{x, y} {};
 
     template <typename U, std::size_t S>
-    inline constexpr Vector(Vector<U, S> const &v) noexcept
-        : data{{T(v[0]), T(v[1])}} {}
+    inline explicit constexpr Vector(Vector<U, S> const &v) noexcept
+        : raw{T(v.raw[0]), T(v.raw[1])} {}
 
     ////////////////////////////////////////////////////////////////////////////
     /// Operators
     ////////////////////////////////////////////////////////////////////////////
 
-    inline auto operator[](std::size_t i) noexcept -> T & { return data[i]; }
+    inline constexpr auto operator[](std::size_t i) noexcept -> T & {
+      return raw[i];
+    }
 
     inline constexpr auto operator[](std::size_t i) const noexcept
         -> T const & {
-      return data[i];
+      return raw[i];
     }
 
     inline constexpr auto operator+=(Vector const &v) noexcept -> Vector & {
-      std::get<0>(data) += v[0];
-      std::get<1>(data) += v[1];
+      // std::get<0>(data) += std::get<0>(v.data);
+      // std::get<1>(data) += std::get<1>(v.data);
+      raw[0] += v.raw[0];
+      raw[1] += v.raw[1];
       return *this;
     }
 
     inline constexpr auto operator-=(Vector const &v) noexcept -> Vector & {
-      std::get<0>(data) -= v[0];
-      std::get<1>(data) -= v[1];
+      raw[0] -= v.raw[0];
+      raw[1] -= v.raw[1];
       return *this;
     }
 
     inline constexpr auto operator*=(T const v) noexcept -> Vector & {
-      std::get<0>(data) *= v;
-      std::get<1>(data) *= v;
+      raw[0] *= v;
+      raw[1] *= v;
       return *this;
     }
 
     inline constexpr auto operator/=(T const v) noexcept -> Vector & {
-      std::get<0>(data) /= v;
-      std::get<1>(data) /= v;
+      raw[0] /= v;
+      raw[1] /= v;
       return *this;
     }
 
     ////////////////////////////////////////////////////////////////////////////
     /// Member Functions
     ////////////////////////////////////////////////////////////////////////////
-    inline auto begin() noexcept -> T * { return data.begin(); }
+    inline constexpr auto begin() noexcept -> T * { return &raw[0]; }
+
     inline constexpr auto begin() const noexcept -> T const * {
-      return data.begin();
+      return &raw[0];
     }
-    inline auto end() noexcept -> T * { return data.end(); }
+
+    inline constexpr auto end() noexcept -> T * { return &raw[0] + Size; }
+
     inline constexpr auto end() const noexcept -> T const * {
-      return data.end();
+      return &raw[0] + Size;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -305,7 +378,8 @@ namespace cagey::math {
      * Anonymous union to allow access to members using different names
      */
     union {
-      std::enable_if_t<is_vec_type<T>::value, std::array<T, 2>> data;
+      std::enable_if_t<is_vec_type<T>::value, std::array<T, Size>> data;
+      T raw[Size];
       struct {
         T x;
         T y;
@@ -322,18 +396,65 @@ namespace cagey::math {
   };
 
   /**
+   * Compute the component wise sum of rhs and lhs.
+   *
+   * @tparam T The component type of the rhs and lhs
+   * @tparam N The number of components in rhs
+   *
+   * @param lhs the left-hand operand
+   * @param rhs the right-hand operand
+   * @return the component wise sum of lhs and rhs
+   */
+  template <typename T, std::size_t N>
+  inline constexpr auto operator+(Vector<T, N> lhs,
+                                  Vector<T, N> const &rhs) noexcept {
+    return lhs += rhs;
+  }
+
+  /**
+   * Compute the component wise difference of rhs and lhs.
+   *
+   * @tparam T The component type of the rhs and lhs
+   * @tparam N The number of components in rhs
+   *
+   * @param lhs the left-hand operand
+   * @param rhs the right-hand operand
+   * @return the component wise difference of lhs and rhs
+   */
+  template <typename T, std::size_t N>
+  inline constexpr auto operator-(Vector<T, N> lhs,
+                                  Vector<T, N> const &rhs) noexcept {
+    return lhs -= rhs;
+  }
+
+  /**
+   * Negates each component of v
+   *
+   * @tparam T The component type of v
+   * @tparam N The number of components of v
+   *
+   * @param v A Vector.
+   * @return The negation of each component of v
+   */
+  template <typename T, std::size_t N,
+            typename Indices = std::make_index_sequence<N>>
+  inline constexpr auto operator-(
+      Vector<T, N> const &v) noexcept->Vector<T, N> {
+    return detail::vector::operatorUnaryMinus(v, Indices());
+  }
+
+  /**
    * Compute the component wise product of rhs and lhs.
    *
-   * @tparam U The type of the components of lhs
-   * @tparam T The component type of the rhs
+   * @tparam T The component type of the rhs and lhs
    * @tparam N The number of components in rhs
    *
    * @param lhs the left-hand operand
    * @param rhs the right-hand operand
    * @return the product of lhs and each component of rhs
    */
-  template <typename U, typename T, std::size_t N>
-  inline constexpr auto operator*(U const lhs,
+  template <typename T, std::size_t N>
+  inline constexpr auto operator*(T const lhs,
                                   Vector<T, N> rhs) noexcept->Vector<T, N> {
     return rhs *= lhs;
   }
@@ -341,33 +462,31 @@ namespace cagey::math {
   /**
    * Compute the component wise product of rhs and lhs.
    *
-   * @tparam U The type of the components of rhs
-   * @tparam T The component type of the lhs
+   * @tparam T The component type of the rhs and lhs
    * @tparam N The number of components of the lhs
    *
    * @param lhs the left-hand operand
    * @param rhs the right-hand operand
    * @return the product of lhs and each component of rhs
    */
-  template <typename U, typename T, std::size_t N>
+  template <typename T, std::size_t N>
   inline constexpr auto operator*(Vector<T, N> lhs,
-                                  U const rhs) noexcept->Vector<T, N> {
+                                  T const rhs) noexcept->Vector<T, N> {
     return lhs *= rhs;
   }
 
   /**
    * Compute the component wise quotients of rhs and lhs.
    *
-   * @tparam U The type of the components of lhs
-   * @tparam T The component type of the rhs
+   * @tparam T The component type of the rhs and lhs
    * @tparam N The number of components in rhs
    *
    * @param lhs the left-hand operand
    * @param rhs the right-hand operand
    * @return the quotients of lhs and each component of rhs
    */
-  template <typename U, typename T, std::size_t N>
-  inline constexpr auto operator/(U const lhs,
+  template <typename T, std::size_t N>
+  inline constexpr auto operator/(T const lhs,
                                   Vector<T, N> rhs) noexcept->Vector<T, N> {
     return rhs /= lhs;
   }
@@ -375,18 +494,149 @@ namespace cagey::math {
   /**
    * Compute the component wise quotients of rhs and lhs.
    *
-   * @tparam U The type of the components of rhs
-   * @tparam T The component type of the lhs
+   * @tparam T The component type of the rhs and lhs
    * @tparam N The number of components of the lhs
    *
    * @param lhs the left-hand operand
    * @param rhs the right-hand operand
    * @return the quotients of lhs and each component of rhs
    */
-  template <typename U, typename T, std::size_t N>
+  template <typename T, std::size_t N>
   inline constexpr auto operator/(Vector<T, N> lhs,
-                                  U const rhs) noexcept->Vector<T, N> {
+                                  T const rhs) noexcept->Vector<T, N> {
     return lhs /= rhs;
+  }
+
+  /**
+   * Determines if two Vectors are equal.
+   *
+   * @tparam T The component type of the lhs
+   * @tparam U The component type of the rhs
+   * @tparam N The number of components of both lhs and rhs
+   *
+   * @param lhs the left-hand operand
+   * @param rhs the right-hand operand
+   * @return true if lhs and rhs are equal
+   */
+  template <typename T, typename U, std::size_t N,
+            typename Indices = std::make_index_sequence<N>>
+  inline auto operator==(Vector<T, N> const &lhs,
+                         Vector<U, N> const &rhs) noexcept->bool {
+    return detail::equal(std::begin(lhs), std::end(lhs), std::begin(rhs));
+  }
+
+  /**
+   * Determines the inequality of if two Vectors.
+   *
+   * @tparam T The component type of the lhs
+   * @tparam U The component type of the rhs
+   * @tparam N The number of components of both lhs and rhs
+   *
+   * @param lhs the left-hand operand
+   * @param rhs the right-hand operand
+   * @return true if lhs and rhs are not equal
+   */
+  template <typename T, typename U, std::size_t N>
+  inline constexpr auto operator!=(Vector<T, N> const &lhs,
+                                   Vector<U, N> const &rhs) noexcept->bool {
+    return !(lhs == rhs);
+  }
+
+  /**
+   * Computes the dot product of lhs and rhs.
+   *
+   * @tparam T The type of the components of lhs
+   * @tparam N The number of component of vec
+   *
+   * @param lhs A Vector
+   * @param rhs A Vector
+   *
+   * @return The dot product of lhs and rhs
+   */
+  template <typename T, std::size_t N>
+  inline constexpr auto dot(Vector<T, N> const &lhs,
+                            Vector<T, N> const &rhs) noexcept->T {
+    return detail::inner_product(lhs.begin(), lhs.end(), rhs.begin(), T(0));
+  }
+
+  /**
+   * Computes the cross product of lhs and rhs.
+   *
+   * @tparam T The type of the components of lhs
+   * @tparam U The type of the components of rhs
+   *
+   * @param lhs A Vector
+   * @param rhs A Vector
+   *
+   * @return The cross product of lhs and rhs.
+   */
+  template <typename T, typename U>
+  inline constexpr auto cross(Vector<T, 3> const &lhs,
+                              Vector<U, 3> const &rhs) noexcept
+      ->Vec3<decltype(std::declval<T>() * std::declval<U>())> {
+    return {
+        lhs[1] * rhs[2] - lhs[2] * rhs[1], lhs[2] * rhs[0] - lhs[0] * rhs[2],
+        lhs[0] * rhs[1] - lhs[1] * rhs[0],
+    };
+  }
+
+  /**
+   * Computes the length of vec.
+   *
+   * @tparam T The type of the components of vec
+   * @tparam N The number of component of vec
+   * @param vec A Vector
+   *
+   * @return The length of vec.
+   */
+  template <typename T, std::size_t N>
+  inline auto length(Vector<T, N> const &vec) noexcept->T {
+    using std::sqrt;
+    return sqrt(lengthSquared(vec));
+  }
+
+  /**
+   * Computes the length of vec squared.
+   *
+   * @tparam T The type of the components of vec
+   * @tparam N The number of component of vec
+   * @param vec A Vector
+   *
+   * @return The squared length of vec.
+   */
+  template <typename T, std::size_t N>
+  inline constexpr auto lengthSquared(Vector<T, N> const &vec) noexcept->T {
+    return dot(vec, vec);
+  }
+
+  /**
+  * Computes length of vec and returns true if it is zero.
+  *
+  * @tparam T The type of the components of vec.
+  * @tparam S The number of components in vec.
+  *
+  * @param vec The Vector to check for zero length
+  * @return true if length of vec is zero
+  */
+  template <typename T, std::size_t S>
+  inline auto isZeroLength(Vector<T, S> const &vec)->bool {
+    T epsilon = std::numeric_limits<T>::epsilon();
+    return std::abs(lengthSquared(vec)) < (epsilon * epsilon);
+  }
+
+  /**
+   * Computes a normalized copy of vec.  If the length of the vec is
+   * 0 the behaviour is undefined.
+   *
+   * @tparam T The type of the components of vec
+   * @tparam N The number of component of vec
+   *
+   * @param vec A Vector
+   * @return a normalized copy of vec.
+   */
+  template <typename T, std::size_t N>
+  inline auto normalize(Vector<T, N> vec) noexcept->Vector<T, N> {
+    return vec *= (T{1} / length(vec));
   }
 
 } // namespace cagey::math

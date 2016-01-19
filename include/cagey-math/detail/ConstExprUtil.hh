@@ -27,10 +27,38 @@
 
 #pragma once
 
+#include <functional>
+
 namespace cagey::math::detail {
 
-  template <typename T> constexpr T repeat(T value, std::size_t) {
-    return value;
+  // the predicate cannot be lambda in constexpr contexts
+  template <class InputIterator1, class InputIterator2, class BinaryPredicate>
+  constexpr bool equal(InputIterator1 first1, InputIterator1 last1,
+                       InputIterator2 first2, BinaryPredicate pred) {
+    for (; first1 != last1; ++first1, ++first2)
+      if (!pred(*first1, *first2))
+        return false;
+    return true;
+  }
+
+  /**
+   * Constexpr equal
+   */
+  template <class InputIterator1, class InputIterator2>
+  constexpr bool equal(InputIterator1 first1, InputIterator1 last1,
+                       InputIterator2 first2) {
+    return detail::equal(first1, last1, first2, std::equal_to<>());
+  }
+
+  /**
+   * Constexpr inner_product
+   */
+  template <class Iterator1, class Iterator2, class T>
+  constexpr T inner_product(Iterator1 first1, Iterator1 last1, Iterator2 first2,
+                            T init) {
+    for (; first1 != last1; ++first1, ++first2)
+      init = init + (*first1 * *first2);
+    return init;
   }
 
 } // namespace cagey::math::detail

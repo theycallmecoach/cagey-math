@@ -27,129 +27,152 @@
 
 #pragma once
 
-namespace cagey::math::detail {
-
-  template <typename T, typename U, std::size_t N, std::size_t... I>
-  inline constexpr auto additionOperatorScalarVector(
-      T const lhs, Vector<U, N> const &rhs, std::index_sequence<I...>)noexcept
-      ->std::enable_if_t<
-          is_vec_type<T>::value,
-          Vector<decltype(std::declval<T>() + std::declval<U>()), N>> {
-    return {lhs + rhs[I]...};
-  }
-
-  template <typename T, typename U, std::size_t N, std::size_t... I>
-  inline constexpr auto additionOperatorVectorScalar(
-      Vector<U, N> const &lhs, T const &rhs, std::index_sequence<I...>)noexcept
-      ->std::enable_if_t<
-          is_vec_type<T>::value,
-          Vector<decltype(std::declval<T>() + std::declval<U>()), N>> {
-    return {lhs[I] + rhs...};
-  }
-
-  template <typename T, typename U, std::size_t N, std::size_t... I>
-  inline constexpr auto additionOperatorVector(
-      Vector<T, N> const &lhs, Vector<U, N> const &rhs,
-      std::index_sequence<I...>)noexcept
-      ->Vector<decltype(std::declval<T>() + std::declval<U>()), 2> {
-    return {lhs[I] + rhs[I]...};
-  }
-
-  template <typename T, typename U, std::size_t N, std::size_t... I>
-  inline constexpr auto subtractionOperatorScalarVector(
-      T const lhs, Vector<U, N> const &rhs, std::index_sequence<I...>)noexcept
-      ->std::enable_if_t<
-          is_vec_type<T>::value,
-          Vector<decltype(std::declval<T>() - std::declval<U>()), N>> {
-    return {lhs - rhs[I]...};
-  }
-
-  template <typename T, typename U, std::size_t N, std::size_t... I>
-  inline constexpr auto subtractionOperatorVectorScalar(
-      Vector<U, N> const &lhs, T const &rhs, std::index_sequence<I...>)noexcept
-      ->std::enable_if_t<
-          is_vec_type<T>::value,
-          Vector<decltype(std::declval<T>() - std::declval<U>()), N>> {
-    return {lhs[I] - rhs...};
-  }
-
-  template <typename T, typename U, std::size_t N, std::size_t... I>
-  inline constexpr auto subtractionOperatorVector(
-      Vector<T, N> const &lhs, Vector<U, N> const &rhs,
-      std::index_sequence<I...>)noexcept
-      ->Vector<decltype(std::declval<T>() - std::declval<U>()), 2> {
-    return {lhs[I] - rhs[I]...};
-  }
-
+namespace cagey::math::detail::vector {
   template <typename T, std::size_t N, std::size_t... I>
-  inline constexpr auto unaryMinusOperatorVector(
-      const Vector<T, N> &v, std::index_sequence<I...>)noexcept
-      ->Vector<decltype(-std::declval<T>()), 2> {
+  inline constexpr auto operatorUnaryMinus(const Vector<T, N> &v,
+                                           std::index_sequence<I...>)noexcept
+      ->Vector<decltype(-std::declval<T>()), N> {
     return {-v[I]...};
   }
 
-  template <typename T, typename U, std::size_t N, std::size_t... I>
-  inline constexpr auto multiplicationOperatorScalarVector(
-      T const lhs, Vector<U, N> const &rhs, std::index_sequence<I...>)noexcept
-      ->std::enable_if_t<
-          is_vec_type<T>::value,
-          Vector<decltype(std::declval<T>() * std::declval<U>()), N>> {
-    return {lhs * rhs[I]...};
+  template <typename T, std::size_t N>
+  inline constexpr auto dot(Vector<T, N> const &lhs,
+                            Vector<T, N> const &rhs) noexcept->T {
+    return lhs[0] * rhs[0] + lhs[1] * rhs[1];
   }
+}
 
-  template <typename T, typename U, std::size_t N, std::size_t... I>
-  inline constexpr auto multiplicationOperatorVectorScalar(
-      Vector<U, N> const &lhs, T const &rhs, std::index_sequence<I...>)noexcept
-      ->std::enable_if_t<
-          is_vec_type<T>::value,
-          Vector<decltype(std::declval<T>() * std::declval<U>()), N>> {
-    return {lhs[I] * rhs...};
-  }
-
-  template <typename T, typename U, std::size_t N, std::size_t... I>
-  inline constexpr auto multiplicationOperatorVector(
-      Vector<T, N> const &lhs, Vector<U, N> const &rhs,
-      std::index_sequence<I...>)noexcept
-      ->Vector<decltype(std::declval<T>() * std::declval<U>()), 2> {
-    return {lhs[I] * rhs[I]...};
-  }
-
-  template <typename T, typename U, std::size_t N, std::size_t... I>
-  inline constexpr auto divisionOperatorScalarVector(
-      T const lhs, Vector<U, N> const &rhs, std::index_sequence<I...>)noexcept
-      ->std::enable_if_t<
-          is_vec_type<T>::value,
-          Vector<decltype(std::declval<T>() / std::declval<U>()), N>> {
-    return {lhs / rhs[I]...};
-  }
-
-  template <typename T, typename U, std::size_t N, std::size_t... I>
-  inline constexpr auto divisionOperatorVectorScalar(
-      Vector<U, N> const &lhs, T const &rhs, std::index_sequence<I...>)noexcept
-      ->std::enable_if_t<
-          is_vec_type<T>::value,
-          Vector<decltype(std::declval<T>() / std::declval<U>()), N>> {
-    return {lhs[I] / rhs...};
-  }
-
-  template <typename T, typename U, std::size_t N, std::size_t... I>
-  inline constexpr auto divisionOperatorVector(
-      Vector<T, N> const &lhs, Vector<U, N> const &rhs,
-      std::index_sequence<I...>)noexcept
-      ->Vector<decltype(std::declval<T>() / std::declval<U>()), 2> {
-    return {lhs[I] / rhs[I]...};
-  }
-
-  template <typename T, typename U, std::size_t N>
-  inline constexpr auto pairCompare(Vector<T, N> const &lhs,
-                                    Vector<U, N> const &rhs, std::size_t i) {
-    return lhs[i] == rhs[i];
-  }
-
-  template <typename T, typename U, std::size_t N, std::size_t... I>
-  inline constexpr auto equalityOperatorVector(
-      Vector<T, N> const &lhs, Vector<U, N> const &rhs,
-      std::index_sequence<I...>)noexcept->bool {
-    return true && pairCompare(lhs, rhs, I...);
-  }
-} // namespace cagey::math::detail
+// namespace cagey::math::detail {
+//
+//   template <typename T, typename U, std::size_t N, std::size_t... I>
+//   inline constexpr auto additionOperatorScalarVector(
+//       T const lhs, Vector<U, N> const &rhs,
+//       std::index_sequence<I...>)noexcept
+//       ->std::enable_if_t<
+//           is_vec_type<T>::value,
+//           Vector<decltype(std::declval<T>() + std::declval<U>()), N>> {
+//     return {lhs + rhs[I]...};
+//   }
+//
+//   template <typename T, typename U, std::size_t N, std::size_t... I>
+//   inline constexpr auto additionOperatorVectorScalar(
+//       Vector<U, N> const &lhs, T const &rhs,
+//       std::index_sequence<I...>)noexcept
+//       ->std::enable_if_t<
+//           is_vec_type<T>::value,
+//           Vector<decltype(std::declval<T>() + std::declval<U>()), N>> {
+//     return {lhs[I] + rhs...};
+//   }
+//
+//   template <typename T, typename U, std::size_t N, std::size_t... I>
+//   inline constexpr auto additionOperatorVector(
+//       Vector<T, N> const &lhs, Vector<U, N> const &rhs,
+//       std::index_sequence<I...>)noexcept
+//       ->Vector<decltype(std::declval<T>() + std::declval<U>()), 2> {
+//     return {lhs[I] + rhs[I]...};
+//   }
+//
+//   template <typename T, typename U, std::size_t N, std::size_t... I>
+//   inline constexpr auto subtractionOperatorScalarVector(
+//       T const lhs, Vector<U, N> const &rhs,
+//       std::index_sequence<I...>)noexcept
+//       ->std::enable_if_t<
+//           is_vec_type<T>::value,
+//           Vector<decltype(std::declval<T>() - std::declval<U>()), N>> {
+//     return {lhs - rhs[I]...};
+//   }
+//
+//   template <typename T, typename U, std::size_t N, std::size_t... I>
+//   inline constexpr auto subtractionOperatorVectorScalar(
+//       Vector<U, N> const &lhs, T const &rhs,
+//       std::index_sequence<I...>)noexcept
+//       ->std::enable_if_t<
+//           is_vec_type<T>::value,
+//           Vector<decltype(std::declval<T>() - std::declval<U>()), N>> {
+//     return {lhs[I] - rhs...};
+//   }
+//
+//   template <typename T, typename U, std::size_t N, std::size_t... I>
+//   inline constexpr auto subtractionOperatorVector(
+//       Vector<T, N> const &lhs, Vector<U, N> const &rhs,
+//       std::index_sequence<I...>)noexcept
+//       ->Vector<decltype(std::declval<T>() - std::declval<U>()), 2> {
+//     return {lhs[I] - rhs[I]...};
+//   }
+//
+//   template <typename T, std::size_t N, std::size_t... I>
+//   inline constexpr auto unaryMinusOperatorVector(
+//       const Vector<T, N> &v, std::index_sequence<I...>)noexcept
+//       ->Vector<decltype(-std::declval<T>()), 2> {
+//     return {-v[I]...};
+//   }
+//
+//   template <typename T, typename U, std::size_t N, std::size_t... I>
+//   inline constexpr auto multiplicationOperatorScalarVector(
+//       T const lhs, Vector<U, N> const &rhs,
+//       std::index_sequence<I...>)noexcept
+//       ->std::enable_if_t<
+//           is_vec_type<T>::value,
+//           Vector<decltype(std::declval<T>() * std::declval<U>()), N>> {
+//     return {lhs * rhs[I]...};
+//   }
+//
+//   template <typename T, typename U, std::size_t N, std::size_t... I>
+//   inline constexpr auto multiplicationOperatorVectorScalar(
+//       Vector<U, N> const &lhs, T const &rhs,
+//       std::index_sequence<I...>)noexcept
+//       ->std::enable_if_t<
+//           is_vec_type<T>::value,
+//           Vector<decltype(std::declval<T>() * std::declval<U>()), N>> {
+//     return {lhs[I] * rhs...};
+//   }
+//
+//   template <typename T, typename U, std::size_t N, std::size_t... I>
+//   inline constexpr auto multiplicationOperatorVector(
+//       Vector<T, N> const &lhs, Vector<U, N> const &rhs,
+//       std::index_sequence<I...>)noexcept
+//       ->Vector<decltype(std::declval<T>() * std::declval<U>()), 2> {
+//     return {lhs[I] * rhs[I]...};
+//   }
+//
+//   template <typename T, typename U, std::size_t N, std::size_t... I>
+//   inline constexpr auto divisionOperatorScalarVector(
+//       T const lhs, Vector<U, N> const &rhs,
+//       std::index_sequence<I...>)noexcept
+//       ->std::enable_if_t<
+//           is_vec_type<T>::value,
+//           Vector<decltype(std::declval<T>() / std::declval<U>()), N>> {
+//     return {lhs / rhs[I]...};
+//   }
+//
+//   template <typename T, typename U, std::size_t N, std::size_t... I>
+//   inline constexpr auto divisionOperatorVectorScalar(
+//       Vector<U, N> const &lhs, T const &rhs,
+//       std::index_sequence<I...>)noexcept
+//       ->std::enable_if_t<
+//           is_vec_type<T>::value,
+//           Vector<decltype(std::declval<T>() / std::declval<U>()), N>> {
+//     return {lhs[I] / rhs...};
+//   }
+//
+//   template <typename T, typename U, std::size_t N, std::size_t... I>
+//   inline constexpr auto divisionOperatorVector(
+//       Vector<T, N> const &lhs, Vector<U, N> const &rhs,
+//       std::index_sequence<I...>)noexcept
+//       ->Vector<decltype(std::declval<T>() / std::declval<U>()), 2> {
+//     return {lhs[I] / rhs[I]...};
+//   }
+//
+//   template <typename T, typename U, std::size_t N>
+//   inline constexpr auto pairCompare(Vector<T, N> const &lhs,
+//                                     Vector<U, N> const &rhs, std::size_t i) {
+//     return lhs[i] == rhs[i];
+//   }
+//
+//   template <typename T, typename U, std::size_t N, std::size_t... I>
+//   inline constexpr auto equalityOperatorVector(
+//       Vector<T, N> const &lhs, Vector<U, N> const &rhs,
+//       std::index_sequence<I...>)noexcept->bool {
+//     return true && pairCompare(lhs, rhs, I...);
+//   }
+// } // namespace cagey::math::detail
