@@ -34,12 +34,6 @@ namespace cagey::math::detail::vector {
       ->Vector<decltype(-std::declval<T>()), N> {
     return {-v[I]...};
   }
-
-  template <typename T, std::size_t N>
-  inline constexpr auto dot(Vector<T, N> const &lhs,
-                            Vector<T, N> const &rhs) noexcept->T {
-    return lhs[0] * rhs[0] + lhs[1] * rhs[1];
-  }
 }
 
 // namespace cagey::math::detail {
