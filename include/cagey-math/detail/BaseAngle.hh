@@ -28,7 +28,7 @@
 #pragma once
 
 #include "cagey-math/Constants.hh"
-#include "cagey-math/Util.hh"
+#include "cagey-math/detail/Util.hh"
 
 namespace cagey::math {
 

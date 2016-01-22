@@ -33,17 +33,18 @@ namespace cagey::math::detail {
     return value;
   }
 
-  // template <typename T, std::size_t N, typename F, std::size_t... I>
-  // constexpr auto transform(T const(&lhs)[N], T const(&rhs)[N], F f,
-  //                          std::index_sequence<I...>)
-  //     ->std::array<decltype(f(lhs[0], rhs[0])), N> {
-  //   return {{f(lhs[I], rhs[I])...}};
-  // }
-  //
-  // template <class T, int N, class F>
-  // constexpr auto transform(T const(&lhs)[N], T const(&rhs)[N], F f)
-  //     ->decltype(transform(lhs, rhs, f, gen_seq<N>{})) {
-  //   return transform(lhs, rhs, f, gen_seq<N>{});
-  // }
+  template <typename T, std::size_t N, std::size_t... I>
+  inline constexpr auto operatorUnaryMinus(const Vector<T, N> &v,
+                                           std::index_sequence<I...>)noexcept
+      ->Vector<decltype(-std::declval<T>()), N> {
+    return {-v[I]...};
+  }
+
+  template <typename T, typename U, std::size_t N, std::size_t... I>
+  inline constexpr auto operatorDivision(U const &lhs, Vector<T, N> const &rhs,
+                                         std::index_sequence<I...>)noexcept
+      ->Vector<decltype(std::declval<T>() / std::declval<U>()), 2> {
+    return {lhs / rhs[I]...};
+  }
 
 } // namespace cagey::math::detail

@@ -82,12 +82,12 @@ TEST(Vector2Test, ExplicitConversionConstructorTest) {
 // //   ASSERT_DOUBLE_EQ(vd[0], 4.8f);
 // //   ASSERT_DOUBLE_EQ(vd[1], 5.6f);
 // // }
-//
-// // TEST(Vector2Test, ZeroTest) {
-// //   constexpr auto v = Vec2f::zero();
-// //   ASSERT_EQ(v, Vec2f{0.0f});
-// // }
-//
+
+TEST(Vector2Test, ZeroTest) {
+  constexpr auto v = Vec2f::zero();
+  ASSERT_EQ(v, Vec2f{0.0f});
+}
+
 TEST(Vector2Test, XAxisTest) {
   constexpr auto v = Vec2f::xAxis();
   ASSERT_EQ(v, Vec2f(1.0f, 0.0f));
