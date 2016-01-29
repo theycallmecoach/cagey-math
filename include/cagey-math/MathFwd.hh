@@ -148,14 +148,14 @@ namespace cagey::math {
   using Mat44i = Matrix<std::int32_t, 4, 4>;
 
   /// Shorthand for 2x3 double matrix
-  using Mat23i = Matr23<std::int32_t>;
-  // Shorthand A 3x2 Matrix with double components.
+  using Mat23i = Mat23<std::int32_t>;
+  /// Shorthand A 3x2 Matrix with double components.
   using Mat32i = Mat32<std::int32_t>;
-  // Shorthand A 3x4 Matrix with double components.
+  /// Shorthand A 3x4 Matrix with double components.
   using Mat34i = Mat34<std::int32_t>;
-  // Shorthand A 4x2 Matrix with double components.
+  /// Shorthand A 4x2 Matrix with double components.
   using Mat42i = Mat42<std::int32_t>;
-  // Shorthand A 4x3 Matrix with double components.
+  /// Shorthand A 4x3 Matrix with double components.
   using Mat43i = Mat43<std::int32_t>;
 
   /// Shorthand for 2x2 square float matrix
@@ -166,14 +166,14 @@ namespace cagey::math {
   using Mat44f = Matrix<float, 4, 4>;
 
   /// Shorthand for 2x3 double matrix
-  using Mat23f = Matr23<float>;
-  // Shorthand A 3x2 Matrix with double components.
+  using Mat23f = Mat23<float>;
+  /// Shorthand A 3x2 Matrix with double components.
   using Mat32f = Mat32<float>;
-  // Shorthand A 3x4 Matrix with double components.
+  /// Shorthand A 3x4 Matrix with double components.
   using Mat34f = Mat34<float>;
-  // Shorthand A 4x2 Matrix with double components.
+  /// Shorthand A 4x2 Matrix with double components.
   using Mat42f = Mat42<float>;
-  // Shorthand A 4x3 Matrix with double components.
+  /// Shorthand A 4x3 Matrix with double components.
   using Mat43f = Mat43<float>;
 
   /// Shorthand for 2x2 square double matrix
@@ -184,14 +184,14 @@ namespace cagey::math {
   using Mat44d = Matrix<double, 4, 4>;
 
   /// Shorthand for 2x3 double matrix
-  using Mat23d = Matr23<double>;
-  // Shorthand A 3x2 Matrix with double components.
+  using Mat23d = Mat23<double>;
+  /// Shorthand A 3x2 Matrix with double components.
   using Mat32d = Mat32<double>;
-  // Shorthand A 3x4 Matrix with double components.
+  /// Shorthand A 3x4 Matrix with double components.
   using Mat34d = Mat34<double>;
-  // Shorthand A 4x2 Matrix with double components.
+  /// Shorthand A 4x2 Matrix with double components.
   using Mat42d = Mat42<double>;
-  // Shorthand A 4x3 Matrix with double components.
+  /// Shorthand A 4x3 Matrix with double components.
   using Mat43d = Mat43<double>;
 
 } // namespace cagey::math

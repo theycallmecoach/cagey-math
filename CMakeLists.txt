@@ -15,11 +15,11 @@ include_directories(
 set(MATH_SOURCES
     include/cagey-math/MathFwd.hh
     include/cagey-math/Vector.hh
+    include/cagey-math/Matrix.hh
     include/cagey-math/Constants.hh
     include/cagey-math/Degree.hh
     include/cagey-math/Radian.hh
     include/cagey-math/detail/BaseAngle.hh
-    include/cagey-math/detail/Vector2.hh
     include/cagey-math/detail/ConstExprUtil.hh
     include/cagey-math/detail/MetaUtil.hh
     include/cagey-math/detail/vec_type.hh)

@@ -28,7 +28,7 @@
 #pragma once
 
 #include <type_traits>
-#include <Vector.hh>
+#include <cagey-math/Vector.hh>
 
 namespace cagey::math {
 
@@ -45,10 +45,13 @@ namespace cagey::math {
    * @tparam R the number of rows in this Matrix
    * @tparam C the number of columns in this Matrix
    */
-  template <typename T, std::size_t R, std::size_t C> struct Matrix;
+  template <typename T, std::size_t R, std::size_t C> class Matrix;
 
-  template <typename T, std::size_t R, std::size_t C> struct Matrix {
-    struct {
+
+  template <typename T, std::size_t R, std::size_t C> class Matrix {
+  public:
+
+  struct {
       std::enable_if_t < is_vec_type<T>::value &&
           (C >= 2 && C <= 4 && R >= 2 && R <= 4),
           std::array<Vector<T, R>, C> columns;
@@ -70,7 +73,7 @@ namespace cagey::math {
     /**
      * Default construct all  components
      */
-    Matrix() noexcept = default;
+    inline constexpr Matrix() noexcept = default;
 
     inline explicit constexpr Matrix(T v) noexcept;
     inline explicit constexpr Matrix(Vector<T, R> const &col) noexcept;
@@ -84,4 +87,16 @@ namespace cagey::math {
                                      Vector<T, R> const &col2,
                                      Vector<T, R> const &col3) noexcept;
   };
+
+  template <typename T>  class Matrix<T, 2, 2> {
+  public:
+    inline constexpr Matrix() noexcept = default;
+
+  };
+
+  template <typename T>  class Matrix<T, 3, 3> {
+  public:
+
+  };
+
 } // namespace cagey::math

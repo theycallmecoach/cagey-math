@@ -311,9 +311,9 @@ namespace cagey::math {
 
     inline constexpr Vector() noexcept = default;
 
-    inline explicit constexpr Vector(T const v) noexcept : raw{v, v} {};
+    inline explicit constexpr Vector(T const v) noexcept : raw{v, v} {}
 
-    inline constexpr Vector(T const x, T const y) noexcept : raw{x, y} {};
+    inline constexpr Vector(T const x, T const y) noexcept : raw{x, y} {}
 
     template <typename U, std::size_t S>
     inline explicit constexpr Vector(Vector<U, S> const &v) noexcept
@@ -433,7 +433,7 @@ namespace cagey::math {
 
     inline constexpr Vector() noexcept = default;
 
-    inline explicit constexpr Vector(T const v) noexcept : raw{v, v, v} {};
+    inline explicit constexpr Vector(T const v) noexcept : raw{v, v, v} {}
 
     inline constexpr Vector(T const x, T const y, T const z) noexcept
         : raw{x, y, z} {};
@@ -525,15 +525,15 @@ namespace cagey::math {
   };
 
   /**
-   * An '3' Dimensional Vector.
+   * An '4' Dimensional Vector.
    */
-  template <typename T> class Vector<T, 3> {
+  template <typename T> class Vector<T, 4> {
   public:
     /// The underlying data type
     using Type = T;
 
     /// The number of elements in this Point
-    const static std::size_t Size = 3;
+    const static std::size_t Size = 4;
 
     ////////////////////////////////////////////////////////////////////////////
     /// Static Member Functions
@@ -565,13 +565,13 @@ namespace cagey::math {
 
     inline constexpr Vector() noexcept = default;
 
-    inline explicit constexpr Vector(T const v) noexcept : raw{v, v, v} {};
+    inline explicit constexpr Vector(T const v) noexcept : raw{v, v, v} {}
 
     inline constexpr Vector(T const x, T const y, T const z, T const w) noexcept
-        : raw{x, y, z, w} {};
+        : raw{x, y, z, w} {}
 
     inline constexpr Vector(Vec3<T> const &v, T const w) noexcept
-        : raw{v[0], v[1], v[2], w} {};
+        : raw{v[0], v[1], v[2], w} {}
 
     template <typename U, std::size_t S>
     inline explicit constexpr Vector(Vector<U, S> const &v) noexcept
@@ -745,7 +745,7 @@ namespace cagey::math {
   /**
    * Compute the component wise quotients of rhs and lhs.
    *
-   * @tparam T The component type of the rhs and lhs
+   * @tparam T The component type of the rhs and lhs3
    * @tparam N The number of components in rhs
    *
    * @param lhs the left-hand operand

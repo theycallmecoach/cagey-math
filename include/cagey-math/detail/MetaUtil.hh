@@ -33,6 +33,8 @@ namespace cagey::math::detail {
     return value;
   }
 
+  namespace vector {
+
   template <typename T, std::size_t N, std::size_t... I>
   inline constexpr auto operatorUnaryMinus(const Vector<T, N> &v,
                                            std::index_sequence<I...>)noexcept
@@ -46,5 +48,7 @@ namespace cagey::math::detail {
       ->Vector<decltype(std::declval<T>() / std::declval<U>()), 2> {
     return {lhs / rhs[I]...};
   }
+
+  } //namespace vector
 
 } // namespace cagey::math::detail
