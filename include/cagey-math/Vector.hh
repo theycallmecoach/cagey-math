@@ -85,18 +85,18 @@ namespace cagey::math {
      * @return A Vector with the first component set to 1 and all other
      * components set to 0.
      */
-    inline static constexpr auto xAxis() noexcept -> Vector;
+    inline static constexpr auto x_axis() noexcept -> Vector;
 
     /**
      * Returns a Vector with the second component set to 1 and all other
      * components set to 0.
      *
-     * Note: Function only available when N >= 2.
+     * Note: Function only available when N > 1.
      *
      * @return A Vector with the second component set to 1 and all other
      * components set to 0.
      */
-    inline static constexpr auto yAxis() noexcept -> Vector;
+    inline static constexpr auto y_axis() noexcept -> Vector;
 
     /**
      * Returns a Vector with the third component set to 1 and all other
@@ -107,7 +107,7 @@ namespace cagey::math {
      * @return A Vector with the third component set to 1 and all other
      * components set to 0.
      */
-    inline static constexpr auto zAxis() noexcept -> Vector;
+    inline static constexpr auto z_axis() noexcept -> Vector;
 
     /**
      * Returns a Vector with the forth component set to 1 and all other
@@ -118,7 +118,7 @@ namespace cagey::math {
      * @return A Vector with the forth component set to 1 and all other
      * components set to 0.
      */
-    inline static constexpr auto wAxis() noexcept -> Vector;
+    inline static constexpr auto w_axis() noexcept -> Vector;
 
     ////////////////////////////////////////////////////////////////////////////
     /// Constructors
@@ -128,6 +128,7 @@ namespace cagey::math {
      * Default Construct all Vector components.
      */
     inline constexpr Vector() noexcept = default;
+
 
     /**
      * Construct each component with the same value.
@@ -146,10 +147,14 @@ namespace cagey::math {
      * @param first a component
      * @param next all other components
      */
-    template <typename... U, typename V = typename std::enable_if<
-                                 sizeof...(U) + 1 == N, T>::type>
+    template <typename... U,
+              typename V = typename std::enable_if<sizeof...(U) + 1 == N, T>::type>
     inline constexpr Vector(T first, U... next)
         : data{first, next...} {}
+
+
+    inline constexpr Vector(Vec2<T> const & xy, T const & z) noexcept
+      : data{xy.x, xy.y, z} {}
 
     ////////////////////////////////////////////////////////////////////////////
     /// Operators
@@ -260,6 +265,30 @@ namespace cagey::math {
      */
     inline constexpr auto end() const noexcept -> T const *;
 
+    /**
+     * @brief Returns a copy of this Vector's first two components
+     * @return a copy of this Vector's first two components
+     */
+    inline constexpr Vec2<T> xy() const noexcept;
+
+    /**
+     * @brief Returns a copy of this Vector's first three components
+     * @return a copy of this Vector's first three components
+     */
+    inline constexpr Vec3<T> xyz() const noexcept;
+
+    /**
+     * @brief Returns a copy of this Vector's first two components
+     * @return a copy of this Vector's first two components
+     */
+    inline constexpr Vec2<T> rg() const noexcept;
+
+    /**
+     * @brief Returns a copy of this Vector's first three components
+     * @return a copy of this Vector's first three components
+     */
+    inline constexpr Vec3<T> rgb() const noexcept;
+
     ////////////////////////////////////////////////////////////////////////////
     /// Data Members
     ////////////////////////////////////////////////////////////////////////////
@@ -301,9 +330,9 @@ namespace cagey::math {
 
     static constexpr auto zero() noexcept -> Vector { return {T(0), T(0)}; }
 
-    static constexpr auto xAxis() noexcept -> Vector { return {T(1), T(0)}; }
+    static constexpr auto x_axis() noexcept -> Vector { return {T(1), T(0)}; }
 
-    static constexpr auto yAxis() noexcept -> Vector { return {T(0), T(1)}; }
+    static constexpr auto y_axis() noexcept -> Vector { return {T(0), T(1)}; }
 
     ////////////////////////////////////////////////////////////////////////////
     /// Constructors
@@ -415,11 +444,11 @@ namespace cagey::math {
       return {T(0), T(0), T(0)};
     }
 
-    static constexpr auto xAxis() noexcept -> Vector {
+    static constexpr auto x_axis() noexcept -> Vector {
       return {T(1), T(0), T(0)};
     }
 
-    static constexpr auto yAxis() noexcept -> Vector {
+    static constexpr auto y_axis() noexcept -> Vector {
       return {T(0), T(1), T(0)};
     }
 
@@ -444,6 +473,12 @@ namespace cagey::math {
     template <typename U, std::size_t S>
     inline explicit constexpr Vector(Vector<U, S> const &v) noexcept
         : raw{T(v.raw[0]), T(v.raw[1]), T(v.raw[2])} {}
+
+
+    template <std::size_t VN, typename = std::enable_if_t<(VN > 3)>>
+    inline explicit constexpr Vector(Vector<T, VN> const & v) noexcept
+        : raw{v.raw[0], v.raw[1], v.raw[2]} {}
+
 
     ////////////////////////////////////////////////////////////////////////////
     /// Operators
@@ -501,6 +536,22 @@ namespace cagey::math {
       return &raw[0] + Size;
     }
 
+    inline constexpr Vec2<T> xy() const noexcept {
+      return Vec2<T>{x, y};
+    }
+
+    inline constexpr Vec3<T> xyz() const noexcept {
+      return Vec3<T>{x, y, z};
+    }
+
+    inline constexpr Vec2<T> rg() const noexcept {
+      return xy();
+    }
+
+    inline constexpr Vec3<T> rgb() const noexcept {
+      return xyz();
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     /// Data Members
     ////////////////////////////////////////////////////////////////////////////
@@ -543,19 +594,19 @@ namespace cagey::math {
       return {T(0), T(0), T(0), T(0)};
     }
 
-    static constexpr auto xAxis() noexcept -> Vector {
+    static constexpr auto x_axis() noexcept -> Vector {
       return {T(1), T(0), T(0), T(0)};
     }
 
-    static constexpr auto yAxis() noexcept -> Vector {
+    static constexpr auto y_axis() noexcept -> Vector {
       return {T(0), T(1), T(0), T(0)};
     }
 
-    static constexpr auto zAxis() noexcept -> Vector {
+    static constexpr auto z_axis() noexcept -> Vector {
       return {T(0), T(0), T(1), T(0)};
     }
 
-    static constexpr auto wAxis() noexcept -> Vector {
+    static constexpr auto w_axis() noexcept -> Vector {
       return {T(0), T(0), T(0), T(1)};
     }
 
@@ -857,7 +908,7 @@ namespace cagey::math {
   template <typename T, std::size_t N>
   inline auto length(Vector<T, N> const &vec) noexcept->T {
     using std::sqrt;
-    return sqrt(lengthSquared(vec));
+    return sqrt(length_squared(vec));
   }
 
   /**
@@ -870,7 +921,7 @@ namespace cagey::math {
    * @return The length of vec.
    */
   template <typename T, std::size_t N>
-  inline auto lengthInverted(Vector<T, N> const &vec) noexcept->T {
+  inline auto length_inverted(Vector<T, N> const &vec) noexcept->T {
     return T{1} / length(vec);
   }
 
@@ -884,7 +935,7 @@ namespace cagey::math {
    * @return The squared length of vec.
    */
   template <typename T, std::size_t N>
-  inline constexpr auto lengthSquared(Vector<T, N> const &vec) noexcept->T {
+  inline constexpr auto length_squared(Vector<T, N> const &vec) noexcept->T {
     return dot(vec, vec);
   }
 
@@ -898,9 +949,9 @@ namespace cagey::math {
   * @return true if length of vec is zero
   */
   template <typename T, std::size_t S>
-  inline auto isZeroLength(Vector<T, S> const &vec)->bool {
+  inline auto is_zero_length(Vector<T, S> const &vec)->bool {
     T epsilon = std::numeric_limits<T>::epsilon();
-    return std::abs(lengthSquared(vec)) < (epsilon * epsilon);
+    return std::abs(length_squared(vec)) < (epsilon * epsilon);
   }
 
   /**
@@ -915,7 +966,7 @@ namespace cagey::math {
    */
   template <typename T, std::size_t N>
   inline auto normalize(Vector<T, N> vec) noexcept->Vector<T, N> {
-    return vec *= lengthInverted(vec);
+    return vec *= length_inverted(vec);
   }
 
   /**
@@ -928,7 +979,7 @@ namespace cagey::math {
    * @param rhs A
    */
   template <typename T, std::size_t N>
-  auto nearlyEqual(Vector<T, N> const &lhs, Vector<T, N> const &rhs,
+  auto nearly_equal(Vector<T, N> const &lhs, Vector<T, N> const &rhs,
                    T const epsilon = std::numeric_limits<T>::epsilon())
       ->bool {
     return std::equal(lhs.begin(), lhs.end(), rhs.begin(), [epsilon](T r, T l) {

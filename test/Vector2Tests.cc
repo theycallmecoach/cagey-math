@@ -89,12 +89,12 @@ TEST(Vector2Test, ZeroTest) {
 }
 
 TEST(Vector2Test, XAxisTest) {
-  constexpr auto v = Vec2f::xAxis();
+  constexpr auto v = Vec2f::x_axis();
   ASSERT_EQ(v, Vec2f(1.0f, 0.0f));
 }
 
 TEST(Vector2Test, YAxisTest) {
-  constexpr auto v = Vec2f::yAxis();
+  constexpr auto v = Vec2f::y_axis();
   ASSERT_EQ(v, Vec2f(0.0f, 1.0f));
 }
 
@@ -269,14 +269,14 @@ TEST(Vector2Test, VectorDotProductTest) {
 
 TEST(Vector2Test, LengthProductTest) {
   ASSERT_DOUBLE_EQ(length(Vec2d(1.2, 3.4)),
-                   std::sqrt(lengthSquared(Vec2d(1.2, 3.4))));
+                   std::sqrt(length_squared(Vec2d(1.2, 3.4))));
 
   constexpr auto x = dot(Vec2d(1.2, 3.4), Vec2d(7, 8));
   ASSERT_DOUBLE_EQ(x, 1.2 * 7 + 3.4 * 8);
 }
 
 TEST(Vector2Test, LengthSquaredProductTest) {
-  constexpr auto x = lengthSquared(Vec2d(1.2, 3.4));
+  constexpr auto x = length_squared(Vec2d(1.2, 3.4));
   ASSERT_DOUBLE_EQ(x, 1.2 * 1.2 + 3.4 * 3.4);
 }
 

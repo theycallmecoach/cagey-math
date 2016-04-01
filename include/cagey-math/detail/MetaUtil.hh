@@ -45,7 +45,7 @@ namespace cagey::math::detail {
   template <typename T, typename U, std::size_t N, std::size_t... I>
   inline constexpr auto operatorDivision(U const &lhs, Vector<T, N> const &rhs,
                                          std::index_sequence<I...>)noexcept
-      ->Vector<decltype(std::declval<T>() / std::declval<U>()), 2> {
+      ->Vector<decltype(std::declval<T>() / std::declval<U>()), N> {
     return {lhs / rhs[I]...};
   }
 

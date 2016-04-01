@@ -27,7 +27,8 @@ set(MATH_SOURCES
 set(MATH_TEST_SOURCES
     test/DegreeTests.cc
     test/VectorTests.cc
-    test/Vector2Tests.cc)
+    test/Vector2Tests.cc
+    test/Vector3Tests.cc)
 
 ##################################################
 #Testing
