@@ -43,7 +43,11 @@ TEST(Vector2Test, Vector2ComponentCountTest) {
   ASSERT_EQ(v2u, 2);
 }
 
-TEST(Vector2Test, DefaultConstructorTest) { Vec2f v; }
+TEST(Vector2Test, DefaultConstructorTest) { 
+  Vec2f v; 
+  ASSERT_FLOAT_EQ(v[0], 0);
+  ASSERT_FLOAT_EQ(v[1], 0);
+}
 
 TEST(Vector2Test, ScalarConstructorTest) {
   constexpr Vec2d v{4.8};

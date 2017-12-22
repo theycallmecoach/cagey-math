@@ -27,6 +27,7 @@
 
 #pragma once
 
+#include <cmath>
 #include <cagey-math/MathFwd.hh>
 #include <cagey-math/detail/MetaUtil.hh>
 #include <cagey-math/detail/vec_type.hh>
@@ -139,7 +140,7 @@ namespace cagey::math {
                               std::is_same<T, U>::value && N != 1, T>::type,
               typename Indices = std::make_index_sequence<N>>
     inline explicit constexpr Vector(U const v) noexcept
-        : Vector(Indices(), v) {}
+        : Vector(Indices{}, v) {}
 
     /**
      * Construct each component with the given values.

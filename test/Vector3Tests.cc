@@ -43,7 +43,12 @@ TEST(Vector3Test, Vector3ComponentCountTest) {
   ASSERT_EQ(v3u, 3);
 }
 
-TEST(Vector3Test, DefaultConstructorTest) { Vec3f v; }
+TEST(Vector3Test, DefaultConstructorTest) { 
+  Vec3f v; 
+  ASSERT_FLOAT_EQ(v[0], 0);
+  ASSERT_FLOAT_EQ(v[1], 0);
+  ASSERT_FLOAT_EQ(v[2], 0);
+}
 
 TEST(Vector3Test, ScalarConstructorTest) {
   constexpr Vec3d v{4.8};

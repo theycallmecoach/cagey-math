@@ -141,6 +141,13 @@ namespace cagey::math {
   template <typename T> using Matrix24 = Matrix<T, 2, 4>;
 
   /// Shorthand for 2x2 square int matrix
+  using Mat22u = Matrix<std::uint32_t, 2, 2>;
+  /// Shorthand for 2x2 square int matrix
+  using Mat33u = Matrix<std::uint32_t, 3, 3>;
+  /// Shorthand for 2x2 square int matrix
+  using Mat44u = Matrix<std::uint32_t, 4, 4>;
+
+  /// Shorthand for 2x2 square int matrix
   using Mat22i = Matrix<std::int32_t, 2, 2>;
   /// Shorthand for 2x2 square int matrix
   using Mat33i = Matrix<std::int32_t, 3, 3>;
