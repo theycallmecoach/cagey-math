@@ -32,6 +32,7 @@
 #include <cagey-math/detail/MetaUtil.hh>
 #include <cagey-math/detail/vec_type.hh>
 #include <cagey-math/detail/ConstExprUtil.hh>
+#include <cmath>
 
 // namespace cagey::math {
 //   /**
