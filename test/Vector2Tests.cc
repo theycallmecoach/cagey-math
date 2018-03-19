@@ -45,15 +45,16 @@ TEST(Vector2Test, Vector2ComponentCountTest) {
 
 TEST(Vector2Test, DefaultConstructorTest) { 
   Vec2f v; 
-  ASSERT_FLOAT_EQ(v[0], 0);
-  ASSERT_FLOAT_EQ(v[1], 0);
+  ASSERT_EQ(sizeof(v), sizeof(float[2]));
 }
 
 TEST(Vector2Test, ScalarConstructorTest) {
   constexpr Vec2d v{4.8};
-  constexpr Vec2d v2{4};
+  constexpr Vec2i v2{4};
   ASSERT_DOUBLE_EQ(v[0], 4.8);
   ASSERT_DOUBLE_EQ(v[1], 4.8);
+  ASSERT_EQ(v2[0], 4);
+  ASSERT_EQ(v2[1], 4);
 }
 
 TEST(Vector2Test, ComponentConstructorTest) {
@@ -61,6 +62,13 @@ TEST(Vector2Test, ComponentConstructorTest) {
   ASSERT_DOUBLE_EQ(v[0], 4.8);
   ASSERT_DOUBLE_EQ(v[1], 5.6);
 }
+
+TEST(Vector2Test, ComponentConstructorTest2) {
+  constexpr Vec2d v = {4.8, 5.6};
+  ASSERT_DOUBLE_EQ(v[0], 4.8);
+  ASSERT_DOUBLE_EQ(v[1], 5.6);
+}
+
 
 TEST(Vector2Test, BeginTest) {
   const Vec2d cvd{1.2};

@@ -33,6 +33,11 @@ namespace cagey::math::detail {
     return value;
   }
 
+  template <typename T> constexpr T index(T value, std::size_t i) {
+    return value[i];
+  }
+
+
   namespace vector {
 
   template <typename T, std::size_t N, std::size_t... I>

@@ -45,9 +45,7 @@ TEST(Vector3Test, Vector3ComponentCountTest) {
 
 TEST(Vector3Test, DefaultConstructorTest) { 
   Vec3f v; 
-  ASSERT_FLOAT_EQ(v[0], 0);
-  ASSERT_FLOAT_EQ(v[1], 0);
-  ASSERT_FLOAT_EQ(v[2], 0);
+  ASSERT_EQ(sizeof(v), sizeof(float[3]));
 }
 
 TEST(Vector3Test, ScalarConstructorTest) {

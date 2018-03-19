@@ -33,8 +33,7 @@ using namespace cagey::math;
 
 TEST(Degree, DefaultConstructor) {
   Degree<float> d;
-
-  EXPECT_FLOAT_EQ(0.0f, float(d));
+  ASSERT_EQ(sizeof(d), sizeof(float));
 }
 
 TEST(Degree, ValueConstructor) {

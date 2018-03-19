@@ -50,13 +50,6 @@ namespace cagey::math {
 
   template <typename T, std::size_t R, std::size_t C> class Matrix {
   public:
-
-    // struct {
-      std::enable_if_t < is_vec_type<T>::value &&
-          (C >= 2 && C <= 4 && R >= 2 && R <= 4),
-          std::array<Vector<T, R>, C>> columns;
-    // } impl_;
-
     /// The Underlying type of this matrix
     using Type = T;
 
@@ -64,9 +57,18 @@ namespace cagey::math {
       Rows = R, /// the number of rows in this matrix
       Cols = C, /// the number of columns in this matrix
     };
-    
+
     /// the number of elements in this matrix
     static const std::size_t Size = Rows * Cols;
+
+     // struct {
+      std::enable_if_t < is_vec_type<T>::value &&
+          (C >= 2 && C <= 4 && R >= 2 && R <= 4),
+          std::array<Vector<T, R>, C>> columns;
+    // } impl_;
+
+  
+     
 
     inline static constexpr auto fill(T const v) noexcept -> Matrix<T, C, R>;
     inline static constexpr auto identity() noexcept -> Matrix<T, C, R>;
@@ -128,26 +130,118 @@ namespace cagey::math {
    */
   template <typename T>  class Matrix<T, 2, 2> {
   public:
+    /// The Underlying type of this matrix
+    using Type = T;
+
+    enum : std::size_t {
+      Rows = 2, /// the number of rows in this matrix
+      Cols = 2, /// the number of columns in this matrix
+    };    
+
+    /// the number of elements in this matrix
+    static const std::size_t Size = Rows * Cols;
+
+    union {
+      std::enable_if_t < is_vec_type<T>::value, std::array<Vector<T, 2>, 2>> columns;  
+      T raw[Size];
+    };
+
+
+    /**
+     * Return a Matrix will all values set to the given value
+     * 
+     * @param v the value for all elements
+     *
+     * @return a matrix will all elements set to the give value
+     */
+    inline static constexpr auto fill(T const v) noexcept -> Matrix {
+      return Matrix{v};
+    }
+
+    inline static constexpr auto identity() noexcept -> Matrix {
+      return Matrix{ {1,0}, {0, 1}};
+    }
+
+    /**
+      * Return a Matrix will all values set to the given value
+      * 
+      * @param v the value for all elements
+      *
+      * @return a matrix will all elements set to the give value
+      */
+    inline static constexpr auto zero() noexcept -> Matrix {
+      return Matrix{0};
+    }
+
+
+    /**
+     * Default Construct with no value initialization
+     */
     inline constexpr Matrix() noexcept = default;
 
+    /**
+     * Construct each component with the same value.
+     *
+     * @param  v The value to initialize each component
+     */
+    template <typename U, typename Indices = std::make_index_sequence<Size>>
+    inline explicit constexpr Matrix(U const v) noexcept
+        : Matrix(Indices{}, v) {}
+
+
+    inline constexpr Matrix(Vector<T, 2> const &col0,
+                            Vector<T, 2> const &col1) noexcept 
+       : columns{{col0, col1}}{
+    }
+
+
+    template <typename Indices = std::make_index_sequence<Size>>
+    inline constexpr explicit Matrix(std::array<T, Size>& elements) noexcept 
+      : Matrix(elements, Indices{}) {
+    }
+
+    /**
+     * Return the column vector at the given index
+     *
+     * @param i column index
+     *
+     * @return the column vector at the given index
+     */
     inline constexpr auto operator[](std::size_t i) noexcept -> Vector<T,2> & { 
       return columns[i];
     }
 
+    /**
+     * Return the column vector at the given index
+     *
+     * @param i column index
+     *
+     * @return the column vector at the given index
+     */
     inline constexpr auto operator[](std::size_t i) const noexcept -> Vector<T,2> const & { 
       return columns[i];
     }
 
-    // struct {
-    //   std::enable_if_t < is_vec_type<T>::value,
-    //       std::array<Vector<T, 2>, 2>> columns;
-    // } impl_;
+  private:
+    /**
+     * Construct all components using the value of 'v'
+     *
+     * @param v A value for all components
+     */
+    template <typename U, std::size_t... I>
+    constexpr Matrix(std::index_sequence<I...>, U const v)
+        : raw{detail::repeat(static_cast<T>(v), I)...} {}
 
-    std::enable_if_t < is_vec_type<T>::value, std::array<Vector<T, 2>, 2>> columns;
+    
+    template <std::size_t... I>
+    constexpr Matrix(std::array<T, Size>& elements, std::index_sequence<I...>) 
+      : raw{elements[I]...}{
+    }
+
   };
 
   /**
-   * An '3x' Matrix.
+   * An '3x3' Matrix.
    */
   template <typename T>  class Matrix<T, 3, 3> {
   public:
@@ -164,8 +258,30 @@ namespace cagey::math {
     //   std::enable_if_t < is_vec_type<T>::value,std::array<Vector<T, 2>, 2>> columns;
     // } impl_;
 
-    std::enable_if_t < is_vec_type<T>::value,std::array<Vector<T, 2>, 2>> columns;
+    std::enable_if_t < is_vec_type<T>::value,std::array<Vector<T, 3>, 3>> columns;
 
+ };
+
+
+/**
+   * An '4x4' Matrix.
+   */
+  template <typename T>  class Matrix<T, 4, 4> {
+  public:
+
+    inline constexpr auto operator[](std::size_t i) noexcept -> Vector<T,4> & { 
+      return columns[i];
+    }
+
+    inline constexpr auto operator[](std::size_t i) const noexcept -> Vector<T,4> const & { 
+      return columns[i];
+    }
+
+    //  struct {
+    //   std::enable_if_t < is_vec_type<T>::value,std::array<Vector<T, 2>, 2>> columns;
+    // } impl_;
+
+    std::enable_if_t < is_vec_type<T>::value,std::array<Vector<T, 4>, 4>> columns;
  };
 
 
