@@ -240,34 +240,6 @@ namespace cagey::math {
     ////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns an iterator pointing to the first component
-     *
-     * @return A pointer to this Vectors data
-     */
-    inline constexpr auto begin() noexcept -> T *;
-
-    /**
-     * Returns an iterator pointing to the first component
-     *
-     * @return A pointer to this Vectors data
-     */
-    inline constexpr auto begin() const noexcept -> T const *;
-
-    /**
-     * Returns an iterator pointing to the last component
-     *
-     * @return A pointer to this Vectors data
-     */
-    inline constexpr auto end() noexcept -> T *;
-
-    /**
-     * Returns an iterator pointing to the last component
-     *
-     * @return A pointer to this Vectors data
-     */
-    inline constexpr auto end() const noexcept -> T const *;
-
-    /**
      * @brief Returns a copy of this Vector's first two components
      * @return a copy of this Vector's first two components
      */
@@ -376,32 +348,23 @@ namespace cagey::math {
     }
 
     inline constexpr auto operator*=(T const v) noexcept -> Vector & {
-      raw[0] *= v;
-      raw[1] *= v;
+      for (auto&& r : raw) {
+        r *= v;
+      }
       return *this;
     }
 
     inline constexpr auto operator/=(T const v) noexcept -> Vector & {
-      raw[0] /= v;
-      raw[1] /= v;
+      for (auto&& r : raw) {
+        r /= v;
+      }
       return *this;
     }
 
     ////////////////////////////////////////////////////////////////////////////
     /// Member Functions
     ////////////////////////////////////////////////////////////////////////////
-    inline constexpr auto begin() noexcept -> T * { return &raw[0]; }
-
-    inline constexpr auto begin() const noexcept -> T const * {
-      return &raw[0];
-    }
-
-    inline constexpr auto end() noexcept -> T * { return &raw[0] + Size; }
-
-    inline constexpr auto end() const noexcept -> T const * {
-      return &raw[0] + Size;
-    }
-
+ 
     ////////////////////////////////////////////////////////////////////////////
     /// Data Members
     ////////////////////////////////////////////////////////////////////////////
@@ -510,34 +473,23 @@ namespace cagey::math {
     }
 
     inline constexpr auto operator*=(T const v) noexcept -> Vector & {
-      raw[0] *= v;
-      raw[1] *= v;
-      raw[2] *= v;
+      for (auto&& r : raw) {
+        r *= v;
+      }
       return *this;
     }
 
     inline constexpr auto operator/=(T const v) noexcept -> Vector & {
-      raw[0] /= v;
-      raw[1] /= v;
-      raw[2] /= v;
+      for (auto&& r : raw) {
+        r /= v;
+      }
       return *this;
     }
 
     ////////////////////////////////////////////////////////////////////////////
     /// Member Functions
     ////////////////////////////////////////////////////////////////////////////
-    inline constexpr auto begin() noexcept -> T * { return &raw[0]; }
-
-    inline constexpr auto begin() const noexcept -> T const * {
-      return &raw[0];
-    }
-
-    inline constexpr auto end() noexcept -> T * { return &raw[0] + Size; }
-
-    inline constexpr auto end() const noexcept -> T const * {
-      return &raw[0] + Size;
-    }
-
+ 
     inline constexpr Vec2<T> xy() const noexcept {
       return Vec2<T>{x, y};
     }
@@ -660,36 +612,23 @@ namespace cagey::math {
     }
 
     inline constexpr auto operator*=(T const v) noexcept -> Vector & {
-      raw[0] *= v;
-      raw[1] *= v;
-      raw[2] *= v;
-      raw[3] *= v;
+      for (auto&& r : raw) {
+        r *= v;
+      }
       return *this;
     }
 
     inline constexpr auto operator/=(T const v) noexcept -> Vector & {
-      raw[0] /= v;
-      raw[1] /= v;
-      raw[2] /= v;
-      raw[3] /= v;
+      for (auto&& r : raw) {
+        r /= v;
+      }
       return *this;
     }
 
     ////////////////////////////////////////////////////////////////////////////
     /// Member Functions
     ////////////////////////////////////////////////////////////////////////////
-    inline constexpr auto begin() noexcept -> T * { return &raw[0]; }
-
-    inline constexpr auto begin() const noexcept -> T const * {
-      return &raw[0];
-    }
-
-    inline constexpr auto end() noexcept -> T * { return &raw[0] + Size; }
-
-    inline constexpr auto end() const noexcept -> T const * {
-      return &raw[0] + Size;
-    }
-
+ 
     ////////////////////////////////////////////////////////////////////////////
     /// Data Members
     ////////////////////////////////////////////////////////////////////////////
@@ -714,6 +653,40 @@ namespace cagey::math {
       };
     };
   };
+
+
+ /**
+   * Overload std::begin()
+   */
+  template <typename T, std::size_t N>
+  inline constexpr auto begin(Vector<T, N> const & v) -> decltype(&v.raw[0]) {
+    return &v.raw[0];
+  }
+  
+  /**
+   * Overload std::begin()
+   */
+  template <typename T, std::size_t N>
+  inline constexpr auto begin(Vector<T, N> & v) -> decltype(&v.raw[0]) {
+    return &v.raw[0];
+  }
+ 
+  /**
+   * Overload std::end()
+   */
+  template <typename T, std::size_t N>
+  inline constexpr auto end(Vector<T, N> const & v) -> decltype(&v.raw[0]) {
+    return &v.raw[0] + Vector<T, N>::Size;
+  }
+  
+  /**
+   * Overload std::end()
+   */
+  template <typename T, std::size_t N>
+  inline constexpr auto end(Vector<T, N> & v) -> decltype(&v.raw[0]) {
+    return &v.raw[0] + Vector<T, N>::Size;
+  }
+
 
   /**
    * Compute the component wise sum of rhs and lhs.
@@ -841,7 +814,9 @@ namespace cagey::math {
   template <typename T, std::size_t N>
   inline auto operator==(Vector<T, N> const &lhs,
                          Vector<T, N> const &rhs) noexcept->bool {
-    return detail::equal(std::begin(lhs), std::end(lhs), std::begin(rhs));
+    using std::begin;
+    using std::end;
+    return detail::equal(begin(lhs), end(lhs), begin(rhs));
   }
 
   /**
@@ -874,7 +849,8 @@ namespace cagey::math {
   template <typename T, std::size_t N>
   inline constexpr auto dot(Vector<T, N> const &lhs,
                             Vector<T, N> const &rhs) noexcept->T {
-    return detail::inner_product(lhs.begin(), lhs.end(), rhs.begin(), T(0));
+    using std::begin;
+    return detail::inner_product(begin(lhs), end(lhs), begin(rhs), T(0));
   }
 
   /**
@@ -953,7 +929,8 @@ namespace cagey::math {
   template <typename T, std::size_t S>
   inline auto is_zero_length(Vector<T, S> const &vec)->bool {
     T epsilon = std::numeric_limits<T>::epsilon();
-    return std::abs(length_squared(vec)) < (epsilon * epsilon);
+    using std::abs;
+    return abs(length_squared(vec)) < (epsilon * epsilon);
   }
 
   /**

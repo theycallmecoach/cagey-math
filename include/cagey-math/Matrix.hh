@@ -81,6 +81,8 @@ namespace cagey::math {
 
     inline explicit constexpr Matrix(T v) noexcept;
 
+    inline constexpr Matrix(Matrix const &) noexcept = default;
+
   /**
      * Construct each component with the same value.
      *
@@ -143,7 +145,7 @@ namespace cagey::math {
 
     union {
       std::enable_if_t < is_vec_type<T>::value, std::array<Vector<T, 2>, 2>> columns;  
-      T raw[Size];
+      T data[Size];
     };
 
 
@@ -158,6 +160,11 @@ namespace cagey::math {
       return Matrix{v};
     }
 
+    /**
+     * Return an Identity matrix
+     *
+     * @return a matrix with 1's on the diagonal
+     */
     inline static constexpr auto identity() noexcept -> Matrix {
       return Matrix{ {1,0}, {0, 1}};
     }
@@ -180,6 +187,11 @@ namespace cagey::math {
     inline constexpr Matrix() noexcept = default;
 
     /**
+     * Copy Constructor
+     */
+    constexpr Matrix(Matrix const &) noexcept = default;
+
+    /**
      * Construct each component with the same value.
      *
      * @param  v The value to initialize each component
@@ -189,6 +201,12 @@ namespace cagey::math {
         : Matrix(Indices{}, v) {}
 
 
+    /**
+     * Construct each column from the given column vectors.
+     *
+     * @param  col0 The first column
+     * @param  col1 The second column
+     */
     inline constexpr Matrix(Vector<T, 2> const &col0,
                             Vector<T, 2> const &col1) noexcept 
        : columns{{col0, col1}}{
@@ -222,6 +240,21 @@ namespace cagey::math {
       return columns[i];
     }
 
+    /**
+     * Scale this matrix by the given value
+     *
+     * @param i column index
+     *
+     * @return the column vector at the given index
+     */
+    inline constexpr auto operator*=(Type const & value) noexcept -> Matrix & { 
+      for (auto&& c : columns) {
+        c *= value;
+      }
+      return *this;
+    }
+
+
   private:
     /**
      * Construct all components using the value of 'v'
@@ -230,12 +263,12 @@ namespace cagey::math {
      */
     template <typename U, std::size_t... I>
     constexpr Matrix(std::index_sequence<I...>, U const v)
-        : raw{detail::repeat(static_cast<T>(v), I)...} {}
+        : data{detail::repeat(static_cast<T>(v), I)...} {}
 
     
     template <std::size_t... I>
     constexpr Matrix(std::array<T, Size>& elements, std::index_sequence<I...>) 
-      : raw{elements[I]...}{
+      : data{elements[I]...}{
     }
 
   };
@@ -245,11 +278,68 @@ namespace cagey::math {
    */
   template <typename T>  class Matrix<T, 3, 3> {
   public:
+   /// The Underlying type of this matrix
+    using Type = T;
 
+    enum : std::size_t {
+      Rows = 3, /// the number of rows in this matrix
+      Cols = 3, /// the number of columns in this matrix
+    };
+
+    /// the number of elements in this matrix
+    static const std::size_t Size = Rows * Cols;
+
+
+    /**
+     * Return a Matrix will all values set to the given value
+     * 
+     * @param v the value for all elements
+     *
+     * @return a matrix will all elements set to the give value
+     */
+    inline static constexpr auto fill(T const v) noexcept -> Matrix {
+      return Matrix{v};
+    }
+
+    /**
+     * Return an Identity matrix
+     *
+     * @return a matrix with 1's on the diagonal
+     */
+    inline static constexpr auto identity() noexcept -> Matrix {
+      return Matrix{ {1,0,0}, {0, 1,0}, {0,0,1}};
+    }
+
+    /**
+     * Return a Matrix will all values set to the given value
+     * 
+     * @param v the value for all elements
+     *
+     * @return a matrix will all elements set to the give value
+     */
+    inline static constexpr auto zero() noexcept -> Matrix {
+      return Matrix{0};
+    }
+
+
+   /**
+     * Return the column vector at the given index
+     *
+     * @param i column index
+     *
+     * @return the column vector at the given index
+     */
     inline constexpr auto operator[](std::size_t i) noexcept -> Vector<T,3> & { 
       return columns[i];
     }
 
+    /**
+     * Return the column vector at the given index
+     *
+     * @param i column index
+     *
+     * @return the column vector at the given index
+     */
     inline constexpr auto operator[](std::size_t i) const noexcept -> Vector<T,3> const & { 
       return columns[i];
     }
@@ -258,7 +348,10 @@ namespace cagey::math {
     //   std::enable_if_t < is_vec_type<T>::value,std::array<Vector<T, 2>, 2>> columns;
     // } impl_;
 
-    std::enable_if_t < is_vec_type<T>::value,std::array<Vector<T, 3>, 3>> columns;
+    union {
+      std::enable_if_t < is_vec_type<T>::value, std::array<Vector<T, 3>, 3>> columns;  
+      T data[Size];
+    };
 
  };
 
@@ -268,21 +361,79 @@ namespace cagey::math {
    */
   template <typename T>  class Matrix<T, 4, 4> {
   public:
+    /// The Underlying type of this matrix
+    using Type = T;
 
+    enum : std::size_t {
+      Rows = 4, /// the number of rows in this matrix
+      Cols = 4, /// the number of columns in this matrix
+    };
+
+    /// the number of elements in this matrix
+    static const std::size_t Size = Rows * Cols;
+
+
+    /**
+     * Return the column vector at the given index
+     *
+     * @param i column index
+     *
+     * @return the column vector at the given index
+     */
     inline constexpr auto operator[](std::size_t i) noexcept -> Vector<T,4> & { 
       return columns[i];
     }
 
+    /**
+     * Return the column vector at the given index
+     *
+     * @param i column index
+     *
+     * @return the column vector at the given index
+     */
     inline constexpr auto operator[](std::size_t i) const noexcept -> Vector<T,4> const & { 
       return columns[i];
     }
 
-    //  struct {
-    //   std::enable_if_t < is_vec_type<T>::value,std::array<Vector<T, 2>, 2>> columns;
-    // } impl_;
 
-    std::enable_if_t < is_vec_type<T>::value,std::array<Vector<T, 4>, 4>> columns;
- };
+    union {
+      std::enable_if_t < is_vec_type<T>::value, std::array<Vector<T, 4>, 4>> columns;  
+      T data[Size];
+    };
+  };
+
+
+  /**
+   * Overload std::begin()
+   */
+  template <typename T, std::size_t R, std::size_t C>
+  inline constexpr auto begin(Matrix<T, R, C> const & m) -> decltype(m.columns.begin()) {
+    return m.columns.begin();
+  }
+  
+  /**
+   * Overload std::begin()
+   */
+  template <typename T, std::size_t R, std::size_t C>
+  inline constexpr auto begin(Matrix<T, R, C> & m) -> decltype(m.columns.begin()) {
+    return m.columns.begin();
+  }
+ 
+  /**
+   * Overload std::end()
+   */
+  template <typename T, std::size_t R, std::size_t C>
+  inline constexpr auto end(Matrix<T, R, C> const & m) -> decltype(m.columns.end()) {
+    return m.columns.end();
+  }
+  
+  /**
+   * Overload std::end()
+   */
+  template <typename T, std::size_t R, std::size_t C>
+  inline constexpr auto end(Matrix<T, R, C> & m) -> decltype(m.columns.begin()) {
+    return m.columns.end();
+  }
 
 
   /**
@@ -299,7 +450,9 @@ namespace cagey::math {
   template <typename T, std::size_t R, std::size_t C>
   inline auto operator==(Matrix<T, R, C> const &lhs,
                          Matrix<T, R, C> const &rhs) noexcept->bool {
-    return detail::equal(std::begin(lhs), std::end(lhs), std::begin(rhs));
+    using std::begin;
+    using std::end;
+    return detail::equal(begin(lhs), end(lhs), begin(rhs));
   }
 
   /**
@@ -319,5 +472,25 @@ namespace cagey::math {
     return !(lhs == rhs);
   }
 
+  /**
+   * Scale a matrix 
+   *
+   * @tparam T The component type of the lhs and rhs
+   * @tparam R The number of rows of both lhs and rhs
+   * @tparam C The number of columns of both lhs and rhs
+   *
+   * @param lhs the left-hand operand
+   * @param rhs the right-hand operand
+   * @return true if lhs and rhs are not equal
+   */
+  template <typename T, std::size_t R, std::size_t C>
+  inline auto operator*(Matrix<T, R, C> const &lhs,
+                        T const & value) noexcept -> Matrix<T, R, C> const {
+    Matrix<T,R,C> res{lhs};
+    return res *= value;
+  }
+
+
+  
 
 } // namespace cagey::math

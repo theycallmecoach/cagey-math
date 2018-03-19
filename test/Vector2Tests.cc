@@ -72,13 +72,15 @@ TEST(Vector2Test, ComponentConstructorTest2) {
 
 TEST(Vector2Test, BeginTest) {
   const Vec2d cvd{1.2};
-  const double *cdata = cvd.begin();
+  using std::begin;
+  const double *cdata = begin(cvd);
   ASSERT_EQ(cdata, static_cast<const void *>(&cvd));
 }
 
 TEST(Vector2Test, EndTest) {
   constexpr Vec2d v{4.8, 5.6};
-  ASSERT_EQ(v.end(), (&v[1] + 1));
+  using std::end;
+  ASSERT_EQ(end(v), (&v[1] + 1));
 }
 
 TEST(Vector2Test, ExplicitConversionConstructorTest) {
@@ -111,6 +113,7 @@ TEST(Vector2Test, YAxisTest) {
 }
 
 TEST(Vector2Test, ArrayIndexOperatorTest) {
+  using std::begin;
   constexpr Vec2d vd{1.3, 5.3};
   auto vd0 = vd[0];
   auto vd1 = vd[1];
@@ -120,14 +123,14 @@ TEST(Vector2Test, ArrayIndexOperatorTest) {
   const auto cvd = vd;
   const auto &cv0 = cvd[0];
   const auto &cv1 = cvd[1];
-  ASSERT_EQ(&cv0, cvd.begin() + 0);
-  ASSERT_EQ(&cv1, cvd.begin() + 1);
+  ASSERT_EQ(&cv0, begin(cvd) + 0);
+  ASSERT_EQ(&cv1, begin(cvd) + 1);
 
   auto v = vd;
   auto &v0 = v[0];
   auto &v1 = v[1];
-  ASSERT_EQ(&v0, v.begin() + 0);
-  ASSERT_EQ(&v1, v.begin() + 1);
+  ASSERT_EQ(&v0, begin(v) + 0);
+  ASSERT_EQ(&v1, begin(v) + 1);
 }
 
 TEST(Vector2Test, ReadFieldTest) {
