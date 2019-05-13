@@ -28,11 +28,12 @@
 #pragma once
 
 #include <cmath>
-#include <cagey-math/MathFwd.hh>
+#include <cagey/math/MathFwd.hh>
 #include <cagey-math/detail/MetaUtil.hh>
 #include <cagey-math/detail/vec_type.hh>
 #include <cagey-math/detail/ConstExprUtil.hh>
 #include <cmath>
+#include <algorithm>
 
 namespace cagey::math {
 
@@ -40,24 +41,29 @@ namespace cagey::math {
    * An 'N' - Dimensional Vector.
    */
   template <typename T, std::size_t N> class Vector {
+    static_assert(N >= 2 , "Vector must have at least two elements");
+
   public:
     /// The underlying data type
     using Type = T;
 
     /// The number of elements in this Vector
     enum : std::size_t {
-      Size = N;
-    }
+      Size = N
+    };
 
     ////////////////////////////////////////////////////////////////////////////
     /// Static Member Functions
     ////////////////////////////////////////////////////////////////////////////
+
     /**
      * Returns a Vector with each component set to 0.
      *
      * @return A Vector with each component set to 0
      */
-    inline static constexpr auto zero() noexcept -> Vector;
+    inline static constexpr auto Zero() noexcept -> Vector {
+      return Vector<T, N>{T(0.0)};
+    }
 
     /**
      * Returns a Vector with the first component set to 1 and all other
@@ -68,40 +74,56 @@ namespace cagey::math {
      * @return A Vector with the first component set to 1 and all other
      * components set to 0.
      */
-    inline static constexpr auto x_axis() noexcept -> Vector;
+    inline static constexpr auto UnitX() noexcept -> Vector {
+      Vector<T, N> v = Vector<T,N>::Zero();
+      v[0] = T(1);
+      return v;
+    }
 
     /**
      * Returns a Vector with the second component set to 1 and all other
      * components set to 0.
      *
-     * Note: Function only available when N > 1.
+     * Note: Function only available when N >= 2.
      *
      * @return A Vector with the second component set to 1 and all other
      * components set to 0.
      */
-    inline static constexpr auto y_axis() noexcept -> Vector;
+    inline static constexpr auto UnitY() noexcept -> Vector {
+      Vector<T, N> v = Vector<T,N>::Zero();
+      v[1] = T(1);
+      return v;
+    }
 
     /**
      * Returns a Vector with the third component set to 1 and all other
      * components set to 0.
      *
-     * Note: Function only available when N > 2.
+     * Note: Function only available when N >= 3.
      *
      * @return A Vector with the third component set to 1 and all other
      * components set to 0.
      */
-    inline static constexpr auto z_axis() noexcept -> Vector;
+    inline static constexpr auto UnitZ() noexcept -> Vector {
+      Vector<T, N> v = Vector<T,N>::Zero();
+      v[2] = T(1);
+      return v;
+    }
 
     /**
      * Returns a Vector with the forth component set to 1 and all other
      * components set to 0.
      *
-     * Note: Function only available when N > 3.
+     * Note: Function only available when N >= 4.
      *
      * @return A Vector with the forth component set to 1 and all other
      * components set to 0.
      */
-    inline static constexpr auto w_axis() noexcept -> Vector;
+    inline static constexpr auto UnitW() noexcept -> Vector {
+      Vector<T, N> v = Vector<T,N>::Zero();
+      v[3] = T(1);
+      return v;
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     /// Constructors
@@ -118,8 +140,8 @@ namespace cagey::math {
      *
      * @param  v The value to initialize each component
      */
-    template <typename U, typename V = typename std::enable_if<
-                              std::is_same<T, U>::value && N != 1, T>::type,
+    template <typename U, 
+              typename V = typename std::enable_if<std::is_same<T, U>::value && N != 1, T>::type,
               typename Indices = std::make_index_sequence<N>>
     inline explicit constexpr Vector(U const v) noexcept
         : Vector(Indices{}, v) {}
@@ -154,7 +176,9 @@ namespace cagey::math {
      *
      * @return a reference to the component at the given index.
      */
-    inline constexpr auto operator[](std::size_t i) noexcept -> T &;
+    inline constexpr auto operator[](std::size_t i) noexcept -> T & {
+      return raw[i];
+    }
 
     /**
      * Return a reference to the component at the given index.
@@ -167,7 +191,9 @@ namespace cagey::math {
      *
      * @return a reference to the component at the given index.
      */
-    inline constexpr auto operator[](std::size_t i) const noexcept -> T const &;
+    inline constexpr auto operator[](std::size_t i) const noexcept -> T const & {
+      return raw[i];
+    }
 
     /**
      * Add each component of the given vector to the corresponding component
@@ -179,7 +205,10 @@ namespace cagey::math {
      *
      * @return A reference to this Vector
      */
-    inline constexpr auto operator+=(Vector const &v) noexcept -> Vector &;
+    inline constexpr auto operator+=(Vector const &v) noexcept -> Vector & {
+      std::transform(data.begin(), data.end(), begin(v), data.begin(), std::plus<>());
+      return *this;
+    }
 
     /**
      * Subtract each component of the given vector from the corresponding
@@ -192,7 +221,10 @@ namespace cagey::math {
      *
      * @return A reference to this Vector
      */
-    inline constexpr auto operator-=(Vector const &v) noexcept -> Vector &;
+    inline constexpr auto operator-=(Vector const &v) noexcept -> Vector & {
+      std::transform(data.begin(), data.end(), begin(v), data.begin(), std::minus<>());
+      return *this;
+    }
 
     /**
      * Multiplies each component of this Vector by x.
@@ -203,7 +235,10 @@ namespace cagey::math {
      *
      * @return A reference to this Vector.
      */
-    inline constexpr auto operator*=(T const x) noexcept -> Vector &;
+    inline constexpr auto operator*=(T const x) noexcept -> Vector & {
+      std::transform(data.begin(), data.end(), data.begin(), [x](auto& a) { return a * x;});
+      return *this;
+    }
 
     /**
      * Divides each component of this Vector by x.
@@ -214,7 +249,10 @@ namespace cagey::math {
      *
      * @return A reference to this Vector.
      */
-    inline constexpr auto operator/=(T const x) noexcept -> Vector &;
+    inline constexpr auto operator/=(T const x) noexcept -> Vector & {
+      std::transform(data.begin(), data.end(), data.begin(), [x](auto& a) { return a / x;});
+      return *this;
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     /// Member Functions
@@ -224,25 +262,17 @@ namespace cagey::math {
      * @brief Returns a copy of this Vector's first two components
      * @return a copy of this Vector's first two components
      */
-    inline constexpr Vec2<T> xy() const noexcept;
+    inline constexpr Vec2<T> xy() const noexcept {
+      return Vec2<T>(data[0], data[1]);
+    }
 
     /**
      * @brief Returns a copy of this Vector's first three components
      * @return a copy of this Vector's first three components
      */
-    inline constexpr Vec3<T> xyz() const noexcept;
-
-    /**
-     * @brief Returns a copy of this Vector's first two components
-     * @return a copy of this Vector's first two components
-     */
-    inline constexpr Vec2<T> rg() const noexcept;
-
-    /**
-     * @brief Returns a copy of this Vector's first three components
-     * @return a copy of this Vector's first three components
-     */
-    inline constexpr Vec3<T> rgb() const noexcept;
+    inline constexpr Vec3<T> xyz() const noexcept{
+      return Vec3<T>(data[0], data[1], data[2]);
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     /// Data Members
@@ -253,7 +283,7 @@ namespace cagey::math {
      * Anonymous union to allow access to members using different names
      */
     union {
-      std::enable_if_t<is_vec_type<T>::value, std::array<T, N>> data;
+      std::array<T, N> data;
       T raw[N];
     };
 
@@ -267,272 +297,6 @@ namespace cagey::math {
     constexpr Vector(std::index_sequence<I...>, U const v)
         : data{detail::repeat(v, I)...} {}
   };
-
- 
-  /**
-   * An '3' Dimensional Vector.
-   */
-  template <typename T> class Vector<T, 3> {
-  public:
-    /// The underlying data type
-    using Type = T;
-
-    /// The number of elements in this Point
-    const static std::size_t Size = 3;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// Static Member Functions
-    ////////////////////////////////////////////////////////////////////////////
-
-    static constexpr auto zero() noexcept -> Vector {
-      return {T(0), T(0), T(0)};
-    }
-
-    static constexpr auto x_axis() noexcept -> Vector {
-      return {T(1), T(0), T(0)};
-    }
-
-    static constexpr auto y_axis() noexcept -> Vector {
-      return {T(0), T(1), T(0)};
-    }
-
-    static constexpr auto zAxis() noexcept -> Vector {
-      return {T(0), T(0), T(1)};
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// Constructors
-    ////////////////////////////////////////////////////////////////////////////
-
-    inline constexpr Vector() noexcept = default;
-
-    inline explicit constexpr Vector(T const v) noexcept : raw{v, v, v} {}
-
-    inline constexpr Vector(T const x, T const y, T const z) noexcept
-        : raw{x, y, z} {};
-
-    inline constexpr Vector(Vec2<T> const &v, T const z) noexcept
-        : raw{v[0], v[1], z} {};
-
-    template <typename U, std::size_t S>
-    inline explicit constexpr Vector(Vector<U, S> const &v) noexcept
-        : raw{T(v.raw[0]), T(v.raw[1]), T(v.raw[2])} {}
-
-
-    template <std::size_t VN, typename = std::enable_if_t<(VN > 3)>>
-    inline explicit constexpr Vector(Vector<T, VN> const & v) noexcept
-        : raw{v.raw[0], v.raw[1], v.raw[2]} {}
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// Operators
-    ////////////////////////////////////////////////////////////////////////////
-
-    inline constexpr auto operator[](std::size_t i) noexcept -> T & {
-      return raw[i];
-    }
-
-    inline constexpr auto operator[](std::size_t i) const noexcept
-        -> T const & {
-      return raw[i];
-    }
-
-    inline constexpr auto operator+=(Vector const &v) noexcept -> Vector & {
-      raw[0] += v.raw[0];
-      raw[1] += v.raw[1];
-      raw[2] += v.raw[2];
-      return *this;
-    }
-
-    inline constexpr auto operator-=(Vector const &v) noexcept -> Vector & {
-      raw[0] -= v.raw[0];
-      raw[1] -= v.raw[1];
-      raw[2] -= v.raw[2];
-      return *this;
-    }
-
-    inline constexpr auto operator*=(T const v) noexcept -> Vector & {
-      for (auto&& r : raw) {
-        r *= v;
-      }
-      return *this;
-    }
-
-    inline constexpr auto operator/=(T const v) noexcept -> Vector & {
-      for (auto&& r : raw) {
-        r /= v;
-      }
-      return *this;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// Member Functions
-    ////////////////////////////////////////////////////////////////////////////
- 
-    inline constexpr Vec2<T> xy() const noexcept {
-      return Vec2<T>{x, y};
-    }
-
-    inline constexpr Vec3<T> xyz() const noexcept {
-      return Vec3<T>{x, y, z};
-    }
-
-    inline constexpr Vec2<T> rg() const noexcept {
-      return xy();
-    }
-
-    inline constexpr Vec3<T> rgb() const noexcept {
-      return xyz();
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// Data Members
-    ////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Anonymous union to allow access to members using different names
-     */
-    union {
-      std::enable_if_t<is_vec_type<T>::value, std::array<T, Size>> data;
-      T raw[Size];
-      struct {
-        T x;
-        T y;
-        T z;
-      };
-      struct {
-        T r;
-        T g;
-        T b;
-      };
-    };
-  };
-
-  /**
-   * An '4' Dimensional Vector.
-   */
-  template <typename T> class Vector<T, 4> {
-  public:
-    /// The underlying data type
-    using Type = T;
-
-    /// The number of elements in this Point
-    const static std::size_t Size = 4;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// Static Member Functions
-    ////////////////////////////////////////////////////////////////////////////
-
-    static constexpr auto zero() noexcept -> Vector {
-      return {T(0), T(0), T(0), T(0)};
-    }
-
-    static constexpr auto x_axis() noexcept -> Vector {
-      return {T(1), T(0), T(0), T(0)};
-    }
-
-    static constexpr auto y_axis() noexcept -> Vector {
-      return {T(0), T(1), T(0), T(0)};
-    }
-
-    static constexpr auto z_axis() noexcept -> Vector {
-      return {T(0), T(0), T(1), T(0)};
-    }
-
-    static constexpr auto w_axis() noexcept -> Vector {
-      return {T(0), T(0), T(0), T(1)};
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// Constructors
-    ////////////////////////////////////////////////////////////////////////////
-
-    inline constexpr Vector() noexcept = default;
-
-    inline explicit constexpr Vector(T const v) noexcept : raw{v, v, v} {}
-
-    inline constexpr Vector(T const x, T const y, T const z, T const w) noexcept
-        : raw{x, y, z, w} {}
-
-    inline constexpr Vector(Vec3<T> const &v, T const w) noexcept
-        : raw{v[0], v[1], v[2], w} {}
-
-    template <typename U, std::size_t S>
-    inline explicit constexpr Vector(Vector<U, S> const &v) noexcept
-        : raw{T(v.raw[0]), T(v.raw[1]), T(v.raw[2]), T(v.raw[3])} {}
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// Operators
-    ////////////////////////////////////////////////////////////////////////////
-
-    inline constexpr auto operator[](std::size_t i) noexcept -> T & {
-      return raw[i];
-    }
-
-    inline constexpr auto operator[](std::size_t i) const noexcept
-        -> T const & {
-      return raw[i];
-    }
-
-    inline constexpr auto operator+=(Vector const &v) noexcept -> Vector & {
-      raw[0] += v.raw[0];
-      raw[1] += v.raw[1];
-      raw[2] += v.raw[2];
-      raw[3] += v.raw[3];
-      return *this;
-    }
-
-    inline constexpr auto operator-=(Vector const &v) noexcept -> Vector & {
-      raw[0] -= v.raw[0];
-      raw[1] -= v.raw[1];
-      raw[2] -= v.raw[2];
-      raw[3] -= v.raw[3];
-      return *this;
-    }
-
-    inline constexpr auto operator*=(T const v) noexcept -> Vector & {
-      for (auto&& r : raw) {
-        r *= v;
-      }
-      return *this;
-    }
-
-    inline constexpr auto operator/=(T const v) noexcept -> Vector & {
-      for (auto&& r : raw) {
-        r /= v;
-      }
-      return *this;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// Member Functions
-    ////////////////////////////////////////////////////////////////////////////
- 
-    ////////////////////////////////////////////////////////////////////////////
-    /// Data Members
-    ////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Anonymous union to allow access to members using different names
-     */
-    union {
-      std::enable_if_t<is_vec_type<T>::value, std::array<T, Size>> data;
-      T raw[Size];
-      struct {
-        T x;
-        T y;
-        T z;
-        T w;
-      };
-      struct {
-        T r;
-        T g;
-        T b;
-        T a;
-      };
-    };
-  };
-
 
  /**
    * Overload std::begin()
@@ -727,7 +491,7 @@ namespace cagey::math {
    */
   template <typename T, std::size_t N>
   inline constexpr auto dot(Vector<T, N> const &lhs,
-                            Vector<T, N> const &rhs) noexcept->T {
+                            Vector<T, N> const &rhs) noexcept -> T {
     using std::begin;
     return detail::inner_product(begin(lhs), end(lhs), begin(rhs), T(0));
   }
@@ -763,9 +527,9 @@ namespace cagey::math {
    * @return The length of vec.
    */
   template <typename T, std::size_t N>
-  inline auto length(Vector<T, N> const &vec) noexcept->T {
+  inline auto length(Vector<T, N> const &vec) noexcept -> T {
     using std::sqrt;
-    return sqrt(length_squared(vec));
+    return sqrt(lengthSquared(vec));
   }
 
   /**
@@ -778,7 +542,7 @@ namespace cagey::math {
    * @return The length of vec.
    */
   template <typename T, std::size_t N>
-  inline auto length_inverted(Vector<T, N> const &vec) noexcept->T {
+  inline auto lengthInverted(Vector<T, N> const &vec) noexcept -> T {
     return T{1} / length(vec);
   }
 
@@ -792,7 +556,7 @@ namespace cagey::math {
    * @return The squared length of vec.
    */
   template <typename T, std::size_t N>
-  inline constexpr auto length_squared(Vector<T, N> const &vec) noexcept->T {
+  inline constexpr auto lengthSquared(Vector<T, N> const &vec) noexcept -> T {
     return dot(vec, vec);
   }
 
@@ -806,10 +570,10 @@ namespace cagey::math {
   * @return true if length of vec is zero
   */
   template <typename T, std::size_t S>
-  inline auto is_zero_length(Vector<T, S> const &vec)->bool {
+  inline auto isZeroLength(Vector<T, S> const &vec) -> bool {
     T epsilon = std::numeric_limits<T>::epsilon();
     using std::abs;
-    return abs(length_squared(vec)) < (epsilon * epsilon);
+    return abs(lengthSquared(vec)) < (epsilon * epsilon);
   }
 
   /**
@@ -824,7 +588,7 @@ namespace cagey::math {
    */
   template <typename T, std::size_t N>
   inline auto normalize(Vector<T, N> vec) noexcept->Vector<T, N> {
-    return vec *= length_inverted(vec);
+    return vec *= lengthInverted(vec);
   }
 
   /**
@@ -837,7 +601,7 @@ namespace cagey::math {
    * @param rhs A
    */
   template <typename T, std::size_t N>
-  auto nearly_equal(Vector<T, N> const &lhs, Vector<T, N> const &rhs,
+  auto fuzzyEquals(Vector<T, N> const &lhs, Vector<T, N> const &rhs,
                    T const epsilon = std::numeric_limits<T>::epsilon())
       ->bool {
     return std::equal(lhs.begin(), lhs.end(), rhs.begin(), [epsilon](T r, T l) {
