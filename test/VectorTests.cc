@@ -5,17 +5,17 @@
 using namespace cagey::math;
 
 TEST(VectorTest, VectorTypeTest) {
-  ASSERT_EQ(is_vec_type<bool>::value, false);
-  ASSERT_EQ(is_vec_type<float>::value, true);
-  ASSERT_EQ(is_vec_type<double>::value, true);
-  ASSERT_EQ(is_vec_type<std::int8_t>::value, true);
-  ASSERT_EQ(is_vec_type<std::int16_t>::value, true);
-  ASSERT_EQ(is_vec_type<std::int32_t>::value, true);
-  ASSERT_EQ(is_vec_type<std::int64_t>::value, true);
-  ASSERT_EQ(is_vec_type<std::uint8_t>::value, true);
-  ASSERT_EQ(is_vec_type<std::uint16_t>::value, true);
-  ASSERT_EQ(is_vec_type<std::uint32_t>::value, true);
-  ASSERT_EQ(is_vec_type<std::uint64_t>::value, true);
+  ASSERT_EQ(detail::isVectorTypeValue<bool>, false);
+  ASSERT_EQ(detail::isVectorTypeValue<float>, true);
+  ASSERT_EQ(detail::isVectorTypeValue<double>, true);
+  ASSERT_EQ(detail::isVectorTypeValue<std::int8_t>, true);
+  ASSERT_EQ(detail::isVectorTypeValue<std::int16_t>, true);
+  ASSERT_EQ(detail::isVectorTypeValue<std::int32_t>, true);
+  ASSERT_EQ(detail::isVectorTypeValue<std::int64_t>, true);
+  ASSERT_EQ(detail::isVectorTypeValue<std::uint8_t>, true);
+  ASSERT_EQ(detail::isVectorTypeValue<std::uint16_t>, true);
+  ASSERT_EQ(detail::isVectorTypeValue<std::uint32_t>, true);
+  ASSERT_EQ(detail::isVectorTypeValue<std::uint64_t>, true);
 }
 
 TEST(VectorTest, ConstructorTest) { 
@@ -75,6 +75,25 @@ TEST(VectorTest, UnitVectorTest) {
   ASSERT_DOUBLE_EQ(v4[3], 1.0f);
 }
 
+TEST(VectorTest, IndexTest) { 
+  Vec3f v1 = Vec3f{1.0f}; 
+  v1[0] = 2.0f;
+  v1[1] = 2.0f;
+  v1[2] = 2.0f;
+  ASSERT_DOUBLE_EQ(v1[0], 2.0f);
+  ASSERT_DOUBLE_EQ(v1[1], 2.0f);  
+  ASSERT_DOUBLE_EQ(v1[2], 2.0f);
+}
+
+TEST(VectorTest, AssignTest) { 
+  Vec3f v1 = Vec3f{1.0f}; 
+  Vec3f v2 = Vec3f{2.0f}; 
+  v1 = v2;
+  ASSERT_DOUBLE_EQ(v1[0], 2.0f);
+  ASSERT_DOUBLE_EQ(v1[1], 2.0f);  
+  ASSERT_DOUBLE_EQ(v1[2], 2.0f);
+}
+
 TEST(VectorTest, AdditionTest) { 
   Vec3f v1 = Vec3f{1.0f}; 
   Vec3f v2 = Vec3f{2.0f}; 
@@ -82,6 +101,12 @@ TEST(VectorTest, AdditionTest) {
   ASSERT_DOUBLE_EQ(v1[0], 3.0f);
   ASSERT_DOUBLE_EQ(v1[1], 3.0f);  
   ASSERT_DOUBLE_EQ(v1[2], 3.0f);
+
+  Vec2f v3 = Vec2f{1.0f};
+  Vec2f v4 = Vec2f{2.0f};
+  Vec2f v5 = v3 + v4;
+  ASSERT_DOUBLE_EQ(v5[0], 3.0f);
+  ASSERT_DOUBLE_EQ(v5[1], 3.0f); 
 }
 
 TEST(VectorTest, SubtractionTest) { 
@@ -91,6 +116,12 @@ TEST(VectorTest, SubtractionTest) {
   ASSERT_DOUBLE_EQ(v1[0], -1.0f);
   ASSERT_DOUBLE_EQ(v1[1], -1.0f);  
   ASSERT_DOUBLE_EQ(v1[2], -1.0f);
+
+  Vec2f v3 = Vec2f{1.0f};
+  Vec2f v4 = Vec2f{2.0f};
+  Vec2f v5 = v3 - v4;
+  ASSERT_DOUBLE_EQ(v5[0], -1.0f);
+  ASSERT_DOUBLE_EQ(v5[1], -1.0f);   
 }
 
 TEST(VectorTest, ScaleTest) { 
@@ -111,4 +142,53 @@ TEST(VectorTest, ScaleTest) {
   ASSERT_DOUBLE_EQ(v3[0], 4.0f);
   ASSERT_DOUBLE_EQ(v3[1], 4.0f);  
   ASSERT_DOUBLE_EQ(v3[2], 4.0f);  
+
+  Vec3f v4 = Vec3f{2.0f}; 
+  v4 = v4 / 2.0f;
+  ASSERT_DOUBLE_EQ(v4[0], 1.0f);
+  ASSERT_DOUBLE_EQ(v4[1], 1.0f);  
+  ASSERT_DOUBLE_EQ(v4[2], 1.0f);  
+
+  Vec3f v5 = Vec3f{2.0f}; 
+  v5 = 2.0f * v5;
+  ASSERT_DOUBLE_EQ(v5[0], 4.0f);
+  ASSERT_DOUBLE_EQ(v5[1], 4.0f);  
+  ASSERT_DOUBLE_EQ(v5[2], 4.0f);  
+
+  Vec3f v6 = Vec3f{2.0f}; 
+  v6 = 2.0f / v6;
+  ASSERT_DOUBLE_EQ(v6[0], 1.0f);
+  ASSERT_DOUBLE_EQ(v6[1], 1.0f);  
+  ASSERT_DOUBLE_EQ(v6[2], 1.0f);    
 }
+
+TEST(VectorTest, NegateTest) { 
+  Vec3f v{1.0f};
+  Vec3f v1 = -v;
+  ASSERT_DOUBLE_EQ(v1[0], -1.0f);
+  ASSERT_DOUBLE_EQ(v1[1], -1.0f);  
+  ASSERT_DOUBLE_EQ(v1[2], -1.0f);  
+}
+
+TEST(VectorTest, EqualsTest) { 
+  Vec3i v{1};
+  Vec3i v1{1};
+  Vec3i v2{2};
+  ASSERT_TRUE(v == v1);
+  ASSERT_TRUE(v != v2);
+}
+
+TEST(VectorTest, NearlyEqualsTest) { 
+  Vec3i v{1};
+  Vec3i v1{1};
+  Vec3i v2{2};
+  ASSERT_TRUE(v == v1);
+  ASSERT_TRUE(v != v2);
+}
+
+TEST(VectorTest, xyTest) { 
+  Vector<float, 3> v{1.0f};
+  v.xy();
+}
+
+

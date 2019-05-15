@@ -28,12 +28,12 @@
 #pragma once
 
 #include <cmath>
-#include <cagey/math/MathFwd.hh>
-#include <cagey-math/detail/MetaUtil.hh>
-#include <cagey-math/detail/vec_type.hh>
-#include <cagey-math/detail/ConstExprUtil.hh>
-#include <cmath>
 #include <algorithm>
+#include <type_traits>
+#include <cagey/math/MathFwd.hh>
+#include <cagey/math/detail/TypeTraits.hh>
+#include <cagey/math/detail/MetaUtil.hh>
+#include <cagey/math/detail/ConstExprUtil.hh>
 
 namespace cagey::math {
 
@@ -283,8 +283,8 @@ namespace cagey::math {
      * Anonymous union to allow access to members using different names
      */
     union {
-      std::array<T, N> data;
-      T raw[N];
+      std::enable_if_t<detail::isVectorTypeValue<T>, std::array<T, N>> data;
+      std::enable_if_t<detail::isVectorTypeValue<T>, T[N]> raw;
     };
 
   private:
@@ -296,9 +296,27 @@ namespace cagey::math {
     template <typename U, std::size_t... I>
     constexpr Vector(std::index_sequence<I...>, U const v)
         : data{detail::repeat(v, I)...} {}
+
+       
   };
 
- /**
+  namespace detail {
+    template <typename T, std::size_t N, std::size_t... I>
+    inline constexpr auto metaNegate(const Vector<T, N> &v,
+                                     std::index_sequence<I...>) noexcept
+      -> Vector<decltype(-std::declval<T>()), N> {
+      return {-v[I]...};
+    }
+
+    template <typename T, typename U, std::size_t N, std::size_t... I>
+    inline constexpr auto metaDivide(U const &lhs, Vector<T, N> const &rhs,
+                                         std::index_sequence<I...>)noexcept
+      -> Vector<decltype(std::declval<T>() / std::declval<U>()), N> {
+      return {lhs / rhs[I]...};
+    }
+  }
+
+  /**
    * Overload std::begin()
    */
   template <typename T, std::size_t N>
@@ -343,7 +361,7 @@ namespace cagey::math {
    */
   template <typename T, std::size_t N>
   inline constexpr auto operator+(Vector<T, N> lhs,
-                                  Vector<T, N> const &rhs) noexcept {
+                                  Vector<T, N> const &rhs) noexcept -> Vector<T, N> {
     return lhs += rhs;
   }
 
@@ -359,7 +377,7 @@ namespace cagey::math {
    */
   template <typename T, std::size_t N>
   inline constexpr auto operator-(Vector<T, N> lhs,
-                                  Vector<T, N> const &rhs) noexcept {
+                                  Vector<T, N> const &rhs) noexcept -> Vector<T, N> {
     return lhs -= rhs;
   }
 
@@ -375,8 +393,8 @@ namespace cagey::math {
   template <typename T, std::size_t N,
             typename Indices = std::make_index_sequence<N>>
   inline constexpr auto operator-(
-      Vector<T, N> const &v) noexcept->Vector<T, N> {
-    return detail::vector::operatorUnaryMinus(v, Indices());
+      Vector<T, N> const &v) noexcept -> Vector<T, N> {
+    return detail::metaNegate(v, Indices());
   }
 
   /**
@@ -407,7 +425,7 @@ namespace cagey::math {
    */
   template <typename T, std::size_t N>
   inline constexpr auto operator*(Vector<T, N> lhs,
-                                  T const rhs) noexcept->Vector<T, N> {
+                                  T const rhs) noexcept -> Vector<T, N> {
     return lhs *= rhs;
   }
 
@@ -424,8 +442,8 @@ namespace cagey::math {
   template <typename T, std::size_t N,
             typename Indices = std::make_index_sequence<N>>
   inline constexpr auto operator/(
-      T const lhs, Vector<T, N> const &rhs) noexcept->Vector<T, N> {
-    return detail::vector::operatorDivision(lhs, rhs, Indices());
+      T const lhs, Vector<T, N> const &rhs) noexcept -> Vector<T, N> {
+    return detail::metaDivide(lhs, rhs, Indices());
   }
 
   /**
@@ -440,7 +458,7 @@ namespace cagey::math {
    */
   template <typename T, std::size_t N>
   inline constexpr auto operator/(Vector<T, N> lhs,
-                                  T const rhs) noexcept->Vector<T, N> {
+                                  T const rhs) noexcept -> Vector<T, N> {
     return lhs /= rhs;
   }
 
