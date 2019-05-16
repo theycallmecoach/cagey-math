@@ -511,10 +511,10 @@ namespace cagey::math {
    * @return The dot product of lhs and rhs
    */
   template <typename T, std::size_t N>
-  inline constexpr auto dot(Vector<T, N> const &lhs,
-                            Vector<T, N> const &rhs) noexcept -> T {
+  constexpr auto dot(Vector<T, N> const &lhs,
+                     Vector<T, N> const &rhs) noexcept -> T {
     using std::begin;
-    return detail::inner_product(begin(lhs), end(lhs), begin(rhs), T(0));
+    return detail::inner_product(begin(lhs), end(lhs), begin(rhs), T{0});
   }
 
   /**
@@ -529,7 +529,7 @@ namespace cagey::math {
    * @return The cross product of lhs and rhs.
    */
   template <typename T, typename U>
-  inline constexpr auto cross(Vector<T, 3> const &lhs,
+  constexpr auto cross(Vector<T, 3> const &lhs,
                               Vector<U, 3> const &rhs) noexcept
       ->Vec3<decltype(std::declval<T>() * std::declval<U>())> {
     return {
@@ -624,8 +624,8 @@ namespace cagey::math {
   template <typename T, std::size_t N>
   auto fuzzyEquals(Vector<T, N> const &lhs, Vector<T, N> const &rhs,
                    T const epsilon = std::numeric_limits<T>::epsilon())
-      ->bool {
-    return std::equal(lhs.begin(), lhs.end(), rhs.begin(), [epsilon](T r, T l) {
+      -> bool {
+    return std::equal(begin(lhs), end(lhs), begin(rhs), [epsilon](T r, T l) {
       using std::abs;
       return static_cast<T>(abs(l - r)) <= epsilon;
     });

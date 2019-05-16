@@ -178,14 +178,6 @@ TEST(VectorTest, EqualsTest) {
   ASSERT_TRUE(v != v2);
 }
 
-TEST(VectorTest, NearlyEqualsTest) { 
-  Vec3i v{1};
-  Vec3i v1{1};
-  Vec3i v2{2};
-  ASSERT_TRUE(v == v1);
-  ASSERT_TRUE(v != v2);
-}
-
 TEST(VectorTest, xyTest) { 
   Vector<float, 3> v{1.0f};
   v.xy();
@@ -217,5 +209,29 @@ TEST(VectorTest, endTest) {
 
   const Vec2f v2{2.0f};
   ASSERT_EQ(&v2[0]+2, end(v2));
+}
+
+TEST(VectorTest, VectorDotProductTest) {
+  auto x = dot(Vec3d{1.2, 3.4, 2.5}, Vec3d{7.0, 8.0, 9.0});
+  ASSERT_DOUBLE_EQ(x, 1.2 * 7 + 3.4 * 8 + 2.5 * 9);
+}
+
+TEST(VectorTest, CrossProductTest) {
+  auto x = cross(Vec3f{5.0f, 1.0f, 4.0f}, Vec3f{-1.0f, 0.0f, 2.0f});
+  auto y = Vec3f{2.0f, -14.0f, 1.0f};
+  ASSERT_TRUE(fuzzyEquals(x, y));
+}
+
+TEST(VectorTest, LengthProductTest) {
+  ASSERT_DOUBLE_EQ(length(Vec3d{1.2, 3.4, 2.5}),
+                   std::sqrt(lengthSquared(Vec3d{1.2, 3.4, 2.5})));
+
+  auto x = dot(Vec3d(1.2, 3.4, 2.5), Vec3d(7.0, 8.0, 2.5));
+  ASSERT_DOUBLE_EQ(x, 1.2 * 7 + 3.4 * 8 + 2.5 * 2.5);
+}
+
+TEST(VectorTest, LengthSquaredProductTest) {
+  auto x = lengthSquared(Vec3d(1.2, 3.4, 2.5));
+  ASSERT_DOUBLE_EQ(x, 1.2 * 1.2 + 3.4 * 3.4 + 2.5 * 2.5);
 }
 
