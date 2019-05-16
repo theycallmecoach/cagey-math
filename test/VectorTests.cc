@@ -191,4 +191,31 @@ TEST(VectorTest, xyTest) {
   v.xy();
 }
 
+TEST(VectorTest, xyzTest) { 
+  Vec4f v{1.0f};
+  Vec3f v1 = v.xyz();
+  ASSERT_DOUBLE_EQ(v1[0], 1.0f);
+  ASSERT_DOUBLE_EQ(v1[1], 1.0f);  
+  ASSERT_DOUBLE_EQ(v1[2], 1.0f);   
+}
+
+TEST(VectorTest, beginTest) { 
+  using std::begin;
+  Vec4f v{1.0f};
+  ASSERT_EQ(&v[0], begin(v));
+
+  const Vec4f v2{2.0f};
+  ASSERT_EQ(&v2[0], begin(v2));
+}
+
+
+TEST(VectorTest, endTest) { 
+  using std::end;
+  Vec4f v{1.0f};
+  //one past the end
+  ASSERT_EQ(&v[0]+4, end(v));
+
+  const Vec2f v2{2.0f};
+  ASSERT_EQ(&v2[0]+2, end(v2));
+}
 

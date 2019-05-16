@@ -61,7 +61,7 @@ namespace cagey::math {
      *
      * @return A Vector with each component set to 0
      */
-    inline static constexpr auto Zero() noexcept -> Vector {
+    static constexpr auto Zero() noexcept -> Vector<T, N> {
       return Vector<T, N>{T(0.0)};
     }
 
@@ -74,7 +74,7 @@ namespace cagey::math {
      * @return A Vector with the first component set to 1 and all other
      * components set to 0.
      */
-    inline static constexpr auto UnitX() noexcept -> Vector {
+    static constexpr auto UnitX() noexcept -> Vector<T, N> {
       Vector<T, N> v = Vector<T,N>::Zero();
       v[0] = T(1);
       return v;
@@ -89,9 +89,9 @@ namespace cagey::math {
      * @return A Vector with the second component set to 1 and all other
      * components set to 0.
      */
-    inline static constexpr auto UnitY() noexcept -> Vector {
+    static constexpr auto UnitY() noexcept -> Vector<T, N> {
       Vector<T, N> v = Vector<T,N>::Zero();
-      v[1] = T(1);
+      v[1] = T{1};
       return v;
     }
 
@@ -104,9 +104,10 @@ namespace cagey::math {
      * @return A Vector with the third component set to 1 and all other
      * components set to 0.
      */
-    inline static constexpr auto UnitZ() noexcept -> Vector {
+    template<typename Q = T>
+    static constexpr typename std::enable_if_t< N>=3, Vector<Q,N>> UnitZ() noexcept {
       Vector<T, N> v = Vector<T,N>::Zero();
-      v[2] = T(1);
+      v[2] = T{1};
       return v;
     }
 
@@ -119,9 +120,10 @@ namespace cagey::math {
      * @return A Vector with the forth component set to 1 and all other
      * components set to 0.
      */
-    inline static constexpr auto UnitW() noexcept -> Vector {
+    template<typename Q = T>
+    static constexpr typename std::enable_if_t< N>=4, Vector<Q,N>> UnitW() noexcept {
       Vector<T, N> v = Vector<T,N>::Zero();
-      v[3] = T(1);
+      v[3] = T{1};
       return v;
     }
 
@@ -132,7 +134,7 @@ namespace cagey::math {
     /**
      * Default Construct all Vector components.
      */
-    inline constexpr Vector() noexcept = default;
+    constexpr Vector() noexcept = default;
 
 
     /**
@@ -143,7 +145,7 @@ namespace cagey::math {
     template <typename U, 
               typename V = typename std::enable_if<std::is_same<T, U>::value && N != 1, T>::type,
               typename Indices = std::make_index_sequence<N>>
-    inline explicit constexpr Vector(U const v) noexcept
+    explicit constexpr Vector(U const v) noexcept
         : Vector(Indices{}, v) {}
 
     /**
@@ -154,11 +156,11 @@ namespace cagey::math {
      */
     template <typename... U,
               typename V = typename std::enable_if<sizeof...(U) + 1 == N, T>::type>
-    inline constexpr Vector(T first, U... next)
+    constexpr Vector(T first, U... next)
         : data{first, next...} {}
 
 
-    inline constexpr Vector(Vec2<T> const & xy, T const & z) noexcept
+    constexpr Vector(Vec2<T> const & xy, T const & z) noexcept
       : data{xy.x, xy.y, z} {}
 
     ////////////////////////////////////////////////////////////////////////////
@@ -176,7 +178,7 @@ namespace cagey::math {
      *
      * @return a reference to the component at the given index.
      */
-    inline constexpr auto operator[](std::size_t i) noexcept -> T & {
+    constexpr auto operator[](std::size_t i) noexcept -> T & {
       return raw[i];
     }
 
@@ -191,7 +193,7 @@ namespace cagey::math {
      *
      * @return a reference to the component at the given index.
      */
-    inline constexpr auto operator[](std::size_t i) const noexcept -> T const & {
+    constexpr auto operator[](std::size_t i) const noexcept -> T const & {
       return raw[i];
     }
 
@@ -205,7 +207,7 @@ namespace cagey::math {
      *
      * @return A reference to this Vector
      */
-    inline constexpr auto operator+=(Vector const &v) noexcept -> Vector & {
+    constexpr auto operator+=(Vector const &v) noexcept -> Vector & {
       std::transform(data.begin(), data.end(), begin(v), data.begin(), std::plus<>());
       return *this;
     }
@@ -221,7 +223,7 @@ namespace cagey::math {
      *
      * @return A reference to this Vector
      */
-    inline constexpr auto operator-=(Vector const &v) noexcept -> Vector & {
+    constexpr auto operator-=(Vector const &v) noexcept -> Vector & {
       std::transform(data.begin(), data.end(), begin(v), data.begin(), std::minus<>());
       return *this;
     }
@@ -235,7 +237,7 @@ namespace cagey::math {
      *
      * @return A reference to this Vector.
      */
-    inline constexpr auto operator*=(T const x) noexcept -> Vector & {
+    constexpr auto operator*=(T const x) noexcept -> Vector & {
       std::transform(data.begin(), data.end(), data.begin(), [x](auto& a) { return a * x;});
       return *this;
     }
@@ -249,7 +251,7 @@ namespace cagey::math {
      *
      * @return A reference to this Vector.
      */
-    inline constexpr auto operator/=(T const x) noexcept -> Vector & {
+    constexpr auto operator/=(T const x) noexcept -> Vector & {
       std::transform(data.begin(), data.end(), data.begin(), [x](auto& a) { return a / x;});
       return *this;
     }
@@ -262,7 +264,7 @@ namespace cagey::math {
      * @brief Returns a copy of this Vector's first two components
      * @return a copy of this Vector's first two components
      */
-    inline constexpr Vec2<T> xy() const noexcept {
+    constexpr Vec2<T> xy() const noexcept {
       return Vec2<T>(data[0], data[1]);
     }
 
@@ -270,7 +272,8 @@ namespace cagey::math {
      * @brief Returns a copy of this Vector's first three components
      * @return a copy of this Vector's first three components
      */
-    inline constexpr Vec3<T> xyz() const noexcept{
+    template<typename Q = T>
+    constexpr typename std::enable_if_t<N>=3, Vector<Q,3>> xyz() noexcept{
       return Vec3<T>(data[0], data[1], data[2]);
     }
 
@@ -320,7 +323,7 @@ namespace cagey::math {
    * Overload std::begin()
    */
   template <typename T, std::size_t N>
-  inline constexpr auto begin(Vector<T, N> const & v) -> decltype(&v.raw[0]) {
+  constexpr auto begin(Vector<T, N> const & v) -> decltype(&v.raw[0]) {
     return &v.raw[0];
   }
   
@@ -328,7 +331,7 @@ namespace cagey::math {
    * Overload std::begin()
    */
   template <typename T, std::size_t N>
-  inline constexpr auto begin(Vector<T, N> & v) -> decltype(&v.raw[0]) {
+  constexpr auto begin(Vector<T, N> & v) -> decltype(&v.raw[0]) {
     return &v.raw[0];
   }
  
@@ -336,16 +339,16 @@ namespace cagey::math {
    * Overload std::end()
    */
   template <typename T, std::size_t N>
-  inline constexpr auto end(Vector<T, N> const & v) -> decltype(&v.raw[0]) {
-    return &v.raw[0] + Vector<T, N>::Size;
+  constexpr auto end(Vector<T, N> const & v) -> decltype(&v.raw[0]) {
+    return &v.raw[0] + N;
   }
   
   /**
    * Overload std::end()
    */
   template <typename T, std::size_t N>
-  inline constexpr auto end(Vector<T, N> & v) -> decltype(&v.raw[0]) {
-    return &v.raw[0] + Vector<T, N>::Size;
+  constexpr auto end(Vector<T, N> & v) -> decltype(&v.raw[0]) {
+    return &v.raw[0] + N;
   }
 
 
