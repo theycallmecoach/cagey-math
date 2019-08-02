@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include <cagey-math/Vector.hh>
+#include <cagey-math/Vector2.hh>
 #include <cstdint>
 
 using namespace cagey::math;
@@ -29,6 +29,13 @@ TEST(Vector2Test, Vector2ComponentTypeTest) {
       (std::is_same<typename Vec2<unsigned int>::Type, unsigned int>::value),
       true);
 }
+
+TEST(Vector2Test, Vector2ComponentAccessTest) {
+  constexpr Vec2d v{4.8};
+  ASSERT_DOUBLE_EQ(v[0], v.x);
+  ASSERT_DOUBLE_EQ(v[1], v.y);
+}
+
 
 TEST(Vector2Test, Vector2ComponentCountTest) {
   constexpr auto v2s = Vec2<short>::Size;
