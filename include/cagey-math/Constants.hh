@@ -42,7 +42,7 @@ namespace cagey::math::constants {
   template <typename T>
   constexpr
       typename std::enable_if<std::is_floating_point<T>::value, T>::type pi =
-          T(3.141592653589793238462643383279502884);
+          static_cast<T>(3.141592653589793238462643383279502884);
 
   /**
    * Value to convert between degrees and radians.
@@ -53,7 +53,7 @@ namespace cagey::math::constants {
   template <typename T>
   constexpr
       typename std::enable_if<std::is_arithmetic<T>::value, T>::type degToRad =
-          pi<T> / T(180.0);
+          pi<T> / static_cast<T>(180.0);
 
   /**
    * Value to convert between radians and degrees.
@@ -64,6 +64,6 @@ namespace cagey::math::constants {
   template <typename T>
   constexpr
       typename std::enable_if<std::is_arithmetic<T>::value, T>::type radToDeg =
-          T(180.0) / pi<T>;
+          static_cast<T>(180.0) / pi<T>;
 
 } // namespace cagey::math::constants

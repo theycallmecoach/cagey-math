@@ -961,7 +961,9 @@ namespace cagey::math {
   auto nearly_equal(Vector<T, N> const &lhs, Vector<T, N> const &rhs,
                    T const epsilon = std::numeric_limits<T>::epsilon())
       ->bool {
-    return std::equal(lhs.begin(), lhs.end(), rhs.begin(), [epsilon](T r, T l) {
+    using std::begin;
+    using std::end;
+    return std::equal(begin(lhs), end(lhs), begin(rhs), [epsilon](T r, T l) {
       using std::abs;
       return static_cast<T>(abs(l - r)) <= epsilon;
     });

@@ -1,7 +1,7 @@
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 //
 // cagey-math - C++-17 Vector Math Library
-// Copyright (c) 2016 Kyle Girard <theycallmecoach@gmail.com>
+// Copyright (c) 2019 Kyle Girard <theycallmecoach@gmail.com>
 //
 // The MIT License (MIT)
 //
@@ -27,40 +27,16 @@
 
 #pragma once
 
-#include <limits>
-#include <type_traits>
 #include <cmath>
+#include <climits>
+#include <cfloat>
+#include <limits>
+#include <cassert>
 
-namespace cagey::math {
+#include "MathFwd.hh"
+#include "Vector2.hh"
+#include "Vector3.hh"
+#include "Vector4.hh"
 
-  /**
-   * Performs fuzzy equals between the given values, use for floating point
-   * types
-   * @tparam T an arithmetic type, only floating point as been tested
-   * @param x value to be tested
-   * @param y value to be tested
-   */
-  template <typename T>
-  typename std::enable_if<std::is_arithmetic<T>::value, bool>::type equals(T const x, T const y) {
-    // values are actually equal
-    if (x == y) {
-      return true;
-    }
-
-    using std::abs;
-    const auto xx = abs(x);
-    const auto yy = abs(y);
-    const auto diff = abs(x - y);
-    const auto ep = std::numeric_limits<T>::epsilon();
-
-    // one or both of the number are zero or close enough that
-    // relative error is meaningless
-    if (x == T{} || y == T{} || diff < ep) {
-      return diff < ep;
-    }
-
-    // relative error
-    return diff / (xx + yy) < ep;
-  }
-
-} // namespace cagey::math
+#include "Constants.hh"
+#include "VectorFunc.hh"

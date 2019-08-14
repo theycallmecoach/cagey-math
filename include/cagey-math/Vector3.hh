@@ -61,6 +61,7 @@ namespace cagey::math {
     static constexpr auto zAxis() noexcept -> Vector {
       return {T(0), T(0), T(1)};
     }
+
     ////////////////////////////////////////////////////////////////////////////
     /// Implicit Constructors
     ////////////////////////////////////////////////////////////////////////////
@@ -100,6 +101,7 @@ namespace cagey::math {
     ////////////////////////////////////////////////////////////////////////////
     /// Component Access
     ////////////////////////////////////////////////////////////////////////////
+
     constexpr auto operator[](std::size_t i) noexcept -> T & {
       assert(i >= 0 && i < Size);
       return raw[i];
@@ -125,10 +127,10 @@ namespace cagey::math {
 
     template<typename U>
     constexpr auto operator+=(U const &scalar) noexcept -> Vector & {
-      raw[0] += static_cast<T>(scalar);
-      raw[1] += static_cast<T>(scalar);
-      raw[2] += static_cast<T>(scalar);
-      return *this;
+      for (auto&& r : raw) {
+        r += static_cast<T>(scalar);
+      }
+     return *this;
     }
 
     template<typename U>
@@ -177,6 +179,32 @@ namespace cagey::math {
       raw[1] /= static_cast<T>(v.raw[1]);
       raw[2] /= static_cast<T>(v.raw[2]);
      return *this;
+    }
+
+    constexpr auto operator++() noexcept -> Vector & {
+      ++raw[0];
+      ++raw[1];
+      ++raw[2];
+      return *this;
+    }
+
+    constexpr auto operator--() noexcept -> Vector & {
+      --raw[0];
+      --raw[1];
+      --raw[2];
+      return *this;
+    }
+
+    constexpr auto operator++(int) noexcept -> Vector & {
+      Vector res = Vector(*this)  
+      ++*this;
+      return *res;
+    }
+
+    constexpr auto operator--(int) noexcept -> Vector & {
+      Vector res = Vector(*this)  
+      --*this;
+      return *res;
     }
 
 

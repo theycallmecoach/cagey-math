@@ -78,7 +78,7 @@ namespace cagey::math {
      */
     template <typename U>
     constexpr explicit BaseAngle(BaseAngle<D, U> const &other)
-        : value(T(other.value)) {}
+        : value(static_cast<T>(other.value)) {}
 
   public:
     /**

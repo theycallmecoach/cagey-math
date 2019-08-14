@@ -30,7 +30,7 @@
 #include "./detail/BaseVector.hh"
 
 namespace cagey::math {
-/**
+  /**
    * An '2' Dimensional Vector.
    */
   template <typename T> class Vector<T, 2> {
@@ -47,15 +47,16 @@ namespace cagey::math {
 
     static constexpr auto zero() noexcept -> Vector { return {T(0), T(0)}; }
 
-    static constexpr auto x_axis() noexcept -> Vector { return {T(1), T(0)}; }
+    static constexpr auto xAxis() noexcept -> Vector { return {T(1), T(0)}; }
 
-    static constexpr auto y_axis() noexcept -> Vector { return {T(0), T(1)}; }
+    static constexpr auto yAxis() noexcept -> Vector { return {T(0), T(1)}; }
    
     ////////////////////////////////////////////////////////////////////////////
     /// Implicit Constructors
     ////////////////////////////////////////////////////////////////////////////
 
     constexpr Vector() noexcept = default;
+    
     constexpr Vector(Vector const & v) noexcept = default;
 
     ////////////////////////////////////////////////////////////////////////////
@@ -63,6 +64,7 @@ namespace cagey::math {
     ////////////////////////////////////////////////////////////////////////////
 
     explicit constexpr Vector(T const v) noexcept : raw{v, v} {}
+    
     constexpr Vector(T const x, T const y) noexcept : raw{x, y} {}
 
     ////////////////////////////////////////////////////////////////////////////
