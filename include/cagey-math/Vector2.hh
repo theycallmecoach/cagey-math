@@ -27,7 +27,7 @@
 
 #pragma once
 
-#include "./detail/BaseVector.hh"
+#include "./detail/Vector.hh"
 
 namespace cagey::math {
   /**

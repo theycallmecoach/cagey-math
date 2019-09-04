@@ -26,13 +26,43 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
-namespace cagey::math {
- 	template<typename T, std::size_t R, std::size_t C>
-    class RectangularMatrix {
-    public:
-        using ColumnType = Vector<C,T>;
-    private:
 
-    }; // Vector
+#include <cmath>
+#include <cagey-math/detail/Vector.hh>
+
+namespace cagey::math {
+
+  /**
+   * @class Matrix
+   * Base Matrix class with R rows and C columns.  Matrix uses column vectors.
+   *
+   * The idea here is to use template specializations to implement Matrices of
+   * different size.  To DRY up the code as much as possble the smallest set of
+   * methods possible will be implemented... all other are free functions.  So
+   * the idea goes... it might get annoying I don't know yet.
+   *
+   * @tparam T underlying data type of this Matrix
+   * @tparam C the number of columns in this Matrix
+   * @tparam R the number of rows in this Matrix
+   */
+  template<typename T, std::size_t C, std::size_t R>
+  class Matrix {
+
+  public:
+    using ColumnType = Vector<C,T>;
+    using RowType = Vector<R,T>;
+    using Type = T;
+
+  enum : std::size_t {
+    Rows = R, /// the number of rows in this matrix
+    Cols = C, /// the number of columns in this matrix
+  };
+
+  /// the number of elements in this matrix
+  static const std::size_t Size = Rows * Cols;
+
+  private:
+    std::array<ColumnType, Cols>> columns;
+  }; // Vector
    
 } //namespace cagey::math
