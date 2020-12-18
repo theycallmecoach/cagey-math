@@ -35,8 +35,12 @@
 
 #include "MathFwd.hh"
 #include "Vector2.hh"
-#include "Vector3.hh"
-#include "Vector4.hh"
+// #include "Vector3.hh"
+// #include "Vector4.hh"
+
+// #include "Matrix22.hh"
+// #include "Matrix33.hh"
+// #include "Matrix44.hh"
 
 #include "Constants.hh"
 #include "VectorFunc.hh"

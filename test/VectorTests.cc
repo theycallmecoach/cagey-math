@@ -1,10 +1,11 @@
 #include "gtest/gtest.h"
-#include <cagey-math/Vector.hh>
+#include <cagey-math/detail/Vector.hh>
 #include <cstdint>
 
 using namespace cagey::math;
 
-TEST(VectorTest, VectorTypeTest) {
+TEST(VectorTest, VectorTypeTest)
+{
   ASSERT_EQ(is_vec_type<bool>::value, false);
   ASSERT_EQ(is_vec_type<float>::value, true);
   ASSERT_EQ(is_vec_type<double>::value, true);

@@ -29,15 +29,21 @@
 
 #include "./detail/Vector.hh"
 
-namespace cagey::math {
+namespace cagey::math
+{
 
   /**
    * An '3' Dimensional Vector.
    */
-  template <typename T> class Vector<T, 3> {
+  template <typename T>
+  class Vector<T, 3>
+  {
   public:
     /// The underlying data type
-    using Type = T;
+    using ValueType = T;
+
+    /// The Vector type
+    using Type = Vector<T, 3>;
 
     /// The number of elements in this Point
     const static std::size_t Size = 3;
@@ -46,185 +52,205 @@ namespace cagey::math {
     /// Static Member Functions
     ////////////////////////////////////////////////////////////////////////////
 
-    static constexpr auto zero() noexcept -> Vector {
+    static constexpr auto zero() noexcept -> Vector
+    {
       return {T(0), T(0), T(0)};
     }
 
-    static constexpr auto xAxis() noexcept -> Vector {
+    static constexpr auto xAxis() noexcept -> Vector
+    {
       return {T(1), T(0), T(0)};
     }
 
-    static constexpr auto yAxis() noexcept -> Vector {
+    static constexpr auto yAxis() noexcept -> Vector
+    {
       return {T(0), T(1), T(0)};
     }
 
-    static constexpr auto zAxis() noexcept -> Vector {
+    static constexpr auto zAxis() noexcept -> Vector
+    {
       return {T(0), T(0), T(1)};
     }
 
     ////////////////////////////////////////////////////////////////////////////
     /// Implicit Constructors
     ////////////////////////////////////////////////////////////////////////////
-    
+
     constexpr Vector() noexcept = default;
-    
-    constexpr Vector(Vector const & v) noexcept = default;
+
+    constexpr Vector(Vector const &v) noexcept = default;
 
     ////////////////////////////////////////////////////////////////////////////
     /// Explicit Constructors
     ////////////////////////////////////////////////////////////////////////////
 
     explicit constexpr Vector(T const v) noexcept : raw{v, v, v} {}
-    
+
     constexpr Vector(T const x, T const y, T const z) noexcept
         : raw{x, y, z} {};
 
-    inline constexpr Vector(Vec2<T> const &v, T const z) noexcept
+    inline constexpr Vector(Vector2<T> const &v, T const z) noexcept
         : raw{v[0], v[1], z} {};
 
     ////////////////////////////////////////////////////////////////////////////
     /// Explicit Conversion Constructors
     ////////////////////////////////////////////////////////////////////////////
 
-
     template <typename U>
     explicit constexpr Vector(Vector<U, Size> const &v) noexcept
-        : raw{static_cast<T>(v.raw[0]), 
-              static_cast<T>(v.raw[1]), 
-              static_cast<T>T(v.raw[2])} {}
+        : raw{static_cast<T>(v.raw[0]),
+              static_cast<T>(v.raw[1]),
+              static_cast<T>(v.raw[2])} {}
 
-
-    template <std::size_t VN, typename = std::enable_if_t<(VN > 3)>>
-    explicit constexpr Vector(Vector<T, VN> const & v) noexcept
+    template <std::size_t VN, typename = std::enable_if_t<(VN > 2)>>
+    explicit constexpr Vector(Vector<T, VN> const &v) noexcept
         : raw{v.raw[0], v.raw[1], v.raw[2]} {}
 
     ////////////////////////////////////////////////////////////////////////////
     /// Component Access
     ////////////////////////////////////////////////////////////////////////////
 
-    constexpr auto operator[](std::size_t i) noexcept -> T & {
+    constexpr auto operator[](std::size_t i) noexcept -> T &
+    {
       assert(i >= 0 && i < Size);
       return raw[i];
     }
 
-    constexpr auto operator[](std::size_t i) const noexcept -> T const & {
+    constexpr auto operator[](std::size_t i) const noexcept -> T const &
+    {
       assert(i >= 0 && i < Size);
       return raw[i];
     }
-
 
     ////////////////////////////////////////////////////////////////////////////
     /// Operators
     ////////////////////////////////////////////////////////////////////////////
 
-    template<typename U>
-    constexpr auto operator+=(Vector<U,Size> const &v) noexcept -> Vector & {
+    template <typename U>
+    constexpr auto operator+=(Vector<U, Size> const &v) noexcept -> Vector &
+    {
       raw[0] += static_cast<T>(v.raw[0]);
       raw[1] += static_cast<T>(v.raw[1]);
       raw[2] += static_cast<T>(v.raw[2]);
       return *this;
     }
 
-    template<typename U>
-    constexpr auto operator+=(U const &scalar) noexcept -> Vector & {
-      for (auto&& r : raw) {
+    template <typename U>
+    constexpr auto operator+=(U const &scalar) noexcept -> Vector &
+    {
+      for (auto &&r : raw)
+      {
         r += static_cast<T>(scalar);
       }
-     return *this;
+      return *this;
     }
 
-    template<typename U>
-    constexpr auto operator-=(Vector const &v) noexcept -> Vector & {
+    template <typename U>
+    constexpr auto operator-=(Vector<U, Size> const &v) noexcept -> Vector &
+    {
       raw[0] -= static_cast<T>(v.raw[0]);
       raw[1] -= static_cast<T>(v.raw[1]);
       raw[2] -= static_cast<T>(v.raw[2]);
       return *this;
     }
 
-    template<typename U>
-    constexpr auto operator-=(U const &scalar) noexcept -> Vector & {
-      for (auto&& r : raw) {
+    template <typename U>
+    constexpr auto operator-=(U const &scalar) noexcept -> Vector &
+    {
+      for (auto &&r : raw)
+      {
         r -= static_cast<T>(scalar);
       }
       return *this;
     }
 
-    template<typename U>
-    constexpr auto operator*=(U const v) noexcept -> Vector & {
-      for (auto&& r : raw) {
+    template <typename U>
+    constexpr auto operator*=(U const v) noexcept -> Vector &
+    {
+      for (auto &&r : raw)
+      {
         r *= static_cast<T>(v);
       }
       return *this;
     }
 
-    template<typename U>
-    constexpr auto operator*=(Vector<U,Size> const &v) noexcept -> Vector & {
+    template <typename U>
+    constexpr auto operator*=(Vector<U, Size> const &v) noexcept -> Vector &
+    {
       raw[0] *= static_cast<T>(v.raw[0]);
       raw[1] *= static_cast<T>(v.raw[1]);
       raw[2] *= static_cast<T>(v.raw[2]);
       return *this;
     }
 
-    template<typename U>
-    constexpr auto operator/=(T const v) noexcept -> Vector & {
-      for (auto&& r : raw) {
+    template <typename U>
+    constexpr auto operator/=(U const v) noexcept -> Vector &
+    {
+      for (auto &&r : raw)
+      {
         r /= static_cast<T>(v);
       }
       return *this;
     }
 
-    template<typename U>
-    constexpr auto operator/=(Vector<U,Size> const &v) noexcept -> Vector & {
+    template <typename U>
+    constexpr auto operator/=(Vector<U, Size> const &v) noexcept -> Vector &
+    {
       raw[0] /= static_cast<T>(v.raw[0]);
       raw[1] /= static_cast<T>(v.raw[1]);
       raw[2] /= static_cast<T>(v.raw[2]);
-     return *this;
+      return *this;
     }
 
-    constexpr auto operator++() noexcept -> Vector & {
+    constexpr auto operator++() noexcept -> Vector &
+    {
       ++raw[0];
       ++raw[1];
       ++raw[2];
       return *this;
     }
 
-    constexpr auto operator--() noexcept -> Vector & {
+    constexpr auto operator--() noexcept -> Vector &
+    {
       --raw[0];
       --raw[1];
       --raw[2];
       return *this;
     }
 
-    constexpr auto operator++(int) noexcept -> Vector & {
-      Vector res = Vector(*this)  
-      ++*this;
+    constexpr auto operator++(int) noexcept -> Vector &
+    {
+      Vector res = Vector(*this)++ * this;
       return *res;
     }
 
-    constexpr auto operator--(int) noexcept -> Vector & {
-      Vector res = Vector(*this)  
-      --*this;
+    constexpr auto operator--(int) noexcept -> Vector &
+    {
+      Vector res = Vector(*this)-- * this;
       return *res;
     }
-
 
     ////////////////////////////////////////////////////////////////////////////
     /// Member Functions
     ////////////////////////////////////////////////////////////////////////////
- 
-    inline constexpr Vec2<T> xy() const noexcept {
-      return Vec2<T>{x, y};
+
+    inline constexpr Vector2<T> xy() const noexcept
+    {
+      return Vector2<T>{x, y};
     }
 
-    inline constexpr Vec3<T> xyz() const noexcept {
-      return Vec3<T>{x, y, z};
+    inline constexpr Vector3<T> xyz() const noexcept
+    {
+      return Vector3<T>{x, y, z};
     }
 
-    inline constexpr Vec2<T> rg() const noexcept {
+    inline constexpr Vector2<T> rg() const noexcept
+    {
       return xy();
     }
 
-    inline constexpr Vec3<T> rgb() const noexcept {
+    inline constexpr Vector3<T> rgb() const noexcept
+    {
       return xyz();
     }
 
@@ -235,20 +261,23 @@ namespace cagey::math {
     /**
      * Anonymous union to allow access to members using different names
      */
-    union {
+    union
+    {
       std::enable_if_t<is_vec_type<T>::value, std::array<T, Size>> data;
       T raw[Size];
-      struct {
+      struct
+      {
         T x;
         T y;
         T z;
       };
-      struct {
+      struct
+      {
         T r;
         T g;
         T b;
       };
     };
   };
-    
+
 } //namespace cagey::math

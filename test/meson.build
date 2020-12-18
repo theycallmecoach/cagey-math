@@ -3,7 +3,7 @@ incdir = include_directories('../include')
 
 gtest_dep = dependency('gtest', main : true, required: true)
 
-test_sources = ['DegreeTests.cc', 'Vector2Tests.cc', 'Vector3Tests.cc', 'VectorTests.cc', 'Matrix22Tests.cc']
+test_sources = ['DegreeTests.cc', 'Vector2Tests.cc', 'Vector3Tests.cc', 'Vector4Tests.cc', 'VectorTests.cc', 'Matrix22Tests.cc']
 
 e = executable('cagey-math-test', test_sources, include_directories : incdir, dependencies : [gtest_dep])
 test('gtest test', e)

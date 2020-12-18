@@ -28,15 +28,21 @@
 #pragma once
 
 #include "./detail/Vector.hh"
+#include "VectorFunc.hh"
 
-namespace cagey::math {
+namespace cagey::math
+{
   /**
    * An '2' Dimensional Vector.
    */
-  template <typename T> class Vector<T, 2> {
+  template <typename T>
+  class Vector<T, 2>
+  {
   public:
-    /// The underlying data type
-    using Type = T;
+    /// The underlying value type
+    using ValueType = T;
+    /// The vector type
+    using Type = Vector<T, 2>;
 
     /// The number of elements in this Point
     const static std::size_t Size = 2;
@@ -50,42 +56,44 @@ namespace cagey::math {
     static constexpr auto xAxis() noexcept -> Vector { return {T(1), T(0)}; }
 
     static constexpr auto yAxis() noexcept -> Vector { return {T(0), T(1)}; }
-   
+
     ////////////////////////////////////////////////////////////////////////////
     /// Implicit Constructors
     ////////////////////////////////////////////////////////////////////////////
 
     constexpr Vector() noexcept = default;
-    
-    constexpr Vector(Vector const & v) noexcept = default;
+
+    constexpr Vector(Vector const &v) noexcept = default;
 
     ////////////////////////////////////////////////////////////////////////////
     /// Explicit Constructors
     ////////////////////////////////////////////////////////////////////////////
 
     explicit constexpr Vector(T const v) noexcept : raw{v, v} {}
-    
+
     constexpr Vector(T const x, T const y) noexcept : raw{x, y} {}
 
     ////////////////////////////////////////////////////////////////////////////
     /// Explicit Conversion Constructors
     ////////////////////////////////////////////////////////////////////////////
-    
+
     template <typename U>
     explicit constexpr Vector(Vector<U, Size> const &v) noexcept
-        : raw{static_cast<T>(v.raw[0]), 
+        : raw{static_cast<T>(v.raw[0]),
               static_cast<T>(v.raw[1])} {}
 
     ////////////////////////////////////////////////////////////////////////////
     /// Component Access
     ////////////////////////////////////////////////////////////////////////////
 
-    constexpr auto operator[](std::size_t i) noexcept -> T & {
+    constexpr auto operator[](std::size_t i) noexcept -> T &
+    {
       assert(i >= 0 && i < Size);
       return raw[i];
     }
 
-    constexpr auto operator[](std::size_t i) const noexcept -> T const & {
+    constexpr auto operator[](std::size_t i) const noexcept -> T const &
+    {
       assert(i >= 0 && i < Size);
       return raw[i];
     }
@@ -94,83 +102,93 @@ namespace cagey::math {
     /// Unary Operators
     ////////////////////////////////////////////////////////////////////////////
 
-    template<typename U>
-    constexpr auto operator+=(Vector<U,Size> const &v) noexcept -> Vector & {
+    template <typename U>
+    constexpr auto operator+=(Vector<U, Size> const &v) noexcept -> Vector &
+    {
       raw[0] += static_cast<T>(v.raw[0]);
       raw[1] += static_cast<T>(v.raw[1]);
       return *this;
     }
 
-    template<typename U>
-    constexpr auto operator+=(U const &scalar) noexcept -> Vector & {
+    template <typename U>
+    constexpr auto operator+=(U const &scalar) noexcept -> Vector &
+    {
       raw[0] += static_cast<T>(scalar);
       raw[1] += static_cast<T>(scalar);
       return *this;
     }
 
-    template<typename U>
-    constexpr auto operator-=(Vector<U,Size> const &v) noexcept -> Vector & {
+    template <typename U>
+    constexpr auto operator-=(Vector<U, Size> const &v) noexcept -> Vector &
+    {
       raw[0] -= static_cast<T>(v.raw[0]);
       raw[1] -= static_cast<T>(v.raw[1]);
       return *this;
     }
 
-    template<typename U>
-    constexpr auto operator-=(U const &scalar) noexcept -> Vector & {
+    template <typename U>
+    constexpr auto operator-=(U const &scalar) noexcept -> Vector &
+    {
       raw[0] -= static_cast<T>(scalar);
       raw[1] -= static_cast<T>(scalar);
       return *this;
     }
 
-    template<typename U>
-    constexpr auto operator*=(U const &scalar) noexcept -> Vector & {
+    template <typename U>
+    constexpr auto operator*=(U const &scalar) noexcept -> Vector &
+    {
       raw[0] *= static_cast<T>(scalar);
       raw[1] *= static_cast<T>(scalar);
       return *this;
     }
 
-    template<typename U>
-    constexpr auto operator*=(Vector<U,Size> const &v) noexcept -> Vector & {
+    template <typename U>
+    constexpr auto operator*=(Vector<U, Size> const &v) noexcept -> Vector &
+    {
       raw[0] *= static_cast<T>(v.raw[0]);
       raw[1] *= static_cast<T>(v.raw[1]);
       return *this;
     }
 
-    template<typename U>
-    constexpr auto operator/=(U const &scalar) noexcept -> Vector & {
+    template <typename U>
+    constexpr auto operator/=(U const &scalar) noexcept -> Vector &
+    {
       raw[0] /= static_cast<T>(scalar);
       raw[1] /= static_cast<T>(scalar);
       return *this;
     }
 
-    template<typename U>
-    constexpr auto operator/=(Vector<U,Size> const &v) noexcept -> Vector & {
+    template <typename U>
+    constexpr auto operator/=(Vector<U, Size> const &v) noexcept -> Vector &
+    {
       raw[0] /= static_cast<T>(v.raw[0]);
       raw[1] /= static_cast<T>(v.raw[1]);
       return *this;
     }
 
-    constexpr auto operator++() noexcept -> Vector & {
+    constexpr auto operator++() noexcept -> Vector &
+    {
       ++raw[0];
       ++raw[1];
       return *this;
     }
 
-    constexpr auto operator--() noexcept -> Vector & {
+    constexpr auto operator--() noexcept -> Vector &
+    {
       --raw[0];
       --raw[1];
       return *this;
     }
 
-    constexpr auto operator++(int) noexcept -> Vector & {
-      Vector res = Vector(*this)  
-      ++*this;
+    constexpr auto operator++(int) noexcept -> Vector &
+    {
+      Vector res = Vector(*this)++ * this;
       return *res;
     }
 
-    constexpr auto operator--(int) noexcept -> Vector & {
-      Vector res = Vector(*this)  
-      --*this;
+    constexpr auto operator--(int) noexcept -> Vector &
+    {
+      Vector res = Vector(*this)-- * this;
       return *res;
     }
 
@@ -181,22 +199,25 @@ namespace cagey::math {
     /**
      * Anonymous union to allow access to members using different names
      */
-    union {
+    union
+    {
       std::enable_if_t<is_vec_type<T>::value, std::array<T, Size>> data;
       T raw[Size];
-      struct {
+      struct
+      {
         T x;
         T y;
       };
-      struct {
+      struct
+      {
         T r;
         T g;
       };
-      struct {
+      struct
+      {
         T w;
         T h;
       };
     };
-
   };
 } //namespace cagey::math

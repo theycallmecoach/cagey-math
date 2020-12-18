@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //
 // cagey-math - C++-17 Vector Math Library
-// Copyright (c) 2019 Kyle Girard <theycallmecoach@gmail.com>
+// Copyright (c) 2020 Kyle Girard <theycallmecoach@gmail.com>
 //
 // The MIT License (MIT)
 //
@@ -27,9 +27,10 @@
 
 #pragma once
 
-#include "./detail/Vector.hh"
+#include "Vector3.hh"
 
-namespace cagey::math {
+namespace cagey::math
+{
 
   /**
    * Computes the dot product of lhs and rhs.
@@ -44,7 +45,8 @@ namespace cagey::math {
    */
   template <typename T, std::size_t N>
   inline constexpr auto dot(Vector<T, N> const &lhs,
-                            Vector<T, N> const &rhs) noexcept->T {
+                            Vector<T, N> const &rhs) noexcept -> T
+  {
     using std::begin;
     return detail::inner_product(begin(lhs), end(lhs), begin(rhs), T(0));
   }
@@ -63,9 +65,11 @@ namespace cagey::math {
   template <typename T, typename U>
   inline constexpr auto cross(Vector<T, 3> const &lhs,
                               Vector<U, 3> const &rhs) noexcept
-      ->Vec3<decltype(std::declval<T>() * std::declval<U>())> {
+      -> Vector3<decltype(std::declval<T>() * std::declval<U>())>
+  {
     return {
-        lhs[1] * rhs[2] - lhs[2] * rhs[1], lhs[2] * rhs[0] - lhs[0] * rhs[2],
+        lhs[1] * rhs[2] - lhs[2] * rhs[1],
+        lhs[2] * rhs[0] - lhs[0] * rhs[2],
         lhs[0] * rhs[1] - lhs[1] * rhs[0],
     };
   }
@@ -80,9 +84,10 @@ namespace cagey::math {
    * @return The length of vec.
    */
   template <typename T, std::size_t N>
-  inline auto length(Vector<T, N> const &vec) noexcept->T {
+  inline auto length(Vector<T, N> const &vec) noexcept -> T
+  {
     using std::sqrt;
-    return sqrt(length_squared(vec));
+    return sqrt(lengthSquared(vec));
   }
 
   /**
@@ -95,7 +100,8 @@ namespace cagey::math {
    * @return The length of vec.
    */
   template <typename T, std::size_t N>
-  inline auto lengthInverted(Vector<T, N> const &vec) noexcept->T {
+  inline auto lengthInverted(Vector<T, N> const &vec) noexcept -> T
+  {
     return T{1} / length(vec);
   }
 
@@ -109,7 +115,8 @@ namespace cagey::math {
    * @return The squared length of vec.
    */
   template <typename T, std::size_t N>
-  inline constexpr auto lengthSquared(Vector<T, N> const &vec) noexcept->T {
+  inline constexpr auto lengthSquared(Vector<T, N> const &vec) noexcept -> T
+  {
     return dot(vec, vec);
   }
 
@@ -123,7 +130,8 @@ namespace cagey::math {
   * @return true if length of vec is zero
   */
   template <typename T, std::size_t S>
-  inline auto isZeroLength(Vector<T, S> const &vec)->bool {
+  inline auto isZeroLength(Vector<T, S> const &vec) -> bool
+  {
     T epsilon = std::numeric_limits<T>::epsilon();
     using std::abs;
     return abs(lengthSquared(vec)) < (epsilon * epsilon);
@@ -140,7 +148,8 @@ namespace cagey::math {
    * @return a normalized copy of vec.
    */
   template <typename T, std::size_t N>
-  inline auto normalize(Vector<T, N> vec) noexcept->Vector<T, N> {
+  inline auto normalize(Vector<T, N> vec) noexcept -> Vector<T, N>
+  {
     return vec *= lengthInverted(vec);
   }
 
@@ -156,7 +165,8 @@ namespace cagey::math {
   template <typename T, std::size_t N>
   auto fuzzyEquals(Vector<T, N> const &lhs, Vector<T, N> const &rhs,
                    T const epsilon = std::numeric_limits<T>::epsilon())
-      ->bool {
+      -> bool
+  {
     using std::begin;
     using std::end;
     return std::equal(begin(lhs), end(lhs), begin(rhs), [epsilon](T r, T l) {
@@ -165,4 +175,4 @@ namespace cagey::math {
     });
   }
 
-} //namesp
+} // namespace cagey::math

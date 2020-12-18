@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
 // cagey-math - C++-17 Vector Math Library
-// Copyright (c) 2019 Kyle Girard <theycallmecoach@gmail.com>
+// Copyright (c) 2020 Kyle Girard <theycallmecoach@gmail.com>
 //
 // The MIT License (MIT)
 //
@@ -33,22 +33,30 @@
 #include <cagey-math/detail/vec_type.hh>
 #include <cagey-math/detail/ConstExprUtil.hh>
 
-namespace cagey::math {
+namespace cagey::math
+{
 
   /**
    * An 'N' - Dimensional Vector.
    */
-  template <typename T, std::size_t N> class Vector {
+  template <typename T, std::size_t N>
+  class Vector
+  {
   public:
     /// The underlying data type
-    using Type = T;
+    using ValueType = T;
+
+    /// The type
+    using Type = Vector<T, N>;
+
     /// The number of elements in this Point
     const static std::size_t Size = N;
 
     /**
      * Anonymous union to allow access to members using different names
      */
-    union {
+    union
+    {
       std::enable_if_t<is_vec_type<T>::value, std::array<T, N>> data;
       T raw[N];
     };
@@ -58,31 +66,35 @@ namespace cagey::math {
    * Overload std::begin()
    */
   template <typename T, std::size_t N>
-  inline constexpr auto begin(Vector<T, N> const & v) -> decltype(&v.raw[0]) {
+  inline constexpr auto begin(Vector<T, N> const &v) -> decltype(&v.raw[0])
+  {
     return &v.raw[0];
   }
-  
+
   /**
    * Overload std::begin()
    */
   template <typename T, std::size_t N>
-  inline constexpr auto begin(Vector<T, N> & v) -> decltype(&v.raw[0]) {
+  inline constexpr auto begin(Vector<T, N> &v) -> decltype(&v.raw[0])
+  {
     return &v.raw[0];
   }
- 
+
   /**
    * Overload std::end()
    */
   template <typename T, std::size_t N>
-  inline constexpr auto end(Vector<T, N> const & v) -> decltype(&v.raw[0]) {
+  inline constexpr auto end(Vector<T, N> const &v) -> decltype(&v.raw[0])
+  {
     return &v.raw[0] + Vector<T, N>::Size;
   }
-  
+
   /**
    * Overload std::end()
    */
   template <typename T, std::size_t N>
-  inline constexpr auto end(Vector<T, N> & v) -> decltype(&v.raw[0]) {
+  inline constexpr auto end(Vector<T, N> &v) -> decltype(&v.raw[0])
+  {
     return &v.raw[0] + Vector<T, N>::Size;
   }
 
@@ -102,7 +114,8 @@ namespace cagey::math {
    */
   template <typename T, std::size_t N>
   inline constexpr auto operator+(Vector<T, N> lhs,
-                                  Vector<T, N> const &rhs) noexcept {
+                                  Vector<T, N> const &rhs) noexcept
+  {
     return lhs += rhs;
   }
 
@@ -118,11 +131,12 @@ namespace cagey::math {
    */
   template <typename T, std::size_t N>
   inline constexpr auto operator-(Vector<T, N> lhs,
-                                  Vector<T, N> const &rhs) noexcept {
+                                  Vector<T, N> const &rhs) noexcept
+  {
     return lhs -= rhs;
   }
 
- /**
+  /**
    * Compute the component wise product of rhs and lhs.
    *
    * @tparam T The component type of the rhs and lhs
@@ -134,7 +148,8 @@ namespace cagey::math {
    */
   template <typename T, std::size_t N>
   inline constexpr auto operator*(T const lhs,
-                                  Vector<T, N> rhs) noexcept->Vector<T, N> {
+                                  Vector<T, N> rhs) noexcept -> Vector<T, N>
+  {
     return rhs *= lhs;
   }
 
@@ -150,7 +165,8 @@ namespace cagey::math {
    */
   template <typename T, std::size_t N>
   inline constexpr auto operator*(Vector<T, N> lhs,
-                                  T const rhs) noexcept->Vector<T, N> {
+                                  T const rhs) noexcept -> Vector<T, N>
+  {
     return lhs *= rhs;
   }
 
@@ -167,7 +183,8 @@ namespace cagey::math {
   template <typename T, std::size_t N,
             typename Indices = std::make_index_sequence<N>>
   inline constexpr auto operator/(
-      T const lhs, Vector<T, N> const &rhs) noexcept->Vector<T, N> {
+      T const lhs, Vector<T, N> const &rhs) noexcept -> Vector<T, N>
+  {
     return detail::vector::operatorDivision(lhs, rhs, Indices());
   }
 
@@ -183,7 +200,8 @@ namespace cagey::math {
    */
   template <typename T, std::size_t N>
   inline constexpr auto operator/(Vector<T, N> lhs,
-                                  T const rhs) noexcept->Vector<T, N> {
+                                  T const rhs) noexcept -> Vector<T, N>
+  {
     return lhs /= rhs;
   }
 
@@ -199,7 +217,8 @@ namespace cagey::math {
    */
   template <typename T, std::size_t N>
   inline auto operator==(Vector<T, N> const &lhs,
-                         Vector<T, N> const &rhs) noexcept->bool {
+                         Vector<T, N> const &rhs) noexcept -> bool
+  {
     using std::begin;
     using std::end;
     return detail::equal(begin(lhs), end(lhs), begin(rhs));
@@ -217,10 +236,10 @@ namespace cagey::math {
    */
   template <typename T, std::size_t N>
   inline constexpr auto operator!=(Vector<T, N> const &lhs,
-                                   Vector<T, N> const &rhs) noexcept->bool {
+                                   Vector<T, N> const &rhs) noexcept -> bool
+  {
     return !(lhs == rhs);
   }
-
 
   ////////////////////////////////////////////////////////////////////////////
   /// Unary Operators
@@ -238,9 +257,9 @@ namespace cagey::math {
   template <typename T, std::size_t N,
             typename Indices = std::make_index_sequence<N>>
   inline constexpr auto operator-(
-      Vector<T, N> const &v) noexcept->Vector<T, N> {
+      Vector<T, N> const &v) noexcept -> Vector<T, N>
+  {
     return detail::vector::operatorUnaryMinus(v, Indices());
   }
-
 
 } //namespace cagey::math
