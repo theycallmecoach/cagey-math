@@ -24,11 +24,11 @@ TEST(Vector2Test, Vector2AlignTest)
 
 TEST(Vector2Test, Vector2ComponentTypeTest)
 {
-  ASSERT_EQ((std::is_same<typename Vector2<short>::ValueType, short>::value), true);
-  ASSERT_EQ((std::is_same<typename Vector2<float>::ValueType, float>::value), true);
-  ASSERT_EQ((std::is_same<typename Vector2<double>::ValueType, double>::value), true);
-  ASSERT_EQ((std::is_same<typename Vector2<int>::ValueType, int>::value), true);
-  ASSERT_EQ((std::is_same<typename Vector2<unsigned int>::ValueType, unsigned int>::value), true);
+  ASSERT_EQ((std::is_same<typename Vector2<short>::ElementType, short>::value), true);
+  ASSERT_EQ((std::is_same<typename Vector2<float>::ElementType, float>::value), true);
+  ASSERT_EQ((std::is_same<typename Vector2<double>::ElementType, double>::value), true);
+  ASSERT_EQ((std::is_same<typename Vector2<int>::ElementType, int>::value), true);
+  ASSERT_EQ((std::is_same<typename Vector2<unsigned int>::ElementType, unsigned int>::value), true);
 }
 
 TEST(Vector2Test, Vector2ComponentAccessTest)
@@ -87,6 +87,9 @@ TEST(Vector2Test, BeginTest)
   const Vector2d cvd{1.2};
   using std::begin;
   const double *cdata = begin(cvd);
+  ASSERT_EQ(cdata, static_cast<const void *>(&cvd));
+
+  cdata = cvd.begin();
   ASSERT_EQ(cdata, static_cast<const void *>(&cvd));
 }
 
@@ -172,6 +175,14 @@ TEST(Vector2Test, WriteFieldTest)
   ASSERT_DOUBLE_EQ(cvd.h, 2.3);
 }
 
+TEST(Vector2Test, CopyAssignmentOperator)
+{
+  Vector2d cvd{1, 8};
+  Vector2d cvd2{4, 5};
+  cvd2 = cvd;
+  ASSERT_TRUE(cvd == cvd2);
+}
+
 // // TEST(Vector2Test, PreIncrementOperatorTest) {
 // //   Vector2i vi{1, 2};
 // //   ASSERT_EQ(&(++vi), &vi);
@@ -247,7 +258,7 @@ TEST(Vector2Test, AdditionOperatorTest)
   // ASSERT_DOUBLE_EQ(v2[0], 1.2 + 5);
   // ASSERT_DOUBLE_EQ(v2[1], 3.4 + 5);
 
-  constexpr auto v3 = Vector2d(1.2, 3.4) + Vector2d(5.0, 6.0);
+  constexpr auto v3 = Vector2d{1.2, 3.4} + Vector2d{5.0, 6.0};
   ASSERT_DOUBLE_EQ(v3[0], 1.2 + 5);
   ASSERT_DOUBLE_EQ(v3[1], 3.4 + 6);
 }
@@ -262,18 +273,18 @@ TEST(Vector2Test, SubtractionOperatorTest)
   // ASSERT_DOUBLE_EQ(v2[0], 1.2 - 5);
   // ASSERT_DOUBLE_EQ(v2[1], 3.4 - 5);
 
-  constexpr auto v3 = Vector2d(1.2, 3.4) - Vector2d(5.0, 6.0);
+  constexpr auto v3 = Vector2d{1.2, 3.4} - Vector2d{5.0, 6.0};
   ASSERT_DOUBLE_EQ(v3[0], 1.2 - 5.0);
   ASSERT_DOUBLE_EQ(v3[1], 3.4 - 6.0);
 }
 
 TEST(Vector2Test, MultiplicationOperatorTest)
 {
-  constexpr auto v1 = 1.0 * Vector2d(2.3, 4.5);
+  constexpr auto v1 = 1.0 * Vector2d{2.3, 4.5};
   ASSERT_DOUBLE_EQ(v1[0], 1.0 * 2.3);
   ASSERT_DOUBLE_EQ(v1[1], 1.0 * 4.5);
 
-  constexpr auto v2 = Vector2d(1.2, 3.4) * 5.0;
+  constexpr auto v2 = Vector2d{1.2, 3.4} * 5.0;
   ASSERT_DOUBLE_EQ(v2[0], 1.2 * 5.0);
   ASSERT_DOUBLE_EQ(v2[1], 3.4 * 5.0);
 
@@ -288,7 +299,7 @@ TEST(Vector2Test, DivisionOperatorTest)
   ASSERT_DOUBLE_EQ(v1[0], 1.0 / 2.3);
   ASSERT_DOUBLE_EQ(v1[1], 1.0 / 4.5);
 
-  constexpr auto v2 = Vector2d(1.2, 3.4) / 5.0;
+  constexpr auto v2 = Vector2d{1.2, 3.4} / 5.0;
   ASSERT_DOUBLE_EQ(v2[0], 1.2 / 5.0);
   ASSERT_DOUBLE_EQ(v2[1], 3.4 / 5.0);
 
@@ -308,27 +319,27 @@ TEST(Vector2Test, EqualityTest)
 
 TEST(Vector2Test, VectorDotProductTest)
 {
-  constexpr auto x = dot(Vector2d(1.2, 3.4), Vector2d(7, 8));
+  constexpr auto x = dot(Vector2d{1.2, 3.4}, Vector2d{7, 8});
   ASSERT_DOUBLE_EQ(x, 1.2 * 7 + 3.4 * 8);
 }
 
 TEST(Vector2Test, LengthProductTest)
 {
-  ASSERT_DOUBLE_EQ(length(Vector2d(1.2, 3.4)),
-                   std::sqrt(lengthSquared(Vector2d(1.2, 3.4))));
+  ASSERT_DOUBLE_EQ(length(Vector2d{1.2, 3.4}),
+                   std::sqrt(lengthSquared(Vector2d{1.2, 3.4})));
 
-  constexpr auto x = dot(Vector2d(1.2, 3.4), Vector2d(7, 8));
+  constexpr auto x = dot(Vector2d{1.2, 3.4}, Vector2d{7, 8});
   ASSERT_DOUBLE_EQ(x, 1.2 * 7 + 3.4 * 8);
 }
 
 TEST(Vector2Test, LengthSquaredProductTest)
 {
-  constexpr auto x = lengthSquared(Vector2d(1.2, 3.4));
+  constexpr auto x = lengthSquared(Vector2d{1.2, 3.4});
   ASSERT_DOUBLE_EQ(x, 1.2 * 1.2 + 3.4 * 3.4);
 }
 
 TEST(Vector2Test, NormalizeTest)
 {
-  const Vector2d v(1.2, 3.4);
+  const Vector2d v{1.2, 3.4};
   ASSERT_EQ(normalize(v), v * (1 / length(v)));
 }

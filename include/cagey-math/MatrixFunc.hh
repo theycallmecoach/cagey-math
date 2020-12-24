@@ -1,8 +1,7 @@
 //=============================================================================
-
 //
 // cagey-math - C++-17 Vector Math Library
-// Copyright (c) 2016 Kyle Girard <theycallmecoach@gmail.com>
+// Copyright (c) 2016-2020 Kyle Girard <theycallmecoach@gmail.com>
 //
 // The MIT License (MIT)
 //
@@ -27,46 +26,62 @@
 //=============================================================================
 
 #pragma once
-
 /**
  * @file
- * @brief Common Math constants like pi.
+ * @brief Utility functions for matrices of various sizes
  */
 
-#include <type_traits>
+#include "cagey-math/Matrix22.hh"
 
-/**
- * @brief Common Math constants like pi.
- */
-namespace cagey::math::constants
+namespace cagey::math
 {
-    /**
-    * The mystical value of pi (3.14....) to the accuracy of T.
-    *
-    * @tparam T the desired type of Pi
-    */
-    template <typename T>
-    constexpr typename std::enable_if<std::is_floating_point<T>::value, T>::type pi =
-        static_cast<T>(3.141592653589793238462643383279502884);
+  namespace detail
+  {
+    template <typename T, std::size_t C, std::size_t R>
+    struct determinantImpl
+    {
+    };
 
-    /**
-    * Value to convert between degrees and radians.
-    * Equivalent to pi / 180
-    * 
-    * @tparam T the desired type of converstion value
-    */
     template <typename T>
-    constexpr typename std::enable_if<std::is_arithmetic<T>::value, T>::type degToRad =
-        pi<T> / static_cast<T>(180.0);
+    struct determinantImpl<T, 2, 2>
+    {
+      static constexpr auto exec(Matrix<T, 2, 2> const &mat) -> T
+      {
+        return mat[0][0] * mat[1][1] - mat[1][0] * mat[0][1];
+      }
+    };
 
-    /**
-    * Value to convert between radians and degrees.
-    * Equivalent to 180 / pi
-    *
-    * @tparam T the desired type of converstion value
-    */
+    template <typename T, std::size_t C, std::size_t R>
+    struct transposeImpl
+    {
+    };
+
     template <typename T>
-    constexpr typename std::enable_if<std::is_arithmetic<T>::value, T>::type radToDeg =
-        static_cast<T>(180.0) / pi<T>;
+    struct transposeImpl<T, 2, 2>
+    {
+      static constexpr auto exec(Matrix<T, 2, 2> const &mat) -> Matrix<T, 2, 2>
+      {
+        Matrix<T, 2, 2> result;
+        result[0][0] = mat[0][0];
+        result[0][1] = mat[1][0];
+        result[1][0] = mat[0][1];
+        result[1][1] = mat[1][1];
+        return result;
+      }
+    };
 
-} // namespace cagey::math::constants
+  } // namespace detail
+
+  template <typename T, std::size_t C, std::size_t R>
+  auto determinant(Matrix<T, C, R> const &mat) -> T
+  {
+    return detail::determinantImpl<T, C, R>::exec(mat);
+  }
+
+  template <typename T, std::size_t C, std::size_t R>
+  auto transpose(Matrix<T, C, R> const &mat) -> Matrix<T, C, R>
+  {
+    return detail::transposeImpl<T, C, R>::exec(mat);
+  }
+
+} // namespace cagey::math

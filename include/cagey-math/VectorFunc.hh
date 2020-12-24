@@ -1,7 +1,7 @@
-/////////////////////////////////////////////////////////////////////////////
+//=============================================================================
 //
 // cagey-math - C++-17 Vector Math Library
-// Copyright (c) 2020 Kyle Girard <theycallmecoach@gmail.com>
+// Copyright (c) 2016-2020 Kyle Girard <theycallmecoach@gmail.com>
 //
 // The MIT License (MIT)
 //
@@ -23,11 +23,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-////////////////////////////////////////////////////////////////////////////////
+//=============================================================================
 
 #pragma once
 
-#include "Vector3.hh"
+/**
+ * @file
+ * @brief Utility function for vectors of various sizes
+ */
+
+#include "cagey-math/Vector3.hh"
 
 namespace cagey::math
 {
@@ -160,7 +165,8 @@ namespace cagey::math
    * @tparam N The number of component of vec
    *
    * @param lhs A Vector.
-   * @param rhs A
+   * @param rhs A Vector
+   * @param epsilon the amount of tolerance
    */
   template <typename T, std::size_t N>
   auto fuzzyEquals(Vector<T, N> const &lhs, Vector<T, N> const &rhs,

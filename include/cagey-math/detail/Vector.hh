@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+//=============================================================================
 //
 // cagey-math - C++-17 Vector Math Library
 // Copyright (c) 2020 Kyle Girard <theycallmecoach@gmail.com>
@@ -23,42 +23,77 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-////////////////////////////////////////////////////////////////////////////////
+//=============================================================================
 
 #pragma once
 
+/**
+ * @file
+ * @brief N-Dimensional Vector class template
+ */
+
 #include <cmath>
-#include <cagey-math/MathFwd.hh>
-#include <cagey-math/detail/MetaUtil.hh>
-#include <cagey-math/detail/vec_type.hh>
-#include <cagey-math/detail/ConstExprUtil.hh>
+
+#include "cagey-math/Math.hh"
+#include "cagey-math/detail/MetaUtil.hh"
+#include "cagey-math/detail/vec_type.hh"
+#include "cagey-math/detail/ConstExprUtil.hh"
 
 namespace cagey::math
 {
 
   /**
-   * An 'N' - Dimensional Vector.
+   * @brief An 'N' - Dimensional Vector.
+   * 
+   * All other vectors are specializations of this template.
+   * 
+   * @tparam T the type of elements of this vector
+   * @tparam N the number of elements of this vector
    */
   template <typename T, std::size_t N>
   class Vector
   {
   public:
-    /// The underlying data type
-    using ValueType = T;
-
-    /// The type
-    using Type = Vector<T, N>;
-
     /// The number of elements in this Point
     const static std::size_t Size = N;
+    using Type = Vector<T, Size>;                                       ///< The vector type
+    using ElementType = T;                                              ///< The underlying value type
+    using Reference = ElementType &;                                    ///< The vector element reference type
+    using ConstReference = ElementType const &;                         ///< The vector element const reference type
+    using Iterator = typename std::array<T, Size>::iterator;            ///< The vector element iterator type
+    using ConstIterator = typename std::array<T, Size>::const_iterator; ///< The vector element const iterator type
+
+    //==========================================================================
+    /// @name Iterators
+    //==========================================================================
+
+    constexpr auto begin() noexcept -> typename Vector::Iterator
+    {
+      return elements.begin();
+    }
+
+    constexpr auto begin() const noexcept -> typename Vector::ConstIterator
+    {
+      return elements.begin();
+    }
+
+    constexpr auto end() noexcept -> typename Vector::Iterator
+    {
+      return elements.end();
+    }
+
+    constexpr auto end() const noexcept -> typename Vector::ConstIterator
+    {
+      return elements.end();
+    }
 
     /**
      * Anonymous union to allow access to members using different names
      */
     union
     {
-      std::enable_if_t<is_vec_type<T>::value, std::array<T, N>> data;
-      T raw[N];
+      std::enable_if_t<is_vec_type<T>::value, std::array<T, N>> elements; /// elements as an std::array
+      T rawElements[N];                                                   /// elements as native array
     };
   }; // Vector
 
@@ -66,42 +101,42 @@ namespace cagey::math
    * Overload std::begin()
    */
   template <typename T, std::size_t N>
-  inline constexpr auto begin(Vector<T, N> const &v) -> decltype(&v.raw[0])
+  inline constexpr auto begin(Vector<T, N> const &v) -> typename Vector<T, N>::ConstIterator
   {
-    return &v.raw[0];
+    return v.begin();
   }
 
   /**
    * Overload std::begin()
    */
   template <typename T, std::size_t N>
-  inline constexpr auto begin(Vector<T, N> &v) -> decltype(&v.raw[0])
+  inline constexpr auto begin(Vector<T, N> &v) -> typename Vector<T, N>::Iterator
   {
-    return &v.raw[0];
+    return v.begin();
   }
 
   /**
    * Overload std::end()
    */
   template <typename T, std::size_t N>
-  inline constexpr auto end(Vector<T, N> const &v) -> decltype(&v.raw[0])
+  inline constexpr auto end(Vector<T, N> const &v) -> decltype(&v.rawElements[0])
   {
-    return &v.raw[0] + Vector<T, N>::Size;
+    return v.end();
   }
 
   /**
    * Overload std::end()
    */
   template <typename T, std::size_t N>
-  inline constexpr auto end(Vector<T, N> &v) -> decltype(&v.raw[0])
+  inline constexpr auto end(Vector<T, N> &v) -> decltype(&v.rawElements[0])
   {
-    return &v.raw[0] + Vector<T, N>::Size;
+    return v.end();
   }
 
-  ////////////////////////////////////////////////////////////////////////////
-  /// Binary Operators
-  ////////////////////////////////////////////////////////////////////////////
-
+  //==========================================================================
+  /// @name Binary Operators
+  //==========================================================================
+  ///@{
   /**
    * Compute the component wise sum of rhs and lhs.
    *
@@ -241,9 +276,11 @@ namespace cagey::math
     return !(lhs == rhs);
   }
 
-  ////////////////////////////////////////////////////////////////////////////
-  /// Unary Operators
-  ////////////////////////////////////////////////////////////////////////////
+  ///@}
+  //==========================================================================
+  /// @name Unary Operators
+  //==========================================================================
+  ///@{
 
   /**
    * Negates each component of v
@@ -262,4 +299,5 @@ namespace cagey::math
     return detail::vector::operatorUnaryMinus(v, Indices());
   }
 
+  ///@}
 } //namespace cagey::math

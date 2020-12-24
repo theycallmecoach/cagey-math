@@ -1,7 +1,7 @@
 //=============================================================================
 //
 // cagey-math - C++-17 Vector Math Library
-// Copyright (c) 2016 Kyle Girard <theycallmecoach@gmail.com>
+// Copyright (c) 2016-2020 Kyle Girard <theycallmecoach@gmail.com>
 //
 // The MIT License (MIT)
 //
@@ -25,66 +25,12 @@
 //
 //=============================================================================
 
-#pragma once
+/** @namespace cagey
+ * @brief Root namespace
+ */
 
-#include <cstdint>
-#include <type_traits>
-
-namespace cagey::math
-{
-
-  template <typename T>
-  struct is_vec_type : public std::integral_constant<bool, false>
-  {
-  };
-
-  template <>
-  struct is_vec_type<float> : public std::integral_constant<bool, true>
-  {
-  };
-
-  template <>
-  struct is_vec_type<double> : public std::integral_constant<bool, true>
-  {
-  };
-
-  template <>
-  struct is_vec_type<std::int8_t> : public std::integral_constant<bool, true>
-  {
-  };
-
-  template <>
-  struct is_vec_type<std::int16_t> : public std::integral_constant<bool, true>
-  {
-  };
-
-  template <>
-  struct is_vec_type<std::int32_t> : public std::integral_constant<bool, true>
-  {
-  };
-
-  template <>
-  struct is_vec_type<std::int64_t> : public std::integral_constant<bool, true>
-  {
-  };
-
-  template <>
-  struct is_vec_type<std::uint8_t> : public std::integral_constant<bool, true>
-  {
-  };
-
-  template <>
-  struct is_vec_type<std::uint16_t> : public std::integral_constant<bool, true>
-  {
-  };
-
-  template <>
-  struct is_vec_type<std::uint32_t> : public std::integral_constant<bool, true>
-  {
-  };
-
-  template <>
-  struct is_vec_type<std::uint64_t> : public std::integral_constant<bool, true>
-  {
-  };
-} // namespace cagey::math
+ /** @namespace cagey::math
+  * @brief Math library
+  * 
+  * 
+  */

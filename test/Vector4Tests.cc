@@ -26,11 +26,11 @@ TEST(Vector4Test, Vector4AlignTest)
 
 TEST(Vector4Test, Vector4ComponentTypeTest)
 {
-  ASSERT_EQ((std::is_same<typename Vector4<short>::ValueType, short>::value), true);
-  ASSERT_EQ((std::is_same<typename Vector4<float>::ValueType, float>::value), true);
-  ASSERT_EQ((std::is_same<typename Vector4<double>::ValueType, double>::value), true);
-  ASSERT_EQ((std::is_same<typename Vector4<int>::ValueType, int>::value), true);
-  ASSERT_EQ((std::is_same<typename Vector4<unsigned int>::ValueType, unsigned int>::value), true);
+  ASSERT_EQ((std::is_same<typename Vector4<short>::ElementType, short>::value), true);
+  ASSERT_EQ((std::is_same<typename Vector4<float>::ElementType, float>::value), true);
+  ASSERT_EQ((std::is_same<typename Vector4<double>::ElementType, double>::value), true);
+  ASSERT_EQ((std::is_same<typename Vector4<int>::ElementType, int>::value), true);
+  ASSERT_EQ((std::is_same<typename Vector4<unsigned int>::ElementType, unsigned int>::value), true);
 }
 
 TEST(Vector4Test, Vector4ComponentCountTest)

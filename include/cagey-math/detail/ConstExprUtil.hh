@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+//=============================================================================
 //
 // cagey-math - C++-17 Vector Math Library
 // Copyright (c) 2016 Kyle Girard <theycallmecoach@gmail.com>
@@ -23,18 +23,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-////////////////////////////////////////////////////////////////////////////////
+//=============================================================================
 
 #pragma once
 
 #include <functional>
 
-namespace cagey::math::detail {
+namespace cagey::math::detail
+{
 
   // the predicate cannot be lambda in constexpr contexts
   template <class InputIterator1, class InputIterator2, class BinaryPredicate>
   constexpr bool equal(InputIterator1 first1, InputIterator1 last1,
-                       InputIterator2 first2, BinaryPredicate pred) {
+                       InputIterator2 first2, BinaryPredicate pred)
+  {
     for (; first1 != last1; ++first1, ++first2)
       if (!pred(*first1, *first2))
         return false;
@@ -46,7 +48,8 @@ namespace cagey::math::detail {
    */
   template <class InputIterator1, class InputIterator2>
   constexpr bool equal(InputIterator1 first1, InputIterator1 last1,
-                       InputIterator2 first2) {
+                       InputIterator2 first2)
+  {
     return detail::equal(first1, last1, first2, std::equal_to<>());
   }
 
@@ -55,7 +58,8 @@ namespace cagey::math::detail {
    */
   template <class Iterator1, class Iterator2, class T>
   constexpr T inner_product(Iterator1 first1, Iterator1 last1, Iterator2 first2,
-                            T init) {
+                            T init)
+  {
     for (; first1 != last1; ++first1, ++first2)
       init = init + (*first1 * *first2);
     return init;

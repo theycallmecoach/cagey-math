@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////
+//=============================================================================
 //
 // cagey-math - C++-17 Vector Math Library
 // Copyright (c) 2019 Kyle Girard <theycallmecoach@gmail.com>
@@ -23,18 +23,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-////////////////////////////////////////////////////////////////////////////////
+//=============================================================================
 
 #pragma once
 
-#include <cmath>
-#include <climits>
-#include <cfloat>
-#include <limits>
-#include <cassert>
+/** @file
+ * @brief Main include for library
+ */
 
-#include "MathFwd.hh"
-#include "Vector2.hh"
+#include "cagey-math/Math.hh"
+#include "caegy-math/Vector2.hh"
 // #include "Vector3.hh"
 // #include "Vector4.hh"
 
@@ -42,5 +40,5 @@
 // #include "Matrix33.hh"
 // #include "Matrix44.hh"
 
-#include "Constants.hh"
-#include "VectorFunc.hh"
+#include "caegy-math/Constants.hh"
+#include "caegy-math/VectorFunc.hh"

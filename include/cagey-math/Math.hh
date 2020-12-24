@@ -1,7 +1,7 @@
-////////////////////////////////////////////////////////////////////////////////
+//=============================================================================
 //
 // cagey-math - C++-17 Vector Math Library
-// Copyright (c) 2016 Kyle Girard <theycallmecoach@gmail.com>
+// Copyright (c) 2016-2020 Kyle Girard <theycallmecoach@gmail.com>
 //
 // The MIT License (MIT)
 //
@@ -23,21 +23,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-////////////////////////////////////////////////////////////////////////////////
+//=============================================================================
 
 #pragma once
 
 /**
  * @file
- * Forward declarations for the cagey::math namespace
+ * @brief Forward declarations for the cagey::math namespace
  */
 
 #include <cstdint>
 #include <cstddef>
 
-/**
- * Namespace to contain all cagey
- */
 namespace cagey::math
 {
 
@@ -92,49 +89,56 @@ namespace cagey::math
   template <typename, std::size_t>
   class Vector;
 
-  /// Shorthand for the two element Vector
+  // Shorthand for the two element Vector
   template <typename T>
   using Vector2 = Vector<T, 2>;
-
-  /// Shorthand for the two element unsigned Vector
+  //Shorthand for the two element unsigned Vector
   using Vector2u = Vector<std::uint32_t, 2>;
-  /// Shorthand for the two element int Vector
+  // Shorthand for the two element int Vector
   using Vector2i = Vector<std::int32_t, 2>;
-  /// Shorthand for the two element float Vector
+  // Shorthand for the two element float Vector
   using Vector2l = Vector<long, 2>;
-  /// Shorthand for the two element float Vector
+  // Shorthand for the two element float Vector
   using Vector2f = Vector<float, 2>;
-  /// Shorthand for the two element double Vector
+  // Shorthand for the two element double Vector
   using Vector2d = Vector<double, 2>;
 
-  /// Shorthand for the three element Vector
+  // Shorthand for the three element Vector
   template <typename T>
   using Vector3 = Vector<T, 3>;
-  /// Shorthand for the three element unsigned Vector
+  // Shorthand for the three element unsigned Vector
   using Vector3u = Vector<std::uint32_t, 3>;
-  /// Shorthand for the three element int Vector
+  // Shorthand for the three element int Vector
   using Vector3i = Vector<std::int32_t, 3>;
-  /// Shorthand for the three element float Vector
+  // Shorthand for the three element float Vector
   using Vector3f = Vector<float, 3>;
-  /// Shorthand for the three element double Vector
+  // Shorthand for the three element double Vector
   using Vector3d = Vector<double, 3>;
 
-  // /// Shorthand for the four element Vector
+  // Shorthand for the four element Vector
   template <typename T>
   using Vector4 = Vector<T, 4>;
-
-  /// Shorthand for the four element unsigned Vector
+  // Shorthand for the four element unsigned Vector
   using Vector4u = Vector<std::uint32_t, 4>;
-  /// Shorthand for the four element int Vector
+  // Shorthand for the four element int Vector
   using Vector4i = Vector<std::int32_t, 4>;
-  /// Shorthand for the four element float Vector
+  // Shorthand for the four element float Vector
   using Vector4f = Vector<float, 4>;
-  /// Shorthand for the four element double Vector
+  // Shorthand for the four element double Vector
   using Vector4d = Vector<double, 4>;
 
-  // // template <typename, std::size_t, std::size_t> class Matrix;
-  // // /// Shorthand for 2x2 square matrix
-  // // template <typename T> using Mat22 = Matrix<T, 2, 2>;
+  template <typename, std::size_t, std::size_t>
+  class Matrix;
+
+  // Shorthand for 2x2 square matrix
+  template <typename T>
+  using Matrix22 = Matrix<T, 2, 2>;
+  // Shorthand for 2x2 square float matrix
+  using Matrix22f = Matrix<float, 2, 2>;
+  using Matrix22d = Matrix<double, 2, 2>;
+  using Matrix22i = Matrix<std::int32_t, 2, 2>;
+  using Matrix22u = Matrix<std::uint32_t, 2, 2>;
+
   // // /// Shorthand for 2x3 Matrix.
   // // template <typename T> using Mat23 = Matrix<T, 2, 3>;
   // // /// Shorthand for 2x4 Matrix.

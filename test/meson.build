@@ -1,9 +1,29 @@
+vector_unit_tests_sources = [
+  'Vector2Tests.cc',
+#  'Vector3Tests.cc',
+#  'Vector4Tests.cc',
+#  'VectorTests.cc',
+]
 
-incdir = include_directories('../include')
+vector_unit_test = executable(
+  'cagey_math_vector_unit_test',
+  vector_unit_tests_sources,
+  include_directories : incdir, 
+  dependencies : gtest_dep,
+ )
 
-gtest_dep = dependency('gtest', main : true, required: true)
+matrix_unit_tests_sources = [
+  'Matrix22Tests.cc',
+]
 
-test_sources = ['DegreeTests.cc', 'Vector2Tests.cc', 'Vector3Tests.cc', 'Vector4Tests.cc', 'VectorTests.cc', 'Matrix22Tests.cc']
+matrix_unit_test = executable(
+  'cagey_math_matrix_unit_test',
+  matrix_unit_tests_sources,
+  include_directories : incdir, 
+  dependencies : gtest_dep,
+ )
 
-e = executable('cagey-math-test', test_sources, include_directories : incdir, dependencies : [gtest_dep])
-test('gtest test', e)
+
+
+test('vector unit tests', vector_unit_test)
+test('matrix unit tests', matrix_unit_test)

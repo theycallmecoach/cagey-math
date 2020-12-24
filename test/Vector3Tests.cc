@@ -26,11 +26,11 @@ TEST(Vector3Test, Vector3AlignTest)
 
 TEST(Vector3Test, Vector3ComponentTypeTest)
 {
-  ASSERT_EQ((std::is_same<typename Vector3<short>::ValueType, short>::value), true);
-  ASSERT_EQ((std::is_same<typename Vector3<float>::ValueType, float>::value), true);
-  ASSERT_EQ((std::is_same<typename Vector3<double>::ValueType, double>::value), true);
-  ASSERT_EQ((std::is_same<typename Vector3<int>::ValueType, int>::value), true);
-  ASSERT_EQ((std::is_same<typename Vector3<unsigned int>::ValueType, unsigned int>::value), true);
+  ASSERT_EQ((std::is_same<typename Vector3<short>::ElementType, short>::value), true);
+  ASSERT_EQ((std::is_same<typename Vector3<float>::ElementType, float>::value), true);
+  ASSERT_EQ((std::is_same<typename Vector3<double>::ElementType, double>::value), true);
+  ASSERT_EQ((std::is_same<typename Vector3<int>::ElementType, int>::value), true);
+  ASSERT_EQ((std::is_same<typename Vector3<unsigned int>::ElementType, unsigned int>::value), true);
 }
 
 TEST(Vector3Test, Vector3ComponentCountTest)

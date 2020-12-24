@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+//=============================================================================
 //
 // cagey-math - C++-17 Vector Math Library
 // Copyright (c) 2016 Kyle Girard <theycallmecoach@gmail.com>
@@ -23,36 +23,42 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-////////////////////////////////////////////////////////////////////////////////
+//=============================================================================
 
 #pragma once
+namespace cagey::math::detail
+{
 
-namespace cagey::math::detail {
-
-  template <typename T> constexpr T repeat(T value, std::size_t) {
+  template <typename T>
+  constexpr T repeat(T value, std::size_t)
+  {
     return value;
   }
 
-  template <typename T> constexpr T index(T value, std::size_t i) {
+  template <typename T>
+  constexpr T index(T value, std::size_t i)
+  {
     return value[i];
   }
 
+  namespace vector
+  {
 
-  namespace vector {
+    template <typename T, std::size_t N, std::size_t... I>
+    inline constexpr auto operatorUnaryMinus(const Vector<T, N> &v,
+                                             std::index_sequence<I...>) noexcept
+        -> Vector<decltype(-std::declval<T>()), N>
+    {
+      return {-v[I]...};
+    }
 
-  template <typename T, std::size_t N, std::size_t... I>
-  inline constexpr auto operatorUnaryMinus(const Vector<T, N> &v,
-                                           std::index_sequence<I...>)noexcept
-      ->Vector<decltype(-std::declval<T>()), N> {
-    return {-v[I]...};
-  }
-
-  template <typename T, typename U, std::size_t N, std::size_t... I>
-  inline constexpr auto operatorDivision(U const &lhs, Vector<T, N> const &rhs,
-                                         std::index_sequence<I...>)noexcept
-      ->Vector<decltype(std::declval<T>() / std::declval<U>()), N> {
-    return {lhs / rhs[I]...};
-  }
+    template <typename T, typename U, std::size_t N, std::size_t... I>
+    inline constexpr auto operatorDivision(U const &lhs, Vector<T, N> const &rhs,
+                                           std::index_sequence<I...>) noexcept
+        -> Vector<decltype(std::declval<T>() / std::declval<U>()), N>
+    {
+      return {lhs / rhs[I]...};
+    }
 
   } //namespace vector
 

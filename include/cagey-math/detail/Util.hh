@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+//=============================================================================
 //
 // cagey-math - C++-17 Vector Math Library
 // Copyright (c) 2016 Kyle Girard <theycallmecoach@gmail.com>
@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-////////////////////////////////////////////////////////////////////////////////
+//=============================================================================
 
 #pragma once
 
@@ -31,7 +31,8 @@
 #include <type_traits>
 #include <cmath>
 
-namespace cagey::math {
+namespace cagey::math
+{
 
   /**
    * Performs fuzzy equals between the given values, use for floating point
@@ -41,9 +42,11 @@ namespace cagey::math {
    * @param y value to be tested
    */
   template <typename T>
-  typename std::enable_if<std::is_arithmetic<T>::value, bool>::type equals(T const x, T const y) {
+  typename std::enable_if<std::is_arithmetic<T>::value, bool>::type equals(T const x, T const y)
+  {
     // values are actually equal
-    if (x == y) {
+    if (x == y)
+    {
       return true;
     }
 
@@ -55,7 +58,8 @@ namespace cagey::math {
 
     // one or both of the number are zero or close enough that
     // relative error is meaningless
-    if (x == T{} || y == T{} || diff < ep) {
+    if (x == T{} || y == T{} || diff < ep)
+    {
       return diff < ep;
     }
 

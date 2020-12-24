@@ -3,26 +3,10 @@ project('cagey-math', 'cpp',
   default_options : ['cpp_std=c++17'],
 )
 
+gtest_proj = subproject('gtest')
+gtest_dep = gtest_proj.get_variable('gtest_main_dep')
+
 incdir = include_directories('include')
 
-gtest_dep = dependency(
-  'gtest', 
-  main : true, 
-  required : false
-)
-
-vector_unit_tests_sources = [
-  'test/Vector2Tests.cc',
-  'test/Vector3Tests.cc',
-  'test/Vector4Tests.cc',
-  'test/VectorTests.cc',
-]
-
-vector_unit_test = executable(
-  'cagey_math_vector_unit_test',
-  vector_unit_tests_sources,
-  include_directories : incdir, 
-  dependencies : gtest_dep,
- )
-
-test('vector unit tests', vector_unit_test)
+subdir('test')
+subdir('doc')
