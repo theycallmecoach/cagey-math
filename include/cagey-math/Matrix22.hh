@@ -158,6 +158,21 @@ namespace cagey::math
       columns[1][1] = elements[3];
     }
 
+    /**
+     * @brief Construct matrix from an array of Size values
+     * 
+     * The values are assumed to be in the following order x0, y0, z0, x1, y1, z1, x2, y2, z2
+     * 
+     * @param elements for the given matrix.
+     */
+    inline constexpr explicit Matrix(T const x1, T const y1, T const x2, T const y2) noexcept
+    {
+      columns[0][0] = x1;
+      columns[0][1] = y1;
+      columns[1][0] = x2;
+      columns[1][1] = y2;
+    }
+
     ///@}
     //==========================================================================
     /// @name Component Access
@@ -196,6 +211,7 @@ namespace cagey::math
     {
       columns[0] = value.columns[0];
       columns[1] = value.columns[1];
+      return *this;
     }
 
     /** 
@@ -292,7 +308,7 @@ namespace cagey::math
     /**
      * @brief returns iterator to the beginning
      */
-    inline constexpr auto columnsBegin() -> ColumnIterator
+    inline constexpr auto columnBegin() -> ColumnIterator
     {
       return columns.begin();
     }
@@ -300,7 +316,7 @@ namespace cagey::math
     /**
      * @brief returns iterator to the first column
      */
-    inline constexpr auto columnsBegin() const -> ConstColumnIterator
+    inline constexpr auto columnBegin() const -> ConstColumnIterator
     {
       return columns.begin();
     }
@@ -308,7 +324,7 @@ namespace cagey::math
     /**
      * @brief returns iterator to the end
      */
-    inline constexpr auto columnsEnd() -> ColumnIterator
+    inline constexpr auto columnEnd() -> ColumnIterator
     {
       return columns.end();
     }
@@ -316,7 +332,7 @@ namespace cagey::math
     /**
      * @brief returns iterator to the beginning
      */
-    inline constexpr auto columnsEnd() const -> ConstColumnIterator
+    inline constexpr auto columnEnd() const -> ConstColumnIterator
     {
       return columns.end();
     }

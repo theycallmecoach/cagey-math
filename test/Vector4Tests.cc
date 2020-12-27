@@ -200,6 +200,14 @@ TEST(Vector4Test, WriteFieldTest)
   ASSERT_DOUBLE_EQ(cvd.a, 2.5);
 }
 
+TEST(Vector4Test, CopyAssignmentOperator)
+{
+  Vector4d cvd{1, 8, 7, 3};
+  Vector4d cvd2{4, 5, 9, 5};
+  cvd2 = cvd;
+  ASSERT_TRUE(cvd == cvd2);
+}
+
 TEST(Vector4Test, xyTest)
 {
   Vector4d cvd{1.2, 8.9, 2.5, 7.8};

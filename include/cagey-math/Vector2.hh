@@ -185,6 +185,7 @@ namespace cagey::math
     constexpr auto operator=(Vector<T, Size> const &v) noexcept -> Vector &
     {
       elements = v.elements;
+      return *this;
     }
 
     /**

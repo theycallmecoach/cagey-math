@@ -45,14 +45,14 @@ namespace cagey::math
   class Vector<T, 4>
   {
   public:
-    /// The underlying data type
-    using ElementType = T;
-
-    /// The Vector type
-    using Type = Vector<T, 4>;
-
     /// The number of elements in this Point
     const static std::size_t Size = 4;
+    using Type = Vector<T, Size>;                                       ///< The vector type
+    using ElementType = T;                                              ///< The underlying value type
+    using Reference = ElementType &;                                    ///< The vector element reference type
+    using ConstReference = ElementType const &;                         ///< The vector element const reference type
+    using Iterator = typename std::array<T, Size>::iterator;            ///< The vector element iterator type
+    using ConstIterator = typename std::array<T, Size>::const_iterator; ///< The vector element const iterator type
 
     //==========================================================================
     /// Static Member Functions
@@ -95,28 +95,28 @@ namespace cagey::math
     /// Explicit onstructors
     //==========================================================================
 
-    explicit constexpr Vector(T const v) noexcept : raw{v, v, v} {}
+    explicit constexpr Vector(T const v) noexcept : elements{v, v, v} {}
 
     constexpr Vector(T const x, T const y, T const z, T const w) noexcept
-        : raw{x, y, z, w} {}
+        : elements{x, y, z, w} {}
 
     //==========================================================================
     /// Explicit Conversion Constructors
     //==========================================================================
 
     constexpr Vector(Vector3<T> const &v, T const w) noexcept
-        : raw{v[0], v[1], v[2], w} {}
+        : elements{v[0], v[1], v[2], w} {}
 
     template <typename U>
     explicit constexpr Vector(Vector<U, Size> const &v) noexcept
-        : raw{static_cast<T>(v.raw[0]),
-              static_cast<T>(v.raw[1]),
-              static_cast<T>(v.raw[2]),
-              static_cast<T>(v.raw[3])} {}
+        : elements{static_cast<T>(v.elements[0]),
+                   static_cast<T>(v.elements[1]),
+                   static_cast<T>(v.elements[2]),
+                   static_cast<T>(v.elements[3])} {}
 
     template <std::size_t VN, typename = std::enable_if_t<(VN > 4)>>
     explicit constexpr Vector(Vector<T, VN> const &v) noexcept
-        : raw{v.raw[0], v.raw[1], v.raw[2]} {}
+        : elements{v.elements[0], v.elements[1], v.elements[2], v.elements[3]} {}
 
     //==========================================================================
     /// Component Access
@@ -125,33 +125,44 @@ namespace cagey::math
     constexpr auto operator[](std::size_t i) noexcept -> T &
     {
       assert(i >= 0 && i < Size);
-      return raw[i];
+      return elements[i];
     }
 
     constexpr auto operator[](std::size_t i) const noexcept -> T const &
     {
       assert(i >= 0 && i < Size);
-      return raw[i];
+      return elements[i];
     }
 
     //==========================================================================
     /// Operators
     //==========================================================================
 
+    /**
+     * @brief CopyAssignment operator
+     * 
+     * @param v src vectror
+     */
+    constexpr auto operator=(Vector<T, Size> const &v) noexcept -> Vector &
+    {
+      elements = v.elements;
+      return *this;
+    }
+
     template <typename U>
     constexpr auto operator+=(Vector<U, Size> const &v) noexcept -> Vector &
     {
-      raw[0] += static_cast<T>(v.raw[0]);
-      raw[1] += static_cast<T>(v.raw[1]);
-      raw[2] += static_cast<T>(v.raw[2]);
-      raw[3] += static_cast<T>(v.raw[3]);
+      elements[0] += static_cast<T>(v.elements[0]);
+      elements[1] += static_cast<T>(v.elements[1]);
+      elements[2] += static_cast<T>(v.elements[2]);
+      elements[3] += static_cast<T>(v.elements[3]);
       return *this;
     }
 
     template <typename U>
     constexpr auto operator+=(U const &scalar) noexcept -> Vector &
     {
-      for (auto &&r : raw)
+      for (auto &&r : elements)
       {
         r += static_cast<T>(scalar);
       }
@@ -161,17 +172,17 @@ namespace cagey::math
     template <typename U>
     constexpr auto operator-=(Vector<U, Size> const &v) noexcept -> Vector &
     {
-      raw[0] -= static_cast<T>(v.raw[0]);
-      raw[1] -= static_cast<T>(v.raw[1]);
-      raw[2] -= static_cast<T>(v.raw[2]);
-      raw[3] -= static_cast<T>(v.raw[3]);
+      elements[0] -= static_cast<T>(v.elements[0]);
+      elements[1] -= static_cast<T>(v.elements[1]);
+      elements[2] -= static_cast<T>(v.elements[2]);
+      elements[3] -= static_cast<T>(v.elements[3]);
       return *this;
     }
 
     template <typename U>
     constexpr auto operator-=(U const &scalar) noexcept -> Vector &
     {
-      for (auto &&r : raw)
+      for (auto &&r : elements)
       {
         r -= static_cast<T>(scalar);
       }
@@ -181,7 +192,7 @@ namespace cagey::math
     template <typename U>
     constexpr auto operator*=(U const v) noexcept -> Vector &
     {
-      for (auto &&r : raw)
+      for (auto &&r : elements)
       {
         r *= static_cast<T>(v);
       }
@@ -191,17 +202,17 @@ namespace cagey::math
     template <typename U>
     constexpr auto operator*=(Vector<U, Size> const &v) noexcept -> Vector &
     {
-      raw[0] *= static_cast<T>(v.raw[0]);
-      raw[1] *= static_cast<T>(v.raw[1]);
-      raw[2] *= static_cast<T>(v.raw[2]);
-      raw[3] *= static_cast<T>(v.raw[3]);
+      elements[0] *= static_cast<T>(v.elements[0]);
+      elements[1] *= static_cast<T>(v.elements[1]);
+      elements[2] *= static_cast<T>(v.elements[2]);
+      elements[3] *= static_cast<T>(v.elements[3]);
       return *this;
     }
 
     template <typename U>
     constexpr auto operator/=(U const v) noexcept -> Vector &
     {
-      for (auto &&r : raw)
+      for (auto &&r : elements)
       {
         r /= static_cast<T>(v);
       }
@@ -211,28 +222,28 @@ namespace cagey::math
     template <typename U>
     constexpr auto operator/=(Vector<U, Size> const &v) noexcept -> Vector &
     {
-      raw[0] /= static_cast<T>(v.raw[0]);
-      raw[1] /= static_cast<T>(v.raw[1]);
-      raw[2] /= static_cast<T>(v.raw[2]);
-      raw[3] /= static_cast<T>(v.raw[3]);
+      elements[0] /= static_cast<T>(v.elements[0]);
+      elements[1] /= static_cast<T>(v.elements[1]);
+      elements[2] /= static_cast<T>(v.elements[2]);
+      elements[3] /= static_cast<T>(v.elements[3]);
       return *this;
     }
 
     constexpr auto operator++() noexcept -> Vector &
     {
-      ++raw[0];
-      ++raw[1];
-      ++raw[2];
-      ++raw[3];
+      ++elements[0];
+      ++elements[1];
+      ++elements[2];
+      ++elements[3];
       return *this;
     }
 
     constexpr auto operator--() noexcept -> Vector &
     {
-      --raw[0];
-      --raw[1];
-      --raw[2];
-      --raw[3];
+      --elements[0];
+      --elements[1];
+      --elements[2];
+      --elements[3];
       return *this;
     }
 
@@ -273,7 +284,7 @@ namespace cagey::math
     }
 
     //==========================================================================
-    /// Data Members
+    /// elements Members
     //==========================================================================
 
     /**
@@ -281,8 +292,8 @@ namespace cagey::math
      */
     union
     {
-      std::enable_if_t<is_vec_type<T>::value, std::array<T, Size>> data;
-      T raw[Size];
+      std::enable_if_t<is_vec_type<T>::value, std::array<T, Size>> elements;
+      T rawElements[Size];
       struct
       {
         T x;

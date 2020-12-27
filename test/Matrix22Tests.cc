@@ -103,6 +103,16 @@ TEST(Matrix22Test, ArrayConstructorTest)
   ASSERT_FLOAT_EQ(m[1][1], 1.0f);
 }
 
+TEST(Matrix22Test, ElementConstructorTest)
+{
+  Matrix22f m{1.0f, 3.0f, 5.0f, 1.0f};
+
+  ASSERT_FLOAT_EQ(m[0][0], 1.0f);
+  ASSERT_FLOAT_EQ(m[0][1], 3.0f);
+  ASSERT_FLOAT_EQ(m[1][0], 5.0f);
+  ASSERT_FLOAT_EQ(m[1][1], 1.0f);
+}
+
 TEST(Matrix22Test, CopyConstructorTest)
 {
   Matrix22f m = Matrix22f::identity();
@@ -133,6 +143,14 @@ TEST(Matrix22Test, InequalityTest)
   ASSERT_TRUE(m3 != m4);
 }
 
+TEST(Matrix22Test, CopyAssignmentOperator)
+{
+  Matrix22f m3 = Matrix22f::fill(2);
+  Matrix22f m4;
+  m4 = m3;
+  ASSERT_TRUE(m3 == m4);
+}
+
 TEST(Matrix22Test, ScaleTest)
 {
   Matrix22f m1 = Matrix22f::fill(2);
@@ -146,6 +164,17 @@ TEST(Matrix22Test, ScaleTest)
   ASSERT_TRUE(m4 == m3);
 }
 
+TEST(Matrix22Test, ScaleAssignTest)
+{
+  Matrix22f m2 = Matrix22f::fill(2);
+  m2 *= 3.0f;
+  Matrix22f m3 = Matrix22f::fill(6);
+  ASSERT_DOUBLE_EQ(m3[0][0], m2[0][0]);
+  ASSERT_DOUBLE_EQ(m3[0][1], m2[0][1]);
+  ASSERT_DOUBLE_EQ(m3[1][0], m2[1][0]);
+  ASSERT_DOUBLE_EQ(m3[1][1], m2[1][1]);
+}
+
 TEST(Matrix22Test, AddTest)
 {
   Matrix22f m1 = Matrix22f::fill(2);
@@ -157,6 +186,41 @@ TEST(Matrix22Test, AddTest)
   ASSERT_DOUBLE_EQ(m3[1][1], m2[1][1]);
   Matrix22f m4 = 3.0f + m1;
   ASSERT_TRUE(m4 == m3);
+}
+
+TEST(Matrix22Test, AddAssignTest)
+{
+  Matrix22f m2 = Matrix22f::fill(2);
+  m2 += 3.0f;
+  Matrix22f m3 = Matrix22f::fill(5);
+  ASSERT_DOUBLE_EQ(m3[0][0], m2[0][0]);
+  ASSERT_DOUBLE_EQ(m3[0][1], m2[0][1]);
+  ASSERT_DOUBLE_EQ(m3[1][0], m2[1][0]);
+  ASSERT_DOUBLE_EQ(m3[1][1], m2[1][1]);
+}
+
+TEST(Matrix22Test, MinusTest)
+{
+  Matrix22f m1 = Matrix22f::fill(2);
+  Matrix22f m2 = m1 - 3.0f;
+  Matrix22f m3 = Matrix22f::fill(-1);
+  ASSERT_DOUBLE_EQ(m3[0][0], m2[0][0]);
+  ASSERT_DOUBLE_EQ(m3[0][1], m2[0][1]);
+  ASSERT_DOUBLE_EQ(m3[1][0], m2[1][0]);
+  ASSERT_DOUBLE_EQ(m3[1][1], m2[1][1]);
+  Matrix22f m4 = 3.0f - m1;
+  ASSERT_TRUE(m4 == m3);
+}
+
+TEST(Matrix22Test, MinusAssignTest)
+{
+  Matrix22f m2 = Matrix22f::fill(2);
+  m2 -= 3.0f;
+  Matrix22f m3 = Matrix22f::fill(-1);
+  ASSERT_DOUBLE_EQ(m3[0][0], m2[0][0]);
+  ASSERT_DOUBLE_EQ(m3[0][1], m2[0][1]);
+  ASSERT_DOUBLE_EQ(m3[1][0], m2[1][0]);
+  ASSERT_DOUBLE_EQ(m3[1][1], m2[1][1]);
 }
 
 TEST(Matrix22Test, transposeTest)

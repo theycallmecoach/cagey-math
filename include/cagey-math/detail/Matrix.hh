@@ -221,6 +221,44 @@ namespace cagey::math
   }
 
   /**
+   * Compute the component wise subtraction of rhs and lhs.
+   *
+   * @tparam T The component type of the rhs and lhs
+   * @tparam U The type of scalar
+   * @tparam C The number of Columns
+   * @tparam R The number of Rows
+   *
+   * @param lhs the left-hand operand
+   * @param rhs the right-hand operand
+   * @return the subraction of lhs and each component of rhs
+   */
+  template <typename U, typename T, std::size_t C, std::size_t R>
+  inline constexpr auto operator-(U const lhs,
+                                  Matrix<T, C, R> rhs) noexcept -> Matrix<T, C, R>
+  {
+    return rhs -= lhs;
+  }
+
+  /**
+   * Compute the component wise subtraction of rhs and lhs.
+   *
+   * @tparam T The component type of the rhs and lhs
+   * @tparam U The type of scalar
+   * @tparam C The number of components of the lhs
+   * @tparam R The number of components of the lhs
+   *
+   * @param lhs the left-hand operand
+   * @param rhs the right-hand operand
+   * @return the subtraction of lhs and each component of rhs
+   */
+  template <typename U, typename T, std::size_t C, std::size_t R>
+  inline constexpr auto operator-(Matrix<T, C, R> lhs,
+                                  U const rhs) noexcept -> Matrix<T, C, R>
+  {
+    return lhs -= rhs;
+  }
+
+  /**
    * Compute the component wise product of rhs and lhs.
    *
    * @tparam T The component type of the rhs and lhs
@@ -309,7 +347,7 @@ namespace cagey::math
   inline auto operator==(Matrix<T, C, R> const &lhs,
                          Matrix<T, C, R> const &rhs) noexcept -> bool
   {
-    return detail::equal(lhs.columnsBegin(), lhs.columnsEnd(), rhs.columnsBegin());
+    return detail::equal(lhs.columnBegin(), lhs.columnEnd(), rhs.columnBegin());
   }
 
   /**

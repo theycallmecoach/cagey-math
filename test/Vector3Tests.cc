@@ -186,6 +186,14 @@ TEST(Vector3Test, WriteFieldTest)
   ASSERT_DOUBLE_EQ(cvd.b, 2.3);
 }
 
+TEST(Vector3Test, CopyAssignmentOperator)
+{
+  Vector3d cvd{1, 8, 7};
+  Vector3d cvd2{4, 5, 9};
+  cvd2 = cvd;
+  ASSERT_TRUE(cvd == cvd2);
+}
+
 TEST(Vector3Test, xyTest)
 {
   Vector3d cvd{1.2, 8.9, 2.5};

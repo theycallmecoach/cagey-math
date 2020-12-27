@@ -205,6 +205,17 @@ namespace cagey::math
     ///@{
 
     /**
+     * @brief CopyAssignment operator
+     * 
+     * @param v src vectror
+     */
+    constexpr auto operator=(Vector<T, Size> const &v) noexcept -> Vector &
+    {
+      elements = v.elements;
+      return *this;
+    }
+
+    /**
      * @brief Add and assign a vector componentwise
      * 
      * Values of the given vector are converted using static_cast
