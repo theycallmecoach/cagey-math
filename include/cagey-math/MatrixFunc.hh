@@ -72,12 +72,23 @@ namespace cagey::math
 
   } // namespace detail
 
+  /**
+   * @brief Calculate the determinant of the given square matrix
+   * 
+   * @return the determinant of the given matrix
+   */
   template <typename T, std::size_t C, std::size_t R>
   auto determinant(Matrix<T, C, R> const &mat) -> T
   {
     return detail::determinantImpl<T, C, R>::exec(mat);
   }
 
+  /**
+   * @brief Transpose the given matrix
+   * 
+   * @param mat the matrix to transpose
+   * @return the transpose of the given matrix
+   */
   template <typename T, std::size_t C, std::size_t R>
   auto transpose(Matrix<T, C, R> const &mat) -> Matrix<T, C, R>
   {

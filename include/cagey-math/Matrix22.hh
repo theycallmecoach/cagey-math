@@ -346,6 +346,68 @@ namespace cagey::math
       ElementType data[Size];
     };
 
-  }; // Vector
+  }; // Matrix22
+
+  /**
+   * Compute the component wise product of rhs and lhs.
+   *
+   * @tparam T The component type of the rhs and lhs
+   * @tparam U The type of scalar
+   * @tparam C The number of components of the lhs
+   * @tparam R The number of components of the lhs
+   *
+   * @param lhs the left-hand operand
+   * @param rhs the right-hand operand
+   * @return the product of lhs and each component of rhs
+   */
+  template <typename T>
+  inline constexpr auto operator*(Matrix<T, 2, 2> const &lhs,
+                                  typename Matrix<T, 2, 2>::RowType const &rhs) noexcept -> typename Matrix<T, 2, 2>::ColumnType
+  {
+    return {lhs[0][0] * rhs.x + lhs[1][0] * rhs.y,
+            lhs[0][1] * rhs.x + lhs[1][1] * rhs.y};
+  }
+
+  /**
+   * Compute the component wise product of rhs and lhs.
+   *
+   * @tparam T The component type of the rhs and lhs
+   * @tparam U The type of scalar
+   * @tparam C The number of components of the lhs
+   * @tparam R The number of components of the lhs
+   *
+   * @param lhs the left-hand operand
+   * @param rhs the right-hand operand
+   * @return the product of lhs and each component of rhs
+   */
+  template <typename T>
+  inline constexpr auto operator*(typename Matrix<T, 2, 2>::ColumnType const &lhs,
+                                  Matrix<T, 2, 2> const &rhs) noexcept -> typename Matrix<T, 2, 2>::RowType
+  {
+    return {lhs.x * rhs[0][0] + lhs.y * rhs[0][1],
+            lhs.x * rhs[1][0] + lhs.y * rhs[1][1]};
+  }
+
+  /**
+   * Compute the component wise product of rhs and lhs.
+   *
+   * @tparam T The component type of the rhs and lhs
+   * @tparam U The type of scalar
+   * @tparam C The number of components of the lhs
+   * @tparam R The number of components of the lhs
+   *
+   * @param lhs the left-hand operand
+   * @param rhs the right-hand operand
+   * @return the product of lhs and each component of rhs
+   */
+  template <typename T>
+  inline constexpr auto operator*(Matrix<T, 2, 2> const &lhs,
+                                  Matrix<T, 2, 2> const &rhs) noexcept -> Matrix<T, 2, 2>
+  {
+    return Matrix<T, 2, 2>{lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
+                           lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
+                           lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
+                           lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1]};
+  }
 
 } //namespace cagey::math

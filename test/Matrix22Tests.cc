@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include <cagey-math/Matrix22.hh>
+#include <cagey-math/Vector2.hh>
 #include <cagey-math/MatrixFunc.hh>
 #include <cstdint>
 
@@ -153,18 +154,42 @@ TEST(Matrix22Test, CopyAssignmentOperator)
 
 TEST(Matrix22Test, ScaleTest)
 {
-  Matrix22f m1 = Matrix22f::fill(2);
-  Matrix22f m2 = m1 * 3.0f;
+  auto m1 = Matrix22f::fill(2);
+  auto m2 = m1 * 3.0f;
+  auto m3 = Matrix22f::fill(6);
+  ASSERT_DOUBLE_EQ(m3[0][0], m2[0][0]);
+  ASSERT_DOUBLE_EQ(m3[0][1], m2[0][1]);
+  ASSERT_DOUBLE_EQ(m3[1][0], m2[1][0]);
+  ASSERT_DOUBLE_EQ(m3[1][1], m2[1][1]);
+  auto m4 = 3.0f * m1;
+  ASSERT_TRUE(m4 == m3);
+}
+
+TEST(Matrix22Test, ScaleAssignTest)
+{
+  auto m2 = Matrix22f::fill(2);
+  m2 *= 3.0f;
   Matrix22f m3 = Matrix22f::fill(6);
   ASSERT_DOUBLE_EQ(m3[0][0], m2[0][0]);
   ASSERT_DOUBLE_EQ(m3[0][1], m2[0][1]);
   ASSERT_DOUBLE_EQ(m3[1][0], m2[1][0]);
   ASSERT_DOUBLE_EQ(m3[1][1], m2[1][1]);
-  Matrix22f m4 = 3.0f * m1;
-  ASSERT_TRUE(m4 == m3);
 }
 
-TEST(Matrix22Test, ScaleAssignTest)
+TEST(Matrix22Test, DivideTest)
+{
+  Matrix22f m1 = Matrix22f::fill(6);
+  Matrix22f m2 = m1 / 3.0f;
+  Matrix22f m3 = Matrix22f::fill(2);
+  ASSERT_DOUBLE_EQ(m3[0][0], m2[0][0]);
+  ASSERT_DOUBLE_EQ(m3[0][1], m2[0][1]);
+  ASSERT_DOUBLE_EQ(m3[1][0], m2[1][0]);
+  ASSERT_DOUBLE_EQ(m3[1][1], m2[1][1]);
+  // Matrix22f m4 = 3.0f / m1;
+  // ASSERT_TRUE(m4 == m3);
+}
+
+TEST(Matrix22Test, DivideAssignTest)
 {
   Matrix22f m2 = Matrix22f::fill(2);
   m2 *= 3.0f;
@@ -214,9 +239,9 @@ TEST(Matrix22Test, MinusTest)
 
 TEST(Matrix22Test, MinusAssignTest)
 {
-  Matrix22f m2 = Matrix22f::fill(2);
+  auto m2 = Matrix22f::fill(2);
   m2 -= 3.0f;
-  Matrix22f m3 = Matrix22f::fill(-1);
+  auto m3 = Matrix22f::fill(-1);
   ASSERT_DOUBLE_EQ(m3[0][0], m2[0][0]);
   ASSERT_DOUBLE_EQ(m3[0][1], m2[0][1]);
   ASSERT_DOUBLE_EQ(m3[1][0], m2[1][0]);
@@ -225,10 +250,49 @@ TEST(Matrix22Test, MinusAssignTest)
 
 TEST(Matrix22Test, transposeTest)
 {
-  Matrix22f m1 = Matrix22f{{1, 2}, {3, 4}};
+  auto m1 = Matrix22f{{1, 2}, {3, 4}};
   m1 = transpose(m1);
   ASSERT_DOUBLE_EQ(m1[0][0], 1);
   ASSERT_DOUBLE_EQ(m1[0][1], 3);
   ASSERT_DOUBLE_EQ(m1[1][0], 2);
   ASSERT_DOUBLE_EQ(m1[1][1], 4);
+}
+
+TEST(Matrix22Test, determinantTest)
+{
+  auto m1 = Matrix22f{{1, 2}, {3, 4}};
+  auto det = determinant(m1);
+  ASSERT_DOUBLE_EQ(det, -2);
+}
+
+TEST(Matrix22Test, MatrixVectorProductTest)
+{
+  auto m1 = Matrix22f{{1, 2}, {3, 4}};
+  auto v1 = Vector2f{1, 2};
+  auto r2 = m1 * v1;
+  auto r3 = Vector2f{7, 10};
+  ASSERT_DOUBLE_EQ(r2[0], r3[0]);
+  ASSERT_DOUBLE_EQ(r2[1], r3[1]);
+}
+
+TEST(Matrix22Test, VectorMatrixProductTest)
+{
+  auto m1 = Matrix22f{{1, 2}, {3, 4}};
+  auto v1 = Vector2f{1, 2};
+  auto r2 = v1 * m1;
+  auto r3 = Vector2f{5, 11};
+  ASSERT_DOUBLE_EQ(r2[0], r3[0]);
+  ASSERT_DOUBLE_EQ(r2[1], r3[1]);
+}
+
+TEST(Matrix22Test, MatrixMatrixProductTest)
+{
+  auto m1 = Matrix22f{1};
+  auto m2 = Matrix22f{1};
+  auto m3 = m1 * m2;
+  auto m4 = Matrix22f{2};
+  ASSERT_DOUBLE_EQ(m3[0][0], m4[0][0]);
+  ASSERT_DOUBLE_EQ(m3[0][1], m4[0][1]);
+  ASSERT_DOUBLE_EQ(m3[1][0], m4[1][0]);
+  ASSERT_DOUBLE_EQ(m3[1][1], m4[1][1]);
 }

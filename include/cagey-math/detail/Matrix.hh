@@ -296,41 +296,24 @@ namespace cagey::math
     return lhs *= rhs;
   }
 
-  // /**
-  //  * @brief Overload std::begin()
-  //  */
-  // template <typename T, std::size_t C, std::size_t R>
-  // inline constexpr auto begin(Matrix<T, C, R> const &m) -> typename Matrix<T, C, R>::ConstIterator
-  // {
-  //   return m.begin();
-  // }
-
-  // /**
-  //  * @brief Overload std::begin()
-  //  */
-  // template <typename T, std::size_t C, std::size_t R>
-  // inline constexpr auto begin(Matrix<T, C, R> &m) -> typename Matrix<T, C, R>::Iterator
-  // {
-  //   return m.begin();
-  // }
-
-  // /**
-  //  * @brief Overload std::end()
-  //  */
-  // template <typename T, std::size_t R, std::size_t C>
-  // inline constexpr auto end(Matrix<T, C, R> const &m) -> typename Matrix<T, C, R>::ConstIterator
-  // {
-  //   return m.end();
-  // }
-
-  // /**
-  //  * @brief Overload std::end()
-  //  */
-  // template <typename T, std::size_t R, std::size_t C>
-  // inline constexpr auto end(Matrix<T, C, R> &m) -> typename Matrix<T, C, R>::Iterator
-  // {
-  //   return m.end();
-  // }
+  /**
+   * Compute the component wise division of rhs and lhs.
+   *
+   * @tparam T The component type of the rhs and lhs
+   * @tparam U The type of scalar
+   * @tparam C The number of components of the lhs
+   * @tparam R The number of components of the lhs
+   *
+   * @param lhs the left-hand operand
+   * @param rhs the right-hand operand
+   * @return the division of lhs and each component of rhs
+   */
+  template <typename U, typename T, std::size_t C, std::size_t R>
+  inline constexpr auto operator/(Matrix<T, C, R> lhs,
+                                  U const rhs) noexcept -> Matrix<T, C, R>
+  {
+    return lhs /= rhs;
+  }
 
   /**
      * Determines if two Matrices are equal.
