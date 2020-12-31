@@ -296,3 +296,16 @@ TEST(Matrix22Test, MatrixMatrixProductTest)
   ASSERT_DOUBLE_EQ(m3[1][0], m4[1][0]);
   ASSERT_DOUBLE_EQ(m3[1][1], m4[1][1]);
 }
+
+TEST(Matrix22Test, MatrixInverseTest)
+{
+  auto m1 = Matrix22f::identity();
+  auto m2 = inverse(m1);
+  ASSERT_EQ(m1, m2);
+  auto m3 = Matrix22f{{4, 2}, {7, 6}};
+  auto m4 = inverse(m3);
+  ASSERT_DOUBLE_EQ(m4[0][0], 0.6f);
+  ASSERT_DOUBLE_EQ(m4[1][0], -0.7f);
+  ASSERT_DOUBLE_EQ(m4[1][1], 0.4f);
+  ASSERT_DOUBLE_EQ(m4[0][1], -0.2f);
+}

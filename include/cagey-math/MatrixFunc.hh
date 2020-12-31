@@ -70,6 +70,36 @@ namespace cagey::math
       }
     };
 
+    template <typename T, std::size_t C, std::size_t R>
+    struct inverseImpl
+    {
+    };
+
+    template <typename T>
+    struct inverseImpl<T, 2, 2>
+    {
+      static constexpr auto exec(Matrix<T, 2, 2> const &mat) -> Matrix<T, 2, 2>
+      {
+        auto invDet = static_cast<T>(1) / determinant(mat);
+        return Matrix<T, 2, 2>{+mat[1][1] * invDet,
+                               -mat[0][1] * invDet,
+                               -mat[1][0] * invDet,
+                               +mat[0][0] * invDet};
+      }
+    };
+
+    // template <typename T>
+    // struct inverseImpl<T, 3, 3>
+    // {
+    //   static constexpr auto exec(Matrix<T, 3, 3> const &mat) -> Matrix<T, 3, 3>
+    //   {
+    //     auto invDet = static_cast<T>(1) / determinant(mat);
+    //     return Matrix<T, 3, 3> { + mat[0][0] * (mat[1][1] * mat[2][2] - mat[2][1] * mat[1][2])
+    // 		- mat[1][0] * (mat[0][1] * mat[2][2] - mat[2][1] * mat[0][2])
+    // 		+ mat[2][0] * (mat[0][1] * mat[1][2] - mat[1][1] * mat[0][2]));
+    // //   }
+    // };
+
   } // namespace detail
 
   /**
@@ -93,6 +123,18 @@ namespace cagey::math
   auto transpose(Matrix<T, C, R> const &mat) -> Matrix<T, C, R>
   {
     return detail::transposeImpl<T, C, R>::exec(mat);
+  }
+
+  /**
+   * @brief Invert the given matrix
+   * 
+   * @param mat the matrix to transpose
+   * @return the transpose of the given matrix
+   */
+  template <typename T, std::size_t C, std::size_t R>
+  auto inverse(Matrix<T, C, R> const &mat) -> Matrix<T, C, R>
+  {
+    return detail::inverseImpl<T, C, R>::exec(mat);
   }
 
 } // namespace cagey::math
